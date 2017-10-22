@@ -38,7 +38,7 @@ namespace JG_Prospect.App_Code
             try
             {
                 PerformGitAction(repo, JGConstant.GitActions.AddUser, gitUserName);
-                
+
             }
             catch (Exception ex)
             {
@@ -100,7 +100,7 @@ namespace JG_Prospect.App_Code
                         client.Credentials = basicAuth;
                         break;
                     }
-            }            
+            }
 
 
             //Perform Actions       
@@ -704,7 +704,7 @@ namespace JG_Prospect.App_Code
         public static string GetDesignationCode(JGConstant.DesignationType objDesignationType)
         {
             string strCode = string.Empty;
-            return strCode = DesignationBLL.Instance.GetDesignationCode (objDesignationType);           
+            return strCode = DesignationBLL.Instance.GetDesignationCode(objDesignationType);
         }
 
         public static System.Web.UI.WebControls.ListItemCollection GetTaskStatusList()
@@ -973,29 +973,29 @@ namespace JG_Prospect.App_Code
 
             DataColumn dcColorClass = new DataColumn("CssClass", System.Type.GetType("System.String"));
 
-             dataSource.Columns.Add(dcColorClass);
+            dataSource.Columns.Add(dcColorClass);
             dataSource.AcceptChanges();
 
             // For all active user set font in red and for all InterviewDate and OfferMade set blue.
             foreach (DataRow row in dataSource.Rows)
             {
-                
-                    JGConstant.InstallUserStatus Userstatus;
-                  Enum.TryParse(Convert.ToString(row["Status"]), out Userstatus);
 
-                    switch (Userstatus)
-                    {
-                        case JGConstant.InstallUserStatus.Active:
-                        case JGConstant.InstallUserStatus.OfferMade:
+                JGConstant.InstallUserStatus Userstatus;
+                Enum.TryParse(Convert.ToString(row["Status"]), out Userstatus);
+
+                switch (Userstatus)
+                {
+                    case JGConstant.InstallUserStatus.Active:
+                    case JGConstant.InstallUserStatus.OfferMade:
                         row["CssClass"] = "activeUser";
-                            break;
-                        case JGConstant.InstallUserStatus.InterviewDate:
-                        row["CssClass"] = "IOUser";                        
-                            break;
-                        default:
-                            break;
-                    }
-                                
+                        break;
+                    case JGConstant.InstallUserStatus.InterviewDate:
+                        row["CssClass"] = "IOUser";
+                        break;
+                    default:
+                        break;
+                }
+
             }
 
             return dataSource;
@@ -1321,6 +1321,38 @@ namespace JG_Prospect.App_Code
 
             }
 
+        }
+
+        public static string GetTaskLinkTitleForAutoEmail(int taskId)
+        {
+
+            DataSet dsTaskDetails = TaskGeneratorBLL.Instance.GetTasksInformation(taskId);
+
+            DataTable dtOriginalTaskDetails = dsTaskDetails.Tables[0];
+
+            string newTaskLinkTitle = "";
+            string installId = dtOriginalTaskDetails.Rows[0]["InstallId"].ToString();
+            string taskTitle = dtOriginalTaskDetails.Rows[0]["Title"].ToString();
+            string parentTaskId = dtOriginalTaskDetails.Rows[0]["ParentTaskId"].ToString();
+            while (!string.IsNullOrEmpty(parentTaskId))
+            {
+                int intParentTaskId = int.Parse(parentTaskId);
+                DataSet parentTask = TaskGeneratorBLL.Instance.GetTasksInformation(intParentTaskId);
+                if (parentTask != null && parentTask.Tables.Count>0)
+                {
+                    installId = parentTask.Tables[0].Rows[0]["InstallId"].ToString() + "-" + installId;
+                    taskTitle += "; " + parentTask.Tables[0].Rows[0]["Title"].ToString();
+                    parentTaskId = parentTask.Tables[0].Rows[0]["ParentTaskId"].ToString();
+                }
+                else
+                {
+                    parentTaskId = "";
+                }
+            }
+
+            newTaskLinkTitle = string.Format("TaskID#:{0}:Title:{1}",installId,taskTitle);
+
+            return newTaskLinkTitle;
         }
     }
 }
