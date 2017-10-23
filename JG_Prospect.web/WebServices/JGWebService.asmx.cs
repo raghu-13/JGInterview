@@ -1165,6 +1165,7 @@ namespace JG_Prospect.WebServices
                     strBody = strBody.Replace("#TaskLinkTitle#", strTaskLinkTitle);
 
 
+
                     strBody = strHeader + strBody + strFooter;
 
                     List<Attachment> lstAttachments = new List<Attachment>();

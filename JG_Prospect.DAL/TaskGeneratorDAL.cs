@@ -1010,8 +1010,8 @@ namespace JG_Prospect.DAL
                 return null;
             }
         }
-
-        //Get details for task with user and attachments
+        
+        //Get details for task 
         public DataSet GetTasksInformation(Int32 TaskId)
         {
             try

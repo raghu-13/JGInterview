@@ -4789,6 +4789,7 @@ namespace JG_Prospect.Sr_App
                     strBody = strBody.Replace("#TaskLinkTitle#", strTaskLinkTitle);
 
 
+
                     strBody = strHeader + strBody + strFooter;
 
                     List<Attachment> lstAttachments = new List<Attachment>();

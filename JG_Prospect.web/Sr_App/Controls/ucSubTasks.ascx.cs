@@ -2241,7 +2241,7 @@ namespace JG_Prospect.Sr_App.Controls
                     // Added by Zubair Ahmed Khan for displaying proper text for task link
                     string strTaskLinkTitle = CommonFunction.GetTaskLinkTitleForAutoEmail(intTaskId);
                     strBody = strBody.Replace("#TaskLinkTitle#", strTaskLinkTitle);
-
+                    
 
                     strBody = strHeader + strBody + strFooter;
 

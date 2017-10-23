@@ -4622,6 +4622,7 @@ namespace JG_Prospect
                     strBody = strBody.Replace("#TaskLinkTitle#", strTaskLinkTitle);
 
 
+
                     strBody = strHeader + strBody + strFooter;
 
                     string strHTMLTemplateName = "Task Generator Auto Email";
