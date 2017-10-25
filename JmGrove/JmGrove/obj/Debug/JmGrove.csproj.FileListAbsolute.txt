@@ -1,0 +1,3 @@
+C:\Users\hardik\Desktop\JmGrove\JmGrove\obj\Debug\Bsnl.FrmDesignation.resources
+C:\Users\hardik\Desktop\JmGrove\JmGrove\obj\Debug\JmGrove.Properties.Resources.resources
+C:\Users\hardik\Desktop\JmGrove\JmGrove\obj\Debug\JmGrove.csproj.GenerateResource.Cache
