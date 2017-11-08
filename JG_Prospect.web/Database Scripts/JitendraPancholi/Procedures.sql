@@ -158,3 +158,33 @@ BEGIN
  UPDATE tblAssignedSequencing SET  IsTemp = 0 WHERE  (Id = @AssignedSeqID)
 
 END
+
+/* =============================================      
+ Author:  Jitendra Pancholi      
+ Create date: 08-Nov-2017
+ Description: This will call all procedure which needs to be run periodically.
+ ============================================= */
+Go
+IF EXISTS(SELECT 1 FROM INFORMATION_SCHEMA.ROUTINES WHERE  ROUTINE_NAME = 'RunJobs')
+  BEGIN
+      DROP PROCEDURE RunJobs
+  END
+ Go
+Create Procedure RunJobs
+As
+Begin
+	Declare @JobSchedulerLogId Bigint, @StartsOn DateTime, @ExecutionTime int
+
+	/* Call this procedure to change user's status to InterviewDateExpired. */
+	Set @StartsOn = GetDate()
+	Insert Into JobSchedulerLog (JobName, StartsOn) Values ('FreeTaskIfInterviewPassed',@StartsOn)
+	Exec FreeTaskIfInterviewPassed
+	Set @JobSchedulerLogId = ident_current('JobSchedulerLog')
+	Set @ExecutionTime = DateDiff(S,@StartsOn,GetDate())
+	Update JobSchedulerLog Set EndsOn = GetDate(), ExecutionTime = @ExecutionTime Where Id = @JobSchedulerLogId
+	/* Call this procedure to change user's status to InterviewDateExpired. */
+	
+	
+	
+	/* Call other job procedures like above */
+End
