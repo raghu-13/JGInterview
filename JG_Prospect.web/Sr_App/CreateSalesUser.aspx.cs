@@ -806,10 +806,13 @@ namespace JG_Prospect.Sr_App
                         //    ddlSource.SelectedValue = ds.Tables[0].Rows[0][38].ToString();
                         //}
                         //if (ds.Tables[0].Rows[0][39].ToString() != "")
-                        if (ds.Tables[0].Rows[0]["SourceID"].ToString() != "")
-                        {
-                            ddlSource.SelectedValue = ds.Tables[0].Rows[0]["SourceID"].ToString();
-                        }
+                        
+
+                        if (ds.Tables[0].Columns.Contains("SourceID"))
+                            if (ds.Tables[0].Rows[0]["SourceID"].ToString() != "")
+                            {
+                                ddlSource.SelectedValue = ds.Tables[0].Rows[0]["SourceID"].ToString();
+                            }
                         {
                             txtNotes.Text = ds.Tables[0].Rows[0][39].ToString();
                         }

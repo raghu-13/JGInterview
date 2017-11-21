@@ -23,6 +23,7 @@ using JG_Prospect.App_Code;
 using OfficeOpenXml;
 using Newtonsoft.Json;
 using System.Globalization;
+using AjaxControlToolkit;
 //using System.Diagnostics;
 
 namespace JG_Prospect
@@ -418,6 +419,10 @@ namespace JG_Prospect
                     DropDownList elePhoneType = (e.Row.FindControl("ddlPhoneType") as DropDownList);
                     int id = Convert.ToInt32(grdUsers.DataKeys[e.Row.RowIndex].Values[0]);
 
+                    int previousStatus = Convert.ToInt32(DataBinder.Eval(e.Row.DataItem, "PreviousStatus"));
+
+                    AssignBookMarkImageURL(e.Row, previousStatus);
+
                     if (hdimg.Value != "")
                     {
                         string[] value = hdimg.Value.Split('/');
@@ -443,6 +448,7 @@ namespace JG_Prospect
 
                     ddlStatus = JG_Prospect.Utilits.FullDropDown.FillUserStatus(ddlStatus);
 
+
                     //populate Designation
                     DropDownList ddlDesiGrd = (e.Row.FindControl("drpDesig") as DropDownList);//Find the DropDownList in the Row
                     DataSet dsDesignation = new DataSet();
@@ -464,85 +470,98 @@ namespace JG_Prospect
                     DropDownList elePhone = (e.Row.FindControl("ddlPhone") as DropDownList);
                     DropDownList eleEmail = (e.Row.FindControl("ddlEmail") as DropDownList);
 
-                    var userEmails = from mails in dtUserEmails.AsEnumerable()
-                                     where mails.Field<int>("UserID") == id
-                                     select mails;
-
-                    var userPhones = from phones in dtUserPhones.AsEnumerable()
-                                     where phones.Field<int>("UserID") == id
-                                     select phones;
                     int i = 0;
-                    foreach (DataRow RowItem in userEmails)
+                    if (dtUserEmails != null)
                     {
-                        try
+                        var userEmails = from mails in dtUserEmails.AsEnumerable()
+                                         where mails.Field<int>("UserID") == id
+                                         select mails;
+
+
+                        foreach (DataRow RowItem in userEmails)
                         {
-                            eleEmail.Items.Add(new ListItem(RowItem["emailID"].ToString(), RowItem["UserEmailID"].ToString()));
-
-                            if (RowItem["IsPrimary"] != DBNull.Value && Convert.ToBoolean(RowItem["IsPrimary"]))
+                            try
                             {
-                                eleEmail.SelectedValue = RowItem["UserEmailID"].ToString();
-                                eleEmail.Items[i].Attributes["data-p"] = "1";
+                                eleEmail.Items.Add(new ListItem(RowItem["emailID"].ToString(), RowItem["UserEmailID"].ToString()));
 
-                                CheckBox eleEmailPrimary = (e.Row.FindControl("chkEmailPrimary") as CheckBox);
-                                eleEmailPrimary.Checked = true;
-                            }
-                        }
-                        catch { }
-                        finally { i++; }
-                    }
-
-                    i = 0;
-                    Label lblExt = (e.Row.FindControl("lblExt") as Label);
-                    foreach (DataRow RowItem in userPhones)
-                    {
-                        try
-                        {
-                            elePhone.Items.Add(new ListItem(RowItem["Phone"].ToString(), RowItem["UserPhoneID"].ToString()));
-                            if (RowItem["IsPrimary"] != DBNull.Value && Convert.ToBoolean(RowItem["IsPrimary"]))
-                            {
-                                elePhone.SelectedValue = RowItem["UserPhoneID"].ToString();
-                                elePhone.Items[i].Attributes["data-p"] = "1";
-                                elePhoneTypeDisplay.SelectedValue = RowItem["PhoneTypeID"].ToString();
-
-                                CheckBox elePhonePrimary = (e.Row.FindControl("chkPhonePrimary") as CheckBox);
-                                elePhonePrimary.Checked = true;
-                            }
-
-                            if (elePhone.SelectedValue == RowItem["UserPhoneID"].ToString())
-                            {
-                                if (RowItem["PhoneExtNo"] != DBNull.Value && RowItem["PhoneExtNo"].ToString() != "")
+                                if (RowItem["IsPrimary"] != DBNull.Value && Convert.ToBoolean(RowItem["IsPrimary"]))
                                 {
-                                    lblExt.Text = RowItem["PhoneExtNo"].ToString();
-                                    lblExt.Style.Add(HtmlTextWriterStyle.Padding, "5px");
+                                    eleEmail.SelectedValue = RowItem["UserEmailID"].ToString();
+                                    eleEmail.Items[i].Attributes["data-p"] = "1";
+
+                                    CheckBox eleEmailPrimary = (e.Row.FindControl("chkEmailPrimary") as CheckBox);
+                                    eleEmailPrimary.Checked = true;
                                 }
                             }
-
-                            if (RowItem["PhoneExtNo"] != DBNull.Value && RowItem["PhoneExtNo"].ToString() != "")
-                                elePhone.Items[i].Attributes["data-ext"] = RowItem["PhoneExtNo"].ToString();
-
+                            catch { }
+                            finally { i++; }
                         }
-                        catch { }
-                        finally { i++; }
                     }
+
+                    if (dtUserPhones != null)
+                    {
+                        var userPhones = from phones in dtUserPhones.AsEnumerable()
+                                         where phones.Field<int>("UserID") == id
+                                         select phones;
+
+                        i = 0;
+                        Label lblExt = (e.Row.FindControl("lblExt") as Label);
+                        foreach (DataRow RowItem in userPhones)
+                        {
+                            try
+                            {
+                                elePhone.Items.Add(new ListItem(RowItem["Phone"].ToString(), RowItem["UserPhoneID"].ToString()));
+                                if (RowItem["IsPrimary"] != DBNull.Value && Convert.ToBoolean(RowItem["IsPrimary"]))
+                                {
+                                    elePhone.SelectedValue = RowItem["UserPhoneID"].ToString();
+                                    elePhone.Items[i].Attributes["data-p"] = "1";
+                                    elePhoneTypeDisplay.SelectedValue = RowItem["PhoneTypeID"].ToString();
+
+                                    CheckBox elePhonePrimary = (e.Row.FindControl("chkPhonePrimary") as CheckBox);
+                                    elePhonePrimary.Checked = true;
+                                }
+
+                                if (elePhone.SelectedValue == RowItem["UserPhoneID"].ToString())
+                                {
+                                    if (RowItem["PhoneExtNo"] != DBNull.Value && RowItem["PhoneExtNo"].ToString() != "")
+                                    {
+                                        lblExt.Text = RowItem["PhoneExtNo"].ToString();
+                                        lblExt.Style.Add(HtmlTextWriterStyle.Padding, "5px");
+                                    }
+                                }
+
+                                if (RowItem["PhoneExtNo"] != DBNull.Value && RowItem["PhoneExtNo"].ToString() != "")
+                                    elePhone.Items[i].Attributes["data-ext"] = RowItem["PhoneExtNo"].ToString();
+
+                            }
+                            catch { }
+                            finally { i++; }
+                        }
+
+                    }
+
+
+
+
 
                     BindContactDllForGrid(ref elePhoneType, ref elePhoneTypeDisplay);
 
                     #region BindUserNotes
+                    //Temp
+                    //if (dtUserNotes != null && dtUserNotes.Rows.Count > 0)
+                    //{
+                    //    var userNotes = (from notes in dtUserNotes.AsEnumerable()
+                    //                     where notes.Field<int>("UserID") == id
+                    //                     select notes).Take(1);
 
-                    if (dtUserNotes != null && dtUserNotes.Rows.Count > 0)
-                    {
-                        var userNotes = (from notes in dtUserNotes.AsEnumerable()
-                                         where notes.Field<int>("UserID") == id
-                                         select notes).Take(1);
+                    //    if (userNotes != null && userNotes.Any())
+                    //    {
+                    //        Repeater rptNotes = (e.Row.FindControl("rptNotes") as Repeater);
 
-                        if (userNotes != null && userNotes.Any())
-                        {
-                            Repeater rptNotes = (e.Row.FindControl("rptNotes") as Repeater);
-
-                            rptNotes.DataSource = userNotes.CopyToDataTable();
-                            rptNotes.DataBind();
-                        }
-                    }
+                    //        rptNotes.DataSource = userNotes.CopyToDataTable();
+                    //        rptNotes.DataBind();
+                    //    }
+                    //}
 
                     // Removed by yogesh keraliya : High performance code replaced.
                     //PlaceHolder placeHolder = (e.Row.FindControl("placeNotes") as PlaceHolder);
@@ -567,7 +586,7 @@ namespace JG_Prospect
                     //    lblNotes.Text += "</tbody></table>";
 
                     //placeHolder.Controls.Add(lblNotes);
-
+                    //Temp
                     #endregion
 
 
@@ -606,9 +625,12 @@ namespace JG_Prospect
                         }
                     }
 
+
                     if (Status != "")
                     {
-                        ddlStatus.Items.FindByValue(Status).Selected = true;
+                        //temp
+                        if (ddlStatus.Items.FindByValue(Status) != null)
+                            ddlStatus.Items.FindByValue(Status).Selected = true;
 
                         switch ((JGConstant.InstallUserStatus)Convert.ToByte(Status))
                         {
@@ -692,6 +714,38 @@ namespace JG_Prospect
             {
                 Response.Write("" + ex.Message);
             }
+        }
+
+        private void AssignBookMarkImageURL(GridViewRow grow, int previousStatus)
+        {
+
+            Image imgbmark = grow.FindControl("imagebmark") as Image;
+            HiddenField bmid = grow.FindControl("bmId") as HiddenField;
+
+            if (previousStatus == 0)
+            {
+                imgbmark.ImageUrl = "../img/star.png";
+                imgbmark.ToolTip = null;
+            }
+            else
+            {
+                imgbmark.ImageUrl = "../img/yellowstar.png";
+                //imgbmark.ToolTip = string.Format("#{0}#{1}#{2}", lblFirstName.Text, lblLastName.Text, Convert.ToString(lblDesignation.Value));
+                imgbmark.ToolTip = Convert.ToString(bmid.Value);
+            }
+
+            //if (previousStatus == 0)
+            //{
+            //    imgbmark.ImageUrl = "../img/star.png";
+            //    imgbmark.ToolTip = null;
+            //}
+            //else
+            //{
+            //    imgbmark.ImageUrl = "../img/yellowstar.png";
+            //    imgbmark.ToolTip = string.Format("#{0}#{1}#{2}", DataBinder.Eval(grow.DataItem, "FristName"), DataBinder.Eval(grow.DataItem, "LastName"), DataBinder.Eval(grow.DataItem, "Designation"));
+
+            //}
+
         }
 
         protected void grdUsers_RowCommand(object sender, GridViewCommandEventArgs e)
@@ -944,8 +998,13 @@ namespace JG_Prospect
                 this.SalesUserSortDirection = SortDirection.Ascending;
             }
 
-            //binddata();
+            ////binddata();
+
+
             GetSalesUsersStaticticsAndData();
+
+
+
         }
 
         protected void ddlPageSize_grdUsers_SelectedIndexChanged(object sender, EventArgs e)
@@ -3995,22 +4054,27 @@ namespace JG_Prospect
                     DataTable dtSalesUser_Grid = dsSalesUserData.Tables[4];
 
                     //added by deep [to get emails and phone of all users]
-                    DataTable dt_UserEmails = dsSalesUserData.Tables[7];
-                    DataTable dt_UserPhones = dsSalesUserData.Tables[8];
-                    ViewState["dt_UserEmails"] = dt_UserEmails;
-                    ViewState["dt_UserPhones"] = dt_UserPhones;
 
-                    ViewState["dt_UserNotes"] = dsSalesUserData.Tables[9];
+                    if (dsSalesUserData.Tables.Count > 6)
+                    {
+                        //temp
+                        DataTable dt_UserEmails = dsSalesUserData.Tables[7];
+                        DataTable dt_UserPhones = dsSalesUserData.Tables[8];
+                        ViewState["dt_UserEmails"] = dt_UserEmails;
+                        ViewState["dt_UserPhones"] = dt_UserPhones;
 
-                    if (dsSalesUserData.Tables[6].Rows.Count > 0)
-                    {
-                        lblCount.Text = dsSalesUserData.Tables[6].Rows[0]["tcount"].ToString();
+                        ViewState["dt_UserNotes"] = dsSalesUserData.Tables[9];
+
+                        if (dsSalesUserData.Tables[6].Rows.Count > 0)
+                        {
+                            lblCount.Text = dsSalesUserData.Tables[6].Rows[0]["tcount"].ToString();
+                        }
+                        else
+                        {
+                            lblCount.Text = "0";
+                        }
+                        lblselectedchk.Text = string.Empty;
                     }
-                    else
-                    {
-                        lblCount.Text = "0";
-                    }
-                    lblselectedchk.Text = string.Empty;
 
                     #region OrderStatus Column
 
@@ -4169,7 +4233,7 @@ namespace JG_Prospect
                         {
                             lblActiveDeactiveRatio.Text = "0";
                         }
-
+                        //Temp
                         BindPieChart(lstHrData);
                     }
                     else
@@ -4203,9 +4267,11 @@ namespace JG_Prospect
                                 dr["Country"] = country;
                             }
                         }
+
                         grdUsers.DataSource = dtSalesUser_Grid;
                         grdUsers.VirtualItemCount = Convert.ToInt32(dsSalesUserData.Tables[5].Rows[0]["TotalRecordCount"]);
                         grdUsers.DataBind();
+
                         grdUsers.UseAccessibleHeader = true;
                         grdUsers.HeaderRow.TableSection = TableRowSection.TableHeader;
                         BindUsersCount(dtSalesUser_Statictics_AddedBy, dtSalesUser_Statictics_Designation, dtSalesUser_Statictics_Source);
@@ -4219,12 +4285,12 @@ namespace JG_Prospect
                     }
 
                     LabelSet();
-                    int countval = Convert.ToInt32(dsSalesUserData.Tables[6].Rows[0]["tcount"]);
-                    int dropvalue = Convert.ToInt32(ddlPageSize_grdUsers.SelectedValue);
-                    if (countval < dropvalue)
-                    {
-                        lblTo.Text = dsSalesUserData.Tables[6].Rows[0]["tcount"].ToString();
-                    }
+                    //int countval = Convert.ToInt32(dsSalesUserData.Tables[6].Rows[0]["tcount"]);
+                    //int dropvalue = Convert.ToInt32(ddlPageSize_grdUsers.SelectedValue);
+                    //if (countval < dropvalue)
+                    //{
+                    //    lblTo.Text = dsSalesUserData.Tables[6].Rows[0]["tcount"].ToString();
+                    //}
                     upUsers.Update();
                 }
             }
@@ -4241,9 +4307,12 @@ namespace JG_Prospect
 
             for (int i = 0; i < lstHrData.Count(); i++)
             {
-                JGConstant.InstallUserStatus status = (JGConstant.InstallUserStatus)Convert.ToInt32(lstHrData[i].status.ToString());
-                x[i] = status.ToString();
-                y[i] = Convert.ToInt32(lstHrData[i].count);
+                if (!string.IsNullOrEmpty(Convert.ToString(lstHrData[i].status)))
+                {
+                    JGConstant.InstallUserStatus status = (JGConstant.InstallUserStatus)Convert.ToInt32(lstHrData[i].status.ToString());
+                    x[i] = status.ToString();
+                    y[i] = Convert.ToInt32(lstHrData[i].count);
+                }
             }
 
             Chart1.Series[0].Points.DataBindXY(x, y);
@@ -4528,7 +4597,20 @@ namespace JG_Prospect
             }
         }
 
+
+
+        protected void OnRatingChanged(object sender, RatingEventArgs e)
+        {
+            //GridViewRow grow = (GridViewRow)((Control)sender).NamingContainer;
+            //string ID = grdUsers.DataKeys[grow.RowIndex]["Id"].ToString();
+            //int intEditId = Convert.ToInt32(ID);
+            //InstallUserBLL.Instance.UpdateBookMarkingUserDetails(intEditId);
+        }
+
         #region 'Assigned Task ToUser'
+
+
+
 
         private void AssignedTaskToUser(int intEditId, DropDownList ddlTechTask, DropDownList ddlTechSubTask)
         {
@@ -4836,6 +4918,39 @@ namespace JG_Prospect
             string strUserInstallId = JGSession.Username + " - " + JGSession.LoginUserID;
             int userID = Convert.ToInt32(JGSession.LoginUserID);
             InstallUserBLL.Instance.AddTouchPointLogRecord(userID, id, strUserInstallId, DateTime.Now, strValueToAdd, "");
+        }
+
+
+        /// <summary>
+        /// This function will bookmark the selected user
+        /// </summary>
+        /// <param name="grow">The row from which the user is bookmarked</param>
+        private void BookMarkUser(GridViewRow grow)
+        {
+            try
+            {
+                string ID = grdUsers.DataKeys[grow.RowIndex]["Id"].ToString();
+                int intEditId = Convert.ToInt32(ID);
+
+                int bookmarkstatus = InstallUserBLL.Instance.UpdateBookMarkingUserDetails(intEditId, Convert.ToInt32(JGSession.LoginUserID));
+
+                HiddenField bmid = grow.FindControl("bmId") as HiddenField;
+                bmid.Value = string.Format("{0}# - {1} {2} & {3} ", JGSession.LoginUserID, JGSession.Username, JGSession.LastName, DateTime.Now.ToString());
+
+                AssignBookMarkImageURL(grow, bookmarkstatus);
+
+            }
+            catch (Exception ex)
+            {
+                Response.Write(ex.Message);
+            }
+
+        }
+
+        protected void lnkBookmarkLink_Click(object sender, EventArgs e)
+        {
+            GridViewRow grow = (GridViewRow)((Control)sender).NamingContainer;
+            BookMarkUser(grow);
         }
     }
 }

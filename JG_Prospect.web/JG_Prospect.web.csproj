@@ -150,6 +150,9 @@
       <HintPath>External Dependencies\MailServerApi.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Microsoft.Office.Interop.Word, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </Reference>
     <Reference Include="Microsoft.Owin, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>External Dependencies\Microsoft.Owin.dll</HintPath>
@@ -1860,12 +1863,14 @@
     <Content Include="img\PlusMinus.png" />
     <Content Include="img\Resource.png" />
     <Content Include="img\sign-in-with-google.png" />
+    <Content Include="img\star.png" />
     <Content Include="img\twitter.jpg" />
     <Content Include="img\ui-anim_basic_16x16.png" />
     <Content Include="img\video-icon.png" />
     <Content Include="img\word-icon.png" />
     <Content Include="img\word.jpg" />
     <Content Include="img\xls.png" />
+    <Content Include="img\yellowstar.png" />
     <Content Include="img\zip-icon.png" />
     <Content Include="Installer\ChangePassword.aspx" />
     <Content Include="Installer\InstallerHeader.ascx" />
@@ -2138,6 +2143,7 @@
     <Content Include="Sr_App\img\Cell_Phone.png" />
     <Content Include="Sr_App\img\dark-blue-astrek.png" />
     <Content Include="Sr_App\img\Email art header.png" />
+    <Content Include="Sr_App\img\FilledStar.gif" />
     <Content Include="Sr_App\img\flags24.png" />
     <Content Include="Sr_App\img\green-astrek.png" />
     <Content Include="Sr_App\img\jmFooter.png" />
@@ -2152,7 +2158,9 @@
     <Content Include="Sr_App\img\red-astrek.png" />
     <Content Include="Sr_App\img\skype.ico" />
     <Content Include="Sr_App\img\skype.png" />
+    <Content Include="Sr_App\img\Star.gif" />
     <Content Include="Sr_App\img\SubmitButton.png" />
+    <Content Include="Sr_App\img\WaitingStar.gif" />
     <Content Include="Sr_App\img\WhatsApp.png" />
     <Content Include="Sr_App\img\white-astrek.png" />
     <Content Include="Sr_App\img\WorkPhone.png" />
@@ -3553,17 +3561,6 @@
     <None Include="Properties\PublishProfiles\DeveloperProfile.pubxml" />
     <None Include="Properties\PublishProfiles\LivePublish.pubxml" />
     <None Include="Properties\PublishProfiles\TestProfile.pubxml" />
-  </ItemGroup>
-  <ItemGroup>
-    <COMReference Include="Microsoft.Office.Interop.Word">
-      <Guid>{00020905-0000-0000-C000-000000000046}</Guid>
-      <VersionMajor>8</VersionMajor>
-      <VersionMinor>4</VersionMinor>
-      <Lcid>0</Lcid>
-      <WrapperTool>primary</WrapperTool>
-      <Isolated>False</Isolated>
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </COMReference>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

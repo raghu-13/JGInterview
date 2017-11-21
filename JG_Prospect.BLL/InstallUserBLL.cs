@@ -611,6 +611,13 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.GetTechTaskByUser(UserId);
         }
 
+
+
+        public int UpdateBookMarkingUserDetails(int UserId, int loginUserID)
+        {
+            return InstallUserDAL.Instance.UpdateBookMarkingUserDetails(UserId, loginUserID);
+        }
+
         public string AddNewPhoneType(string NewPhoneType, int AddedByID)
         {
             return InstallUserDAL.Instance.AddNewPhoneType(NewPhoneType, AddedByID);

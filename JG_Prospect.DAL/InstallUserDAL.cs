@@ -2719,7 +2719,36 @@ namespace JG_Prospect.DAL
             }
         }
 
+        public int UpdateBookMarkingUserDetails(int bookmarkedUser, int loginUserID)
+        {
+            int result = 0;
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand cmd = database.GetStoredProcCommand("[UpdateBookmarkInstallUserStatus]");
+                    cmd.CommandType = CommandType.StoredProcedure;
 
+                    database.AddInParameter(cmd, "@ID", DbType.Int32, bookmarkedUser);
+                    database.AddInParameter(cmd, "@UserID", DbType.Int32, loginUserID);
+
+                    database.AddOutParameter(cmd, "@Return_Value", DbType.Int32, 0);
+                 
+
+                    database.ExecuteNonQuery(cmd);
+
+                    result =Convert.ToInt32( database.GetParameterValue(cmd, "@Return_Value"));
+                   
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return result;
+            }
+            
+        }
         //------------- end DP -------------
 
         public DataSet GetSalesUsersStaticticsAndData(string strSearchTerm, string strStatus, Int32 intDesignationId, Int32 intSourceId, DateTime? fromdate, DateTime? todate, int userid, int intPageIndex, int intPageSize, string strSortExpression)
@@ -2967,7 +2996,8 @@ namespace JG_Prospect.DAL
             {
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
-                    DbCommand command = database.GetStoredProcCommand("usp_GeAddedBytUsersFilter");
+                    //DbCommand command = database.GetStoredProcCommand("usp_GeAddedBytUsersFilter");
+                    DbCommand command = database.GetStoredProcCommand("usp_GetUsersNDesignationForSalesFilter");
 
                     command.CommandType = CommandType.StoredProcedure;
                     returndata = database.ExecuteDataSet(command);
