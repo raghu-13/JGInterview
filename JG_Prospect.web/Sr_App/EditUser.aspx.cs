@@ -421,7 +421,6 @@ namespace JG_Prospect
 
                     int previousStatus = Convert.ToInt32(DataBinder.Eval(e.Row.DataItem, "PreviousStatus"));
 
-                    AssignBookMarkImageURL(e.Row, previousStatus);
 
                     if (hdimg.Value != "")
                     {
@@ -716,37 +715,37 @@ namespace JG_Prospect
             }
         }
 
-        private void AssignBookMarkImageURL(GridViewRow grow, int previousStatus)
-        {
+        //private void AssignBookMarkImageURL(GridViewRow grow, int previousStatus)
+        //{
 
-            Image imgbmark = grow.FindControl("imagebmark") as Image;
-            HiddenField bmid = grow.FindControl("bmId") as HiddenField;
+        //    Image imgbmark = grow.FindControl("imagebmark") as Image;
+        //    HiddenField bmid = grow.FindControl("bmId") as HiddenField;
 
-            if (previousStatus == 0)
-            {
-                imgbmark.ImageUrl = "../img/star.png";
-                imgbmark.ToolTip = null;
-            }
-            else
-            {
-                imgbmark.ImageUrl = "../img/yellowstar.png";
-                //imgbmark.ToolTip = string.Format("#{0}#{1}#{2}", lblFirstName.Text, lblLastName.Text, Convert.ToString(lblDesignation.Value));
-                imgbmark.ToolTip = Convert.ToString(bmid.Value);
-            }
+        //    if (previousStatus == 0)
+        //    {
+        //        imgbmark.ImageUrl = "../img/star.png";
+        //        imgbmark.ToolTip = null;
+        //    }
+        //    else
+        //    {
+        //        imgbmark.ImageUrl = "../img/yellowstar.png";
+        //        //imgbmark.ToolTip = string.Format("#{0}#{1}#{2}", lblFirstName.Text, lblLastName.Text, Convert.ToString(lblDesignation.Value));
+        //        imgbmark.ToolTip = Convert.ToString(bmid.Value);
+        //    }
 
-            //if (previousStatus == 0)
-            //{
-            //    imgbmark.ImageUrl = "../img/star.png";
-            //    imgbmark.ToolTip = null;
-            //}
-            //else
-            //{
-            //    imgbmark.ImageUrl = "../img/yellowstar.png";
-            //    imgbmark.ToolTip = string.Format("#{0}#{1}#{2}", DataBinder.Eval(grow.DataItem, "FristName"), DataBinder.Eval(grow.DataItem, "LastName"), DataBinder.Eval(grow.DataItem, "Designation"));
+        //    //if (previousStatus == 0)
+        //    //{
+        //    //    imgbmark.ImageUrl = "../img/star.png";
+        //    //    imgbmark.ToolTip = null;
+        //    //}
+        //    //else
+        //    //{
+        //    //    imgbmark.ImageUrl = "../img/yellowstar.png";
+        //    //    imgbmark.ToolTip = string.Format("#{0}#{1}#{2}", DataBinder.Eval(grow.DataItem, "FristName"), DataBinder.Eval(grow.DataItem, "LastName"), DataBinder.Eval(grow.DataItem, "Designation"));
 
-            //}
+        //    //}
 
-        }
+        //}
 
         protected void grdUsers_RowCommand(object sender, GridViewCommandEventArgs e)
         {
@@ -4599,13 +4598,14 @@ namespace JG_Prospect
 
 
 
-        protected void OnRatingChanged(object sender, RatingEventArgs e)
-        {
-            //GridViewRow grow = (GridViewRow)((Control)sender).NamingContainer;
-            //string ID = grdUsers.DataKeys[grow.RowIndex]["Id"].ToString();
-            //int intEditId = Convert.ToInt32(ID);
-            //InstallUserBLL.Instance.UpdateBookMarkingUserDetails(intEditId);
-        }
+        //protected void OnRatingChanged(object sender, RatingEventArgs e)
+        //{
+        //    GridViewRow grow = (GridViewRow)((Control)sender).NamingContainer;
+        //    BookMarkUser(grow);
+        //    //string ID = grdUsers.DataKeys[grow.RowIndex]["Id"].ToString();
+        //    //int intEditId = Convert.ToInt32(ID);
+        //    //InstallUserBLL.Instance.UpdateBookMarkingUserDetails(intEditId);
+        //}
 
         #region 'Assigned Task ToUser'
 
@@ -4921,36 +4921,6 @@ namespace JG_Prospect
         }
 
 
-        /// <summary>
-        /// This function will bookmark the selected user
-        /// </summary>
-        /// <param name="grow">The row from which the user is bookmarked</param>
-        private void BookMarkUser(GridViewRow grow)
-        {
-            try
-            {
-                string ID = grdUsers.DataKeys[grow.RowIndex]["Id"].ToString();
-                int intEditId = Convert.ToInt32(ID);
-
-                int bookmarkstatus = InstallUserBLL.Instance.UpdateBookMarkingUserDetails(intEditId, Convert.ToInt32(JGSession.LoginUserID));
-
-                HiddenField bmid = grow.FindControl("bmId") as HiddenField;
-                bmid.Value = string.Format("{0}# - {1} {2} & {3} ", JGSession.LoginUserID, JGSession.Username, JGSession.LastName, DateTime.Now.ToString());
-
-                AssignBookMarkImageURL(grow, bookmarkstatus);
-
-            }
-            catch (Exception ex)
-            {
-                Response.Write(ex.Message);
-            }
-
-        }
-
-        protected void lnkBookmarkLink_Click(object sender, EventArgs e)
-        {
-            GridViewRow grow = (GridViewRow)((Control)sender).NamingContainer;
-            BookMarkUser(grow);
-        }
+        
     }
 }

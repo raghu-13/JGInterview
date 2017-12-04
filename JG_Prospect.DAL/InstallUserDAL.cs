@@ -2698,6 +2698,30 @@ namespace JG_Prospect.DAL
                 return "false";
             }
         }
+
+        public bool BookmarkUnStarInstallUser(int bookmarkingUser, int bookmarkedUser, int isdelete)
+        {
+            int action = 0;
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("USP_BookmarkUnStarInstallUser");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@UserId", DbType.Int64, bookmarkedUser);
+                    database.AddInParameter(command, "@BookmarkById", DbType.Int64, bookmarkingUser);
+                    database.AddInParameter(command, "@action", DbType.Int32, isdelete);
+                    action = database.ExecuteNonQuery(command);
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         public DataSet GetBookMarkingUserDetails(int bookmarkedUser)
         {
             DataSet result = null;

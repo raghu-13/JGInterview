@@ -569,6 +569,10 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.GetStarBookMarkUsers(bookmarkingUser, bookmarkedUser, isdelete);
         }
 
+        public bool BookmarkUnStarInstallUser(int bookmarkingUser, int bookmarkedUser, int isdelete)
+        {
+            return InstallUserDAL.Instance.BookmarkUnStarInstallUser(bookmarkingUser, bookmarkedUser, isdelete);
+        }
         public DataSet GetBookMarkingUserDetails(int bookmarkedUser)
         {
             return InstallUserDAL.Instance.GetBookMarkingUserDetails(bookmarkedUser);

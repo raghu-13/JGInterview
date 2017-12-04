@@ -147,7 +147,36 @@ namespace JG_Prospect.Sr_App
 
         //---------- End DP ---------
 
+        [WebMethod]
+        public static string BookmarkUnStarInstallUser(int bookmarkedUser, int isdelete)
+        {
+            bool strReturn = true;
+            List<object> listdata = null;
 
+            try
+            {
+                int userId = Convert.ToInt16(HttpContext.Current.Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
+                strReturn = InstallUserBLL.Instance.BookmarkUnStarInstallUser(userId, bookmarkedUser, isdelete);
+                listdata = new List<object>();
+
+
+                listdata.Add(new
+                {
+                    isdel = isdelete.ToString(),
+                    Id = Convert.ToInt16(HttpContext.Current.Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]),
+                    BookMarkedBy = string.Format("{0} {1}", JGSession.Username, JGSession.LastName),
+                    createdDateTime = DateTime.Now.ToString("MM/dd/yyyy h:mm:ss tt")
+                });
+
+
+
+            }
+            catch (Exception ex)
+            {
+                strReturn = false;
+            }
+             return new JavaScriptSerializer().Serialize(listdata);
+        }
         #endregion
 
         #region "-- Chat --"

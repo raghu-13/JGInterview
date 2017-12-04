@@ -228,6 +228,7 @@
             margin: 0 0 0 0 !important;
         }
     </style>
+      
     <style type="text/css">
         #hint {
             cursor: pointer;
@@ -880,9 +881,9 @@
                                 <Columns>
                                     <asp:TemplateField HeaderText="Action <br/> Picture" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center"
                                         HeaderStyle-Width="1%"
-                                        ItemStyle-Width="3.5%" SortExpression="PreviousStatus">
+                                        ItemStyle-Width="3.5%" SortExpression="BookmarkedInstallUserId">
                                         <ItemTemplate>
-                                            <asp:HiddenField runat="server" ID="bmId" Value='<%#  string.Format("{0}# - {1} & {2} ", Eval("BookmarkByInstallUserId"),Eval("BookmarkBy"), Eval("BookmarkTime"))%>' />
+                                            <asp:HiddenField runat="server" ID="bmId" Value='<%#  string.Format("{0}# - {1} {2} {3} ", Eval("BookmarkByInstallUserId"),Eval("BookmarkBy"), Environment.NewLine,  Eval("BookmarkTime"))%>' />
                                             <asp:HiddenField runat="server" Value='<%#Eval("Id")%>' ID="hdId" />
                                             <asp:HiddenField runat="server" Value='<%#Eval("picture")%>' ID="hdimgsource" />
 
@@ -892,19 +893,19 @@
 
 
                                             <%-- <asp:Image CssClass="starimg"  ID="starblankimg"  runat="server" ImageUrl= "../img/star.png"    ></asp:Image> --%>
-                                            <%-- <asp:ImageButton ID="starredimg" CssClass="starimg" runat="server" ImageUrl="~/img/starred.png" OnClientClick=<%# "GotoStarUser('" + Eval("Id") + "','1')" %>></asp:ImageButton>--%>
+                                            
 
                                             <a href='<%# String.Concat("ViewSalesUser.aspx?ID=", Eval("Id")) %>'>
                                                 <asp:Image Style="width: 100%; height: 85%; margin-top: -20px" ID="imgprofile" runat="server"></asp:Image></a>
-                                            
 
-
-                                            <asp:LinkButton ID="lnkBookmarkLink" OnClick="lnkBookmarkLink_Click" runat="server">
-                                                <asp:Image ID="imagebmark" runat="server" ImageAlign="Right"
-                                                    Style="border-width: 0px;" Height="16" Width="16" />
-                                            </asp:LinkButton>
+                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                             <asp:ImageButton ID= "starredimg" CssClass="starimg" runat="server"
+                                                 ToolTip='<%#( Convert.ToInt32( Eval("PreviousStatus")) == 0 ? string.Empty: string.Format("{0}# {1} {2} {3} ", Eval("BookmarkByInstallUserId"),Eval("BookmarkBy"),Environment.NewLine,Convert.ToDateTime(Eval("BookmarkTime")).ToString("MM/dd/yyyy h:mm:ss tt")))%>'
+                                                   ImageUrl='<%#( Convert.ToInt32( Eval("PreviousStatus")) == 0 ? "../img/star.png" :"../img/yellowstar.png"  )%>'  
+                                                  OnClientClick=<%# "GotoStarUser('" + Eval("Id") + "','" + Eval("PreviousStatus") +  "','"  + ((GridViewRow)Container).FindControl("starredimg").ClientID  + "')" %>>
+                                             </asp:ImageButton>
                                             <br />
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                           
                                         <asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server" CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
                                             <%--<asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server" Visible='<%# Eval("picture").ToString()!="" && Eval("picture")!= null ? true :  false %>' CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>--%>
                                             <%-- <asp:LinkButton ID="lnkDeactivate" Text="Deactivate" CommandName="DeactivateSalesUser" runat="server" OnClientClick="return confirm('Are you sure you want to deactivate this user?')"
@@ -2061,53 +2062,7 @@
 
 
         //============= Start DP =============
-        function GotoStarUser(bookmarkedUser, isdel, obj) {
-            //alert(isdel);
-            //alert(obj);
-            //alert(bookmarkedUser);
-            $(".loading").show();
-            $.ajax({
-                type: "POST",
-                url: "ajaxcalls.aspx/StarBookMarkUsers",
-                data: '{bookmarkedUser: ' + bookmarkedUser + ',isdelete:' + isdel + ' }',
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function (response) {
-                    //alert("Hello: " + response + " ");
-
-                    var d = new Date();
-                    if (isdel == "0") {
-                        // alert("if");
-                        //alert($("#" + obj));
-                        $("#" + obj).removeAttr("src").prop('src', 'http://localhost:61394/img/starred.png?dummy=' + d.getTime());
-                        $("#" + obj).removeAttr("class").attr('class', 'starimgred');
-                        $("#" + obj).removeAttr("alt").attr('alt', bookmarkedUser);
-                        $("#" + obj).removeAttr("onclick").attr('onclick', 'GotoStarUser("' + bookmarkedUser + '","1","' + obj + '")')
-                    }
-                    else {
-                        $("#" + obj).removeAttr("src").prop('src', 'http://localhost:61394/img/star.png?dummy=' + d.getTime());
-                        $("#" + obj).removeAttr("class").attr('class', 'starimg');
-                        $("#" + obj).removeAttr("alt").attr('alt', bookmarkedUser);
-                        $("#" + obj).removeAttr("onclick").attr('onclick', 'GotoStarUser("' + bookmarkedUser + '","0","' + obj + '")')
-                    }
-                    $(".loading").show();
-                },
-                complete: function () {
-                    // Schedule the next request when the current one has been completed
-                    // setTimeout(ajaxInterval, 4000);
-                    $(".loading").hide();
-                },
-                failure: function (response) {
-                    // alert(response.responseText);
-                    $(".loading").hide();
-                },
-                error: function (response) {
-                    // alert(response.responseText);
-                    $(".loading").hide();
-                }
-            });
-
-        }
+        
 
         function GridstatusChanged(event, dropdown) {
 
@@ -2254,7 +2209,77 @@
         });
 
         //============== End DP ==============
+        function GotoStarUser(bookmarkedUser, action, obj) {
 
+            var isdel = 0;
+
+            //action is the current status of the bookmark
+            if (action == 0)
+                isdel = 1;
+            else
+                isdel = 0;
+
+
+            $(".loading").show();
+
+            $.ajax({
+                type: "POST",
+                url: "ajaxcalls.aspx/BookmarkUnStarInstallUser",
+                data: '{bookmarkedUser: ' + bookmarkedUser + ',isdelete:' + isdel + ' }',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                   
+                    if (isdel == "0") {
+                       
+                        //alert($("#" + obj));
+                        //$("#" + obj).removeAttr("src").prop('src', 'http://localhost:61394/img/starred.png?dummy=' + d.getTime());
+                        $("#" + obj).removeAttr("class").attr('class', 'starimgred');
+                        $("#" + obj).removeAttr("title")      //.prop('alt', bookmarkedUser);
+                        $("#" + obj).removeAttr("onclick").attr('onclick', 'GotoStarUser("' + bookmarkedUser + '","0","' + obj + '")')
+                        $("#" + obj).removeAttr("src").prop('src', '../img/star.png');
+                    }
+                    else {
+                       
+                        //$("#" + obj).removeAttr("src").prop('src', 'http://localhost:61394/img/star.png?dummy=' + d.getTime());
+                        //$("#" + obj).removeAttr("src").prop('src', 'http://localhost:61394/img/star.png?dummy=' + d.getTime());
+
+                        var strParsed = $.parseJSON(response.d);
+                        var strtooltip = "";
+
+                        $.each(strParsed, function (i, item) {
+                            strtooltip = item.Id + "# " + item.BookMarkedBy + "\n" + item.createdDateTime;
+                        });
+
+
+                        $("#" + obj).removeAttr("class").attr('class', 'starimg');
+                        $("#" + obj).removeAttr("title").attr('title', strtooltip);
+                        $("#" + obj).removeAttr("src").prop('src', '../img/yellowstar.png');
+                        $("#" + obj).removeAttr("onclick").attr('onclick', 'GotoStarUser("' + bookmarkedUser + '","1","' + obj + '")')
+                    }
+                    $(".loading").hide();
+                    
+                },
+                complete: function () {
+                    // Schedule the next request when the current one has been completed
+                    // setTimeout(ajaxInterval, 4000);
+                   
+                    $(".loading").hide();
+                },
+                failure: function (response) {
+                    
+                    $(".loading").hide();
+                },
+                error: function (response) {
+                    
+                    $(".loading").hide();
+                }
+            });
+
+        }
     </script>
+
+
+ 
 </asp:Content>
 

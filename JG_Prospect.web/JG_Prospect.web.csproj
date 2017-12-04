@@ -1848,6 +1848,7 @@
     <Content Include="img\facebook.jpg" />
     <Content Include="img\fb_login.png" />
     <Content Include="img\File.png" />
+    <Content Include="img\FilledStar.gif" />
     <Content Include="img\folder.png" />
     <Content Include="img\gplus.png" />
     <Content Include="img\image-icon.png" />
@@ -1863,10 +1864,12 @@
     <Content Include="img\PlusMinus.png" />
     <Content Include="img\Resource.png" />
     <Content Include="img\sign-in-with-google.png" />
+    <Content Include="img\Star.gif" />
     <Content Include="img\star.png" />
     <Content Include="img\twitter.jpg" />
     <Content Include="img\ui-anim_basic_16x16.png" />
     <Content Include="img\video-icon.png" />
+    <Content Include="img\WaitingStar.gif" />
     <Content Include="img\word-icon.png" />
     <Content Include="img\word.jpg" />
     <Content Include="img\xls.png" />
