@@ -228,7 +228,7 @@
             margin: 0 0 0 0 !important;
         }
     </style>
-      
+
     <style type="text/css">
         #hint {
             cursor: pointer;
@@ -893,20 +893,23 @@
 
 
                                             <%-- <asp:Image CssClass="starimg"  ID="starblankimg"  runat="server" ImageUrl= "../img/star.png"    ></asp:Image> --%>
-                                            
+
 
                                             <a href='<%# String.Concat("ViewSalesUser.aspx?ID=", Eval("Id")) %>'>
                                                 <asp:Image Style="width: 100%; height: 85%; margin-top: -20px" ID="imgprofile" runat="server"></asp:Image></a>
 
                                             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                             <asp:ImageButton ID= "starredimg" CssClass="starimg" runat="server"
-                                                 ToolTip='<%#( Convert.ToInt32( Eval("PreviousStatus")) == 0 ? string.Empty: string.Format("{0}# {1} {2} {3} ", Eval("BookmarkByInstallUserId"),Eval("BookmarkBy"),Environment.NewLine,Convert.ToDateTime(Eval("BookmarkTime")).ToString("MM/dd/yyyy h:mm:ss tt")))%>'
-                                                   ImageUrl='<%#( Convert.ToInt32( Eval("PreviousStatus")) == 0 ? "../img/star.png" :"../img/yellowstar.png"  )%>'  
-                                                  OnClientClick=<%# "GotoStarUser('" + Eval("Id") + "','" + Eval("PreviousStatus") +  "','"  + ((GridViewRow)Container).FindControl("starredimg").ClientID  + "')" %>>
-                                             </asp:ImageButton>
+                                             <asp:ImageButton ID="starredimg" CssClass="starimg" runat="server"
+                                                 ImageUrl='<%#( Convert.ToInt32( Eval("PreviousStatus")) == 0 ? "../img/star.png" :"../img/yellowstar.png"  )%>'
+                                                 OnClientClick=<%# "GotoStarUser('" + Eval("Id") + "','" + Eval("PreviousStatus") +  "','"  + ((GridViewRow)Container).FindControl("starredimg").ClientID  + "')" %>
+                                                 onmouseover=<%# "ShowToolTipForStarredUser('" + Eval("Id") + "','" + Eval("PreviousStatus") +  "','"  + ((GridViewRow)Container).FindControl("starredimg").ClientID  + "')" %>
+                                                 onmouseleave = "HideToolTip()"
+                                                 ></asp:ImageButton>
+                                                
                                             <br />
-                                           
-                                        <asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server" CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
+                                            <%--ToolTip='<%#( Convert.ToInt32( Eval("PreviousStatus")) == 0 ? string.Empty: string.Format("{0}# <a>{1} </a>{2} {3} ", Eval("BookmarkByInstallUserId"),Eval("BookmarkBy"),Environment.NewLine,Convert.ToDateTime(Eval("BookmarkTime")).ToString("MM/dd/yyyy h:mm:ss tt")))%>'--%>
+
+                                            <asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server" CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
                                             <%--<asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server" Visible='<%# Eval("picture").ToString()!="" && Eval("picture")!= null ? true :  false %>' CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>--%>
                                             <%-- <asp:LinkButton ID="lnkDeactivate" Text="Deactivate" CommandName="DeactivateSalesUser" runat="server" OnClientClick="return confirm('Are you sure you want to deactivate this user?')"
                                             CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>--%>
@@ -1126,7 +1129,7 @@
                                             </asp:DropDownList><br />
                                             <%--  <span><%# (Eval("EmpType").ToString() =="0")?"Not Selected -":Eval("EmpType") +" -" %></span>--%>
                                             <span class='<%# (string.IsNullOrEmpty(Eval("Aggregate").ToString())) ? "hide" : (Convert.ToDouble(Eval("Aggregate")) > JG_Prospect.Common.JGApplicationInfo.GetAcceptiblePrecentage()) ? "greentext" : "redtext" %>'><%#(string.IsNullOrEmpty(Eval("Aggregate").ToString())) ? "N/A" : string.Format("{0:#,##}", Eval("Aggregate")) + "%" %></span>
-                                            <div style="max-width: 100px; overflow:hidden;">
+                                            <div style="max-width: 100px; overflow: hidden;">
                                                 <a href='<%# Eval("Resumepath") %>' id="aReasumePath" runat="server" target="_blank"><%# System.IO.Path.GetFileName(Eval("Resumepath").ToString()) %></a>
                                             </div>
                                             <%--<span><%# Eval("EmpType") %></span> <span> - <span><%#(string.IsNullOrEmpty(Eval("Aggregate").ToString()))?"N/A":string.Format("{0:#,##}",Eval("Aggregate"))+ "%" %></span>--%>
@@ -1997,32 +2000,32 @@
         function SetSalesUserAutoSuggestion() {
 
             $("#<%=txtSearch.ClientID%>").catcomplete({
-                                                    delay: 500,
-                                                    source: function (request, response) {
-                                                        $.ajax({
-                                                            type: "POST",
-                                                            url: "ajaxcalls.aspx/GetSalesUserAutoSuggestion",
-                                                            dataType: "json",
-                                                            contentType: "application/json; charset=utf-8",
-                                                            data: JSON.stringify({ searchterm: request.term }),
-                                                            success: function (data) {
-                                                                // Handle 'no match' indicated by [ "" ] response
-                                                                if (data.d) {
+                delay: 500,
+                source: function (request, response) {
+                    $.ajax({
+                        type: "POST",
+                        url: "ajaxcalls.aspx/GetSalesUserAutoSuggestion",
+                        dataType: "json",
+                        contentType: "application/json; charset=utf-8",
+                        data: JSON.stringify({ searchterm: request.term }),
+                        success: function (data) {
+                            // Handle 'no match' indicated by [ "" ] response
+                            if (data.d) {
 
-                                                                    response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
-                                                                }
-                                                                // remove loading spinner image.                                
-                                                                $("#<%=txtSearch.ClientID%>").removeClass("ui-autocomplete-loading");
+                                response(data.length === 1 && data[0].length === 0 ? [] : JSON.parse(data.d));
+                            }
+                            // remove loading spinner image.                                
+                            $("#<%=txtSearch.ClientID%>").removeClass("ui-autocomplete-loading");
                         }
                     });
                 },
-                                                    minLength: 2,
-                                                    select: function (event, ui) {
-                                                        $("#<%=txtSearch.ClientID%>").val(ui.item.value);
+                minLength: 2,
+                select: function (event, ui) {
+                    $("#<%=txtSearch.ClientID%>").val(ui.item.value);
                     //TriggerSearch();
                     $('#<%=btnSearchGridData.ClientID%>').click();
                 }
-                                                });
+            });
         }
 
         function SetSalesUserAutoSuggestionUI() {
@@ -2053,35 +2056,35 @@
 
         function grdUsers_Email_OnClick(sender, email) {
             $('#<%=lblEmailTo.ClientID%>').html(email);
-            $('#<%=hdnEmailTo.ClientID%>').val(email);
+                                                $('#<%=hdnEmailTo.ClientID%>').val(email);
             <%--SetCKEditor('<%=txtEmailHeader.ClientID%>');
             SetCKEditor('<%=txtEmailBody.ClientID%>');
             SetCKEditor('<%=txtEmailFooter.ClientID%>');--%>
-            ShowPopupWithTitle('#<%=divSendEmailToUser.ClientID%>', 'Send Email');
-        }
+                                                ShowPopupWithTitle('#<%=divSendEmailToUser.ClientID%>', 'Send Email');
+                                            }
 
 
-        //============= Start DP =============
-        
+                                            //============= Start DP =============
 
-        function GridstatusChanged(event, dropdown) {
 
-            var selectedValue = $(dropdown).val();
+                                            function GridstatusChanged(event, dropdown) {
 
-            // If user status is offermade than dont postback.
-            if (selectedValue == "6") {
-                OverlayPopupOfferMade();
-                var statustr = $(dropdown).closest("tr");
+                                                var selectedValue = $(dropdown).val();
 
-                var Email = $(statustr).find(".OffferMadeEmail").html();
-                var FirstName = $(statustr).find(".OffferMadeFirstName").html();
-                var LastName = $(statustr).find(".OffferMadeLastName").html();
-                var Designation = $(statustr).find(".OffferMadeDesignation").html();
-                var OldStatus = $(statustr).find(".OffferMadeOldStatus").html();
-                var DesignationID = $(statustr).find(".OffferMadeUserDesignID").html();
-                var UserID = $(statustr).find(".OffferMadeUserID").html();
+                                                // If user status is offermade than dont postback.
+                                                if (selectedValue == "6") {
+                                                    OverlayPopupOfferMade();
+                                                    var statustr = $(dropdown).closest("tr");
 
-                $('#<%=lblName_OfferMade.ClientID%>').html(FirstName + ' ' + LastName);
+                                                    var Email = $(statustr).find(".OffferMadeEmail").html();
+                                                    var FirstName = $(statustr).find(".OffferMadeFirstName").html();
+                                                    var LastName = $(statustr).find(".OffferMadeLastName").html();
+                                                    var Designation = $(statustr).find(".OffferMadeDesignation").html();
+                                                    var OldStatus = $(statustr).find(".OffferMadeOldStatus").html();
+                                                    var DesignationID = $(statustr).find(".OffferMadeUserDesignID").html();
+                                                    var UserID = $(statustr).find(".OffferMadeUserID").html();
+
+                                                    $('#<%=lblName_OfferMade.ClientID%>').html(FirstName + ' ' + LastName);
                 $('#<%=lblDesignation_OfferMade.ClientID%>').html(Designation);
 
 
@@ -2140,17 +2143,10 @@
 
         }
 
-        $(document).ready(function () {
+      
+        function ShowToolTipForStarredUser(bookmarkedUser, action, obj) {
 
-            var changeTooltipPosition = function (event) {
-                var tooltipX = event.pageX - 8;
-                var tooltipY = event.pageY + 8;
-                $('div.startooltip').css({ top: tooltipY, left: tooltipX });
-            };
-
-            var showTooltip = function (event) {
-                //$(".loading").show();
-                var bookmarkedUser = $(this).attr('alt');
+            if (action == 1) {
 
                 $.ajax({
                     type: "POST",
@@ -2164,16 +2160,24 @@
                             var parsed = $.parseJSON(data.d);
 
                             $.each(parsed, function (i, item) {
-                                var vBookmarkDate = new Date(parseInt(item.createdDateTime.substr(6)));
-                                str = str + item.UserInstallId + " - " + item.FristName + " " + item.LastName + " & " + vBookmarkDate + "<br/> ";
+                                str = str + '<a href=' + 'ViewSalesUser.aspx?ID=' +
+                                    item.UserInstallId + '>' + item.UserInstallId + "# " +
+                                    item.FristName + " " + item.LastName + '</a>' + "<br/>" +
+                                    item.createdDate +
+                                    '<span style=' + 'color:' + 'red' + '> ' + item.createdTime + '</span>' +
+                                    " (EST)" + "<br/> ";
                             });
 
                             $('div.startooltip').remove();
                             $('<div class="startooltip">' + str + '</div>')
                                   .appendTo('body');
-                            changeTooltipPosition(event);
+                           
+
+                            var tooltipX = $("#" + obj).position().left - 8;
+                            var tooltipY = $("#" + obj).position().top + 8;
+                            $('div.startooltip').css({ top: tooltipY, left: tooltipX });
                         }
-                        // $(".loading").show();
+                        
                     },
                     complete: function () {
                         // Schedule the next request when the current one has been completed
@@ -2181,32 +2185,14 @@
                         //$(".loading").hide();
                     },
                     failure: function (response) {
-                        // alert(response.responseText);
                         // $(".loading").hide();
                     },
                     error: function (response) {
-                        // alert(response.responseText);
                         // $(".loading").hide();
                     }
                 });
-
-            };
-
-            var hideTooltip = function () {
-                $('div.startooltip').remove();
-                //$(".loading").hide();
-            };
-
-            $(".starimgred").bind({
-                mousemove: changeTooltipPosition,
-                mouseenter: showTooltip,
-                mouseleave: hideTooltip
-
-            });
-
-
-
-        });
+            }
+        }
 
         //============== End DP ==============
         function GotoStarUser(bookmarkedUser, action, obj) {
@@ -2229,57 +2215,53 @@
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
                 success: function (response) {
-                   
+
                     if (isdel == "0") {
-                       
-                        //alert($("#" + obj));
-                        //$("#" + obj).removeAttr("src").prop('src', 'http://localhost:61394/img/starred.png?dummy=' + d.getTime());
+                                               
                         $("#" + obj).removeAttr("class").attr('class', 'starimgred');
-                        $("#" + obj).removeAttr("title")      //.prop('alt', bookmarkedUser);
+                        $("#" + obj).removeAttr("title")      
                         $("#" + obj).removeAttr("onclick").attr('onclick', 'GotoStarUser("' + bookmarkedUser + '","0","' + obj + '")')
                         $("#" + obj).removeAttr("src").prop('src', '../img/star.png');
+                        $("#" + obj).removeAttr("onmouseover").attr('onmouseover', 'ShowToolTipForStarredUser("' + bookmarkedUser + '","0","' + obj + '")');
                     }
                     else {
-                       
-                        //$("#" + obj).removeAttr("src").prop('src', 'http://localhost:61394/img/star.png?dummy=' + d.getTime());
-                        //$("#" + obj).removeAttr("src").prop('src', 'http://localhost:61394/img/star.png?dummy=' + d.getTime());
-
-                        var strParsed = $.parseJSON(response.d);
-                        var strtooltip = "";
-
-                        $.each(strParsed, function (i, item) {
-                            strtooltip = item.Id + "# " + item.BookMarkedBy + "\n" + item.createdDateTime;
-                        });
-
-
+                        
                         $("#" + obj).removeAttr("class").attr('class', 'starimg');
-                        $("#" + obj).removeAttr("title").attr('title', strtooltip);
+                        $("#" + obj).removeAttr("title");
                         $("#" + obj).removeAttr("src").prop('src', '../img/yellowstar.png');
-                        $("#" + obj).removeAttr("onclick").attr('onclick', 'GotoStarUser("' + bookmarkedUser + '","1","' + obj + '")')
+                        $("#" + obj).removeAttr("onclick").attr('onclick', 'GotoStarUser("' + bookmarkedUser + '","1","' + obj + '")');
+                        ShowToolTipForStarredUser(bookmarkedUser, 1, obj);
+                        $("#" + obj).removeAttr("onmouseover").attr('onmouseover', 'ShowToolTipForStarredUser("' + bookmarkedUser + '","1","' + obj + '")');
                     }
                     $(".loading").hide();
-                    
+
                 },
                 complete: function () {
                     // Schedule the next request when the current one has been completed
                     // setTimeout(ajaxInterval, 4000);
-                   
+
                     $(".loading").hide();
                 },
                 failure: function (response) {
-                    
+
                     $(".loading").hide();
                 },
                 error: function (response) {
-                    
+
                     $(".loading").hide();
                 }
             });
 
         }
+
+
+        function HideToolTip() {
+            $('div.startooltip').remove();
+        }
+
     </script>
 
 
- 
+
 </asp:Content>
 

@@ -95,7 +95,7 @@ namespace JG_Prospect.Sr_App
 
             if (!IsPostBack)
             {
-                
+
                 FillControls();
                 BindProducts1();
                 BindProducts2();
@@ -491,7 +491,7 @@ namespace JG_Prospect.Sr_App
                             #region - if Rows[0][6] is haveing value
                             ddlstatus.SelectedValue = ds.Tables[0].Rows[0][6].ToString();
                             Session["PreviousStatusNew"] = Convert.ToString(ds.Tables[0].Rows[0][6]);
-                            
+
                             //if (ddlstatus.SelectedValue == "Install Prospect")
                             if (ddlstatus.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.InstallProspect).ToString())
                             {
@@ -746,7 +746,7 @@ namespace JG_Prospect.Sr_App
                                 #endregion
 
                                 //if ((ddlstatus.SelectedValue == "Active") || (ddlstatus.SelectedValue == "OfferMade"))
-                                if ((ddlstatus.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString()) 
+                                if ((ddlstatus.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString())
                                     || (ddlstatus.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.OfferMade).ToString()))
                                 {
                                     showHideNewHireSection(true);
@@ -759,9 +759,9 @@ namespace JG_Prospect.Sr_App
                         Session["PreviousStatus"] = Convert.ToString(ds.Tables[0].Rows[0][6]);
                         //if (ds.Tables[0].Rows[0][6].ToString() == "Active"
                         //    || ds.Tables[0].Rows[0][6].ToString() == "OfferMade")
-                            if (ds.Tables[0].Rows[0][6].ToString() == Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString()
-                                || ds.Tables[0].Rows[0][6].ToString() == Convert.ToByte(JGConstant.InstallUserStatus.OfferMade).ToString())
-                            {
+                        if (ds.Tables[0].Rows[0][6].ToString() == Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString()
+                            || ds.Tables[0].Rows[0][6].ToString() == Convert.ToByte(JGConstant.InstallUserStatus.OfferMade).ToString())
+                        {
 
                             //pnlGrid.Visible = true;
                             pnl4.Visible = false;
@@ -788,9 +788,12 @@ namespace JG_Prospect.Sr_App
                         //        ddlSource.SelectedIndex = ddlSource.Items.IndexOf(lstSource);
                         //    }
                         //}
-                        if (ds.Tables[0].Rows[0]["SourceID"].ToString() != "")
+                        if (ds.Tables[0].Rows[0].ItemArray.Contains("SourceID"))
                         {
-                            ddlSource.SelectedValue = ds.Tables[0].Rows[0]["SourceID"].ToString();
+                            if (ds.Tables[0].Rows[0]["SourceID"].ToString() != "")
+                            {
+                                ddlSource.SelectedValue = ds.Tables[0].Rows[0]["SourceID"].ToString();
+                            }
                         }
 
                         if (ds.Tables[0].Rows[0][39].ToString() != "")
@@ -2489,7 +2492,7 @@ namespace JG_Prospect.Sr_App
                 objuser.IsMailContactPreference = ContactPreferenceChkMail.Checked;
 
                 //if (Convert.ToString(Session["PrevDesig"]) != ddldesignation.SelectedValue || ddlstatus.SelectedValue == "Deactive")
-                if (Convert.ToString(Session["PrevDesig"]) != ddldesignation.SelectedValue 
+                if (Convert.ToString(Session["PrevDesig"]) != ddldesignation.SelectedValue
                     || ddlstatus.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.Deactive).ToString())
                 {
                     Session["installId"] = GetUpdatedId(Convert.ToString(Session["installId"]));
@@ -2892,7 +2895,7 @@ namespace JG_Prospect.Sr_App
                 return;
             }
             //if ((Convert.ToString(Session["PreviousStatusNew"]) == "Active") && (!(Convert.ToString(Session["usertype"]).Contains("Admin")) && !(Convert.ToString(Session["usertype"]).Contains("SM"))))
-            if ((Convert.ToString(Session["PreviousStatusNew"]) == Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString()) 
+            if ((Convert.ToString(Session["PreviousStatusNew"]) == Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString())
                 && (!(Convert.ToString(Session["usertype"]).Contains("Admin")) && !(Convert.ToString(Session["usertype"]).Contains("SM"))))
             {
                 //binddata();
@@ -2901,7 +2904,7 @@ namespace JG_Prospect.Sr_App
             }
             //else if ((Convert.ToString(Session["PreviousStatusNew"]) == "Active" && ddlstatus.SelectedValue != "Deactive") && ((Convert.ToString(Session["usertype"]).Contains("Admin")) || (Convert.ToString(Session["usertype"]).Contains("SM"))))
             else if ((Convert.ToString(Session["PreviousStatusNew"]) == Convert.ToByte(JGConstant.InstallUserStatus.Active).ToString()
-                && ddlstatus.SelectedValue != "Deactive") && ((Convert.ToString(Session["usertype"]).Contains("Admin")) 
+                && ddlstatus.SelectedValue != "Deactive") && ((Convert.ToString(Session["usertype"]).Contains("Admin"))
                 || (Convert.ToString(Session["usertype"]).Contains("SM"))))
             {
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "Overlay", "overlayPassword();", true);
@@ -3038,7 +3041,7 @@ namespace JG_Prospect.Sr_App
 
             //if (ddlstatus.SelectedValue == "Deactive" && (!(Convert.ToString(Session["usertype"]).Contains("Admin")) && !(Convert.ToString(Session["usertype"]).Contains("SM"))))
             if (ddlstatus.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.Deactive).ToString()
-                && (!(Convert.ToString(Session["usertype"]).Contains("Admin")) 
+                && (!(Convert.ToString(Session["usertype"]).Contains("Admin"))
                 && !(Convert.ToString(Session["usertype"]).Contains("SM"))))
             {
                 ScriptManager.RegisterStartupScript(this, this.GetType(), "alert", "alert('You dont have permission to Activate or Deactivate user')", true);
@@ -3050,7 +3053,7 @@ namespace JG_Prospect.Sr_App
                 return;
             }
             //if ((ddlstatus.SelectedValue == "OfferMade") && (ddldesignation.SelectedItem.Text == "ForeMan" || ddldesignation.SelectedItem.Text == "Installer"))
-            if ((ddlstatus.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.OfferMade).ToString()) 
+            if ((ddlstatus.SelectedValue == Convert.ToByte(JGConstant.InstallUserStatus.OfferMade).ToString())
                 && (ddldesignation.SelectedItem.Text == "ForeMan" || ddldesignation.SelectedItem.Text == "Installer"))
             {
                 showHideNewHireSection(true);
@@ -4675,7 +4678,7 @@ namespace JG_Prospect.Sr_App
                     // Added by Zubair Ahmed Khan for displaying proper text for task link
                     string strTaskLinkTitle = CommonFunction.GetTaskLinkTitleForAutoEmail(int.Parse(strTaskId));
                     strBody = strBody.Replace("#TaskLinkTitle#", strTaskLinkTitle);
-                    
+
 
                     strBody = strHeader + strBody + strFooter;
 

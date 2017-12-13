@@ -117,9 +117,11 @@ namespace JG_Prospect.Sr_App
 
         public static string GetBookMarkingUserDetails(int bookmarkedUser)
         {
-            DataSet dsBook = new DataSet();
+            DataSet dsBook = null;
+            TimeZone localZone = TimeZone.CurrentTimeZone;
             try
             {
+               
                 dsBook = InstallUserBLL.Instance.GetBookMarkingUserDetails(bookmarkedUser);
             }
             catch (Exception ex)
@@ -127,19 +129,23 @@ namespace JG_Prospect.Sr_App
                 dsBook = null;
             }
 
-            List<object> listdata = new List<object>();
-            for (int i = 0; i < dsBook.Tables[0].Rows.Count;i++ )
-            {
-                listdata.Add(new
+          List<object> listdata = new List<object>();
+
+            if (dsBook != null)
+           {
+                for (int i = 0; i < dsBook.Tables[0].Rows.Count; i++)
                 {
-                    Id = dsBook.Tables[0].Rows[i]["Id"],
-                    FristName = dsBook.Tables[0].Rows[i]["FristName"],
-                    LastName = dsBook.Tables[0].Rows[i]["LastName"],
-                    Designation = dsBook.Tables[0].Rows[i]["Designation"],
-                    Email = dsBook.Tables[0].Rows[i]["Email"],
-                    UserInstallId = dsBook.Tables[0].Rows[i]["UserInstallId"],
-                    createdDateTime = dsBook.Tables[0].Rows[i]["createdDateTime"]
-                });
+                    listdata.Add(new
+                    {
+                        Id = dsBook.Tables[0].Rows[i]["Id"],
+                        FristName = dsBook.Tables[0].Rows[i]["FristName"],
+                        LastName = dsBook.Tables[0].Rows[i]["LastName"],
+                        UserInstallId = dsBook.Tables[0].Rows[i]["BookmarkByInstallUserID"],
+                        createdDate =  Convert.ToDateTime(dsBook.Tables[0].Rows[i]["BookmarkTime"]).ToString("MM/dd/yyyy"),
+                        createdTime= Convert.ToDateTime(dsBook.Tables[0].Rows[i]["BookmarkTime"]).ToString("h:mm tt")
+
+                    });
+                }
             }
 
             return new JavaScriptSerializer().Serialize(listdata); 
@@ -151,31 +157,18 @@ namespace JG_Prospect.Sr_App
         public static string BookmarkUnStarInstallUser(int bookmarkedUser, int isdelete)
         {
             bool strReturn = true;
-            List<object> listdata = null;
-
+            
             try
             {
                 int userId = Convert.ToInt16(HttpContext.Current.Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
                 strReturn = InstallUserBLL.Instance.BookmarkUnStarInstallUser(userId, bookmarkedUser, isdelete);
-                listdata = new List<object>();
-
-
-                listdata.Add(new
-                {
-                    isdel = isdelete.ToString(),
-                    Id = Convert.ToInt16(HttpContext.Current.Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]),
-                    BookMarkedBy = string.Format("{0} {1}", JGSession.Username, JGSession.LastName),
-                    createdDateTime = DateTime.Now.ToString("MM/dd/yyyy h:mm:ss tt")
-                });
-
-
-
+                
             }
             catch (Exception ex)
             {
                 strReturn = false;
             }
-             return new JavaScriptSerializer().Serialize(listdata);
+             return strReturn.ToString();
         }
         #endregion
 
