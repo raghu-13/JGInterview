@@ -27,7 +27,7 @@ namespace JG_Prospect.DAL
             private set {; }
         }
 
-        public DataSet returndata;
+        public DataSet returndata;        
 
         public void AddUserNotes(string Notes, int UserID, int AddedByID)
         {
@@ -375,7 +375,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public string AddTouchPointLogRecord(int loginUserID, int userID, string loginUserInstallID, DateTime LogTime, string changeLog, string strGUID)
+        public int AddTouchPointLogRecord(int loginUserID, int userID, string loginUserInstallID, DateTime LogTime, string changeLog, string strGUID, int touchPointSource)
         {
             try
             {
@@ -389,14 +389,14 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@LogTime", DbType.DateTime, LogTime);
                     database.AddInParameter(command, "@changeLog", DbType.String, changeLog);
                     database.AddInParameter(command, "@CurrGUID", DbType.String, strGUID);
-
-                    string lResult = database.ExecuteScalar(command).ToString();
-                    return lResult;
+                    database.AddInParameter(command, "@TouchPointSource", DbType.Int32, touchPointSource);
+                    DataSet dsTemp = database.ExecuteDataSet(command);
+                    return Convert.ToInt32(dsTemp.Tables[0].Rows[0]["UserTouchPointLogID"]);
                 }
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                return 0;
             }
         }
 
@@ -466,6 +466,196 @@ namespace JG_Prospect.DAL
             }
         }
 
+        public PagingResult<Notes> GetUserTouchPointLogs(int pageNumber, int pageSize, int userId)
+        {
+            try
+            {
+                List<Notes> notes = new List<Notes>();
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GetUserTouchPointLogs");
+                    database.AddInParameter(command, "@UserID", DbType.Int32, userId);
+                    database.AddInParameter(command, "@PageNumber", DbType.Int32, pageNumber);
+                    database.AddInParameter(command, "@PageSize", DbType.Int32, pageSize);
+                    database.AddOutParameter(command, "@TotalResults", DbType.Int32, 0);
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+
+                    int TotalResults = Convert.ToInt32(database.GetParameterValue(command, "@TotalResults"));
+
+                    if (returndata != null && returndata.Tables[0] != null && returndata.Tables[0].Rows.Count > 0)
+                    {
+                        foreach (DataRow item in returndata.Tables[0].Rows)
+                        {
+                            notes.Add(new Notes
+                            {
+                                UserTouchPointLogID = Convert.ToInt32(item["UserTouchPointLogID"]),
+                                UserID = Convert.ToInt32(item["UserID"]),
+                                UpdatedByUserID = Convert.ToInt32(item["UpdatedByUserID"]),
+                                UpdatedUserInstallID = item["UpdatedUserInstallID"].ToString(),
+                                ChangeDateTime = Convert.ToDateTime(item["ChangeDateTime"]).ToEST(),
+                                LogDescription = item["LogDescription"].ToString(),
+                                UpdatedByFirstName = item["UpdatedByFirstName"].ToString(),
+                                UpdatedByLastName = item["UpdatedByLastName"].ToString(),
+                                UpdatedByEmail = item["UpdatedByEmail"].ToString(),
+                                FristName = item["FristName"].ToString(),
+                                LastName = item["LastName"].ToString(),
+                                Email = item["Email"].ToString(),
+                                Phone = item["Phone"].ToString(),
+                                ChangeDateTimeFormatted = Convert.ToDateTime(item["ChangeDateTime"]).ToEST().ToString(),
+                                SourceUser = item["SourceUser"].ToString(),
+                                SourceUserInstallId = item["SourceUserInstallId"].ToString(),
+                                SourceUsername = item["SourceUsername"].ToString(),
+                                TouchPointSource = item["TouchPointSource"] != null ? Convert.ToInt32(item["TouchPointSource"]) : 0
+                            });
+                        }
+                    }
+                    return new PagingResult<Notes>
+                    {
+                        Data = notes,
+                        Status = ActionStatus.Successfull,
+                        TotalResults = TotalResults
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public ActionOutput<string> GenerateLoginCode(int userId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GenerateLoginCode");
+                    database.AddInParameter(command, "@UserId", DbType.Int32, userId);
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+                }
+                return new ActionOutput<string>
+                {
+                    Object = returndata.Tables[0].Rows[0]["Id"].ToString(),
+                    Status = ActionStatus.Successfull
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ActionOutput<string>
+                {
+                    Status = ActionStatus.Error,
+                    Object = ex.ToString(),
+                    Message = ex.Message
+                };
+            }
+        }
+
+        public ActionOutput<string> GenerateLoginCode(string Email)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GenerateLoginCodeByEmail");
+                    database.AddInParameter(command, "@Email", DbType.String, Email);
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+                }
+                return new ActionOutput<string>
+                {
+                    Object = returndata.Tables[0].Rows[0]["Id"].ToString(),
+                    Status = ActionStatus.Successfull
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ActionOutput<string>
+                {
+                    Status = ActionStatus.Error,
+                    Object = ex.ToString(),
+                    Message = ex.Message
+                };
+            }
+        }
+
+        public ActionOutput<string> ExpireLoginCode(string Id)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("ExpireLoginCode");
+                    database.AddInParameter(command, "@Id", DbType.String, Id);
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+                }
+                return new ActionOutput<string>
+                {
+                    Status = ActionStatus.Successfull,
+                    Object = returndata.Tables[0].Rows[0]["Email"].ToString()
+                };
+            }
+            catch (Exception ex)
+            {
+                return new ActionOutput<string>
+                {
+                    Status = ActionStatus.Error,
+                    Message = ex.Message
+                };
+            }
+        }
+
+        public ActionOutput<LoginUser> GetUsers(string keyword)
+        {
+            try
+            {
+                List<LoginUser> users = new List<LoginUser>();
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GetUsersByKeyword");
+                    database.AddInParameter(command, "@Keyword", DbType.String, keyword);
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    returndata = database.ExecuteDataSet(command);
+
+                    if (returndata != null && returndata.Tables[0] != null && returndata.Tables[0].Rows.Count > 0)
+                    {
+                        foreach (DataRow item in returndata.Tables[0].Rows)
+                        {
+                            users.Add(new LoginUser
+                            {
+                                ID = Convert.ToInt32(item["Id"].ToString()),
+                                FirstName = item["FristName"].ToString(),
+                                LastName = item["LastName"].ToString(),
+                                Email = item["Email"].ToString(),
+                                Phone = item["Phone"].ToString()
+                            });
+                        }
+                    }
+                    return new ActionOutput<LoginUser>
+                    {
+                        Results = users,
+                        Status = ActionStatus.Successfull
+                    };
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public DataSet GetTouchPointLogDataByGUID(string strGUID)
         {
             try
@@ -484,6 +674,26 @@ namespace JG_Prospect.DAL
             {
                 return null;
             }
+        }
+
+        public DataSet BulkIntsallUserDuplicateCheck(String xmlDoc)
+        {
+            DataSet dsTemp = new DataSet();
+
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("UDP_BulkInstallUserDuplicateCheck");
+                    database.AddInParameter(command, "@XMLDOC2", SqlDbType.Xml, xmlDoc);
+                    dsTemp = database.ExecuteDataSet(command);
+                    return dsTemp;
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+            return dsTemp;
         }
 
         public string AddUserEmail(bool isPrimaryEmail, string strEmail, int UserID, bool ClearDataBeforInsert)
@@ -2083,7 +2293,28 @@ namespace JG_Prospect.DAL
                 return false;
             }
         }
+        public DataSet getuserdetailsbyId(int id)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GetInstallUserById");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@UserId", DbType.Int32, id);
+                    returndata = database.ExecuteDataSet(command);
 
+                    return returndata;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+
+            }
+        }
         public DataSet getuserdetails(int id)
         {
             try
@@ -2187,6 +2418,29 @@ namespace JG_Prospect.DAL
                     {
                         database.AddInParameter(command, "@RejectedStatus", DbType.String, Convert.ToByte(JGConstant.InstallUserStatus.Rejected).ToString());
                     }
+                    returndata = database.ExecuteDataSet(command);
+
+                    return returndata;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+
+            }
+        }
+
+        public DataSet getInstallUserDetailsById(Int32 UserId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("usp_GetInstallUserDetailsById");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@UserId", DbType.Int32, UserId);
                     returndata = database.ExecuteDataSet(command);
 
                     return returndata;
@@ -2677,6 +2931,51 @@ namespace JG_Prospect.DAL
                 return null;
             }
         }
+
+        public DataSet GetEmployeeInterviewDetails(int UserID)
+        {
+            try
+            {
+                DataSet result = null;
+
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_GetEmployeeInterviewDetails");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@UserId", DbType.Int32, UserID);
+                    result = database.ExecuteDataSet(command);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+        public DataSet GetTaskUsersForDashBoard(String searchTerm)
+        {
+            try
+            {
+                DataSet result = null;
+
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("GetTaskUsersForDashboard");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@SearchTerm", DbType.String, searchTerm);
+                    result = database.ExecuteDataSet(command);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public string GetStarBookMarkUsers(int bookmarkingUser, int bookmarkedUser, int isdelete)
         {
             try
@@ -2698,30 +2997,6 @@ namespace JG_Prospect.DAL
                 return "false";
             }
         }
-
-        public bool BookmarkUnStarInstallUser(int bookmarkingUser, int bookmarkedUser, int isdelete)
-        {
-            int action = 0;
-            try
-            {
-                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
-                {
-                    DbCommand command = database.GetStoredProcCommand("USP_BookmarkUnStarInstallUser");
-                    command.CommandType = CommandType.StoredProcedure;
-                    database.AddInParameter(command, "@UserId", DbType.Int64, bookmarkedUser);
-                    database.AddInParameter(command, "@BookmarkById", DbType.Int64, bookmarkingUser);
-                    database.AddInParameter(command, "@action", DbType.Int32, isdelete);
-                    action = database.ExecuteNonQuery(command);
-                }
-
-                return true;
-            }
-            catch (Exception ex)
-            {
-                return false;
-            }
-        }
-
         public DataSet GetBookMarkingUserDetails(int bookmarkedUser)
         {
             DataSet result = null;
@@ -2743,36 +3018,7 @@ namespace JG_Prospect.DAL
             }
         }
 
-        public int UpdateBookMarkingUserDetails(int bookmarkedUser, int loginUserID)
-        {
-            int result = 0;
-            try
-            {
-                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
-                {
-                    DbCommand cmd = database.GetStoredProcCommand("[UpdateBookmarkInstallUserStatus]");
-                    cmd.CommandType = CommandType.StoredProcedure;
 
-                    database.AddInParameter(cmd, "@ID", DbType.Int32, bookmarkedUser);
-                    database.AddInParameter(cmd, "@UserID", DbType.Int32, loginUserID);
-
-                    database.AddOutParameter(cmd, "@Return_Value", DbType.Int32, 0);
-                 
-
-                    database.ExecuteNonQuery(cmd);
-
-                    result =Convert.ToInt32( database.GetParameterValue(cmd, "@Return_Value"));
-                   
-                }
-
-                return result;
-            }
-            catch (Exception ex)
-            {
-                return result;
-            }
-            
-        }
         //------------- end DP -------------
 
         public DataSet GetSalesUsersStaticticsAndData(string strSearchTerm, string strStatus, Int32 intDesignationId, Int32 intSourceId, DateTime? fromdate, DateTime? todate, int userid, int intPageIndex, int intPageSize, string strSortExpression)
@@ -2965,7 +3211,7 @@ namespace JG_Prospect.DAL
         }
 
 
-        public void SetUserDisplayID(int UserId, string strDesignationsCode, string UpdateCurrentSequence)
+        public void SetUserDisplayID(int UserId, string strUserDesignationId, string UpdateCurrentSequence)
         {
             try
             {
@@ -2974,7 +3220,7 @@ namespace JG_Prospect.DAL
                     DbCommand command = database.GetStoredProcCommand("USP_SetUserDisplayID");
                     command.CommandType = CommandType.StoredProcedure;
                     database.AddInParameter(command, "@InstallUserID", DbType.String, UserId);
-                    database.AddInParameter(command, "@DesignationsCode", DbType.String, strDesignationsCode);
+                    database.AddInParameter(command, "@DesignationId", DbType.String, strUserDesignationId);
                     database.AddInParameter(command, "@UpdateCurrentSequence", DbType.String, UpdateCurrentSequence);
                     database.ExecuteNonQuery(command);
                 }
@@ -3020,8 +3266,7 @@ namespace JG_Prospect.DAL
             {
                 SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
                 {
-                    //DbCommand command = database.GetStoredProcCommand("usp_GeAddedBytUsersFilter");
-                    DbCommand command = database.GetStoredProcCommand("usp_GetUsersNDesignationForSalesFilter");
+                    DbCommand command = database.GetStoredProcCommand("usp_GeAddedBytUsersFilter");
 
                     command.CommandType = CommandType.StoredProcedure;
                     returndata = database.ExecuteDataSet(command);
@@ -3064,10 +3309,10 @@ namespace JG_Prospect.DAL
                 {
                     DbCommand command = database.GetStoredProcCommand("usp_SearchUsersForPopup");
 
-                    command.CommandType = CommandType.StoredProcedure;                    
+                    command.CommandType = CommandType.StoredProcedure;
 
                     database.AddInParameter(command, "@UserIds", DbType.String, UserIds);
-                    database.AddInParameter(command, "@Status", DbType.String, Status);                    
+                    database.AddInParameter(command, "@Status", DbType.String, Status);
                     database.AddInParameter(command, "@DesignationId", DbType.Int32, DesignationId);
                     database.AddInParameter(command, "@PageIndex", DbType.Int32, PageIndex);
                     database.AddInParameter(command, "@PageSize", DbType.Int32, PageSize);
@@ -3085,5 +3330,107 @@ namespace JG_Prospect.DAL
             }
             return returndata;
         }
+
+        public Int32 QuickSaveInstallUser(user objuser)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_QuickSaveInstallUser");
+                    command.CommandType = CommandType.StoredProcedure;
+                    
+                    database.AddInParameter(command, "@FirstName", DbType.String, objuser.fristname);
+                    database.AddInParameter(command, "@NameMiddleInitial", DbType.String, objuser.NameMiddleInitial);
+                    database.AddInParameter(command, "@LastName", DbType.String, objuser.lastname);
+                    database.AddInParameter(command, "@Email", DbType.String, objuser.email);
+                    database.AddInParameter(command, "@Phone", DbType.String, objuser.phone);
+                    database.AddInParameter(command, "@Zip", DbType.String, objuser.zip);
+                    database.AddInParameter(command, "@DesignationText", DbType.String, objuser.designation);
+                    database.AddInParameter(command, "@DesignationID", DbType.String, objuser.DesignationID);
+                    database.AddInParameter(command, "@Status", DbType.String, objuser.status);
+                    database.AddInParameter(command, "@SourceText", DbType.String, objuser.Source);
+                    database.AddInParameter(command, "@EmpType", DbType.String, objuser.EmpType);
+                    database.AddInParameter(command, "@StartDate", DbType.String, objuser.StartDate);
+                    database.AddInParameter(command, "@SalaryReq", DbType.String, objuser.SalaryReq);
+                    database.AddInParameter(command, "@SourceUserId", DbType.String, objuser.SourceUser);
+                    database.AddInParameter(command, "@PositionAppliedForDesignationId", DbType.String, objuser.PositionAppliedFor);
+                    database.AddInParameter(command, "@SourceID", DbType.Int32, objuser.SourceId == 0 ? DBNull.Value : (object)objuser.SourceId);
+                    database.AddInParameter(command, "@AddedByUserId", DbType.Int32, objuser.AddedBy);
+                    database.AddInParameter(command, "@IsEmailContactPreference", DbType.Boolean, objuser.IsEmailContactPreference);
+                    database.AddInParameter(command, "@IsCallContactPreference", DbType.Boolean, objuser.IsCallContactPreference);
+                    database.AddInParameter(command, "@IsTextContactPreference", DbType.Boolean, objuser.IsTextContactPreference);
+                    database.AddInParameter(command, "@IsMailContactPreference", DbType.Boolean, objuser.IsMailContactPreference);
+
+                    database.AddOutParameter(command, "@Id", DbType.Int32, 1);  
+
+                    database.ExecuteScalar(command);
+
+                    int UserId = Convert.ToInt32(database.GetParameterValue(command, "@Id"));
+
+                    return UserId;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return 0;
+
+            }
+        }
+
+        public Boolean UpdateUserProfile(user objuser)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_UpdateInstallUserDetailsById");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@UserId", DbType.Int32, objuser.id);
+                    database.AddInParameter(command, "@PositionAppliedFor", DbType.String, objuser.PositionAppliedFor);
+                    database.AddInParameter(command, "@SourceID", DbType.Int32, objuser.SourceId);
+                    database.AddInParameter(command, "@Source", DbType.String, objuser.Source);
+                    database.AddInParameter(command, "@FristName", DbType.String, objuser.fristname);
+                    database.AddInParameter(command, "@NameMiddleInitial", DbType.String, objuser.NameMiddleInitial);
+                    database.AddInParameter(command, "@LastName", DbType.String, objuser.lastname);
+                    database.AddInParameter(command, "@CountryCode", DbType.String, objuser.CountryCode);
+                    database.AddInParameter(command, "@Zip", DbType.String, objuser.zip);
+                    database.AddInParameter(command, "@City", DbType.String, objuser.city);
+                    database.AddInParameter(command, "@State", DbType.String, objuser.state);
+                    database.AddInParameter(command, "@Address", DbType.String, objuser.address);
+                    database.AddInParameter(command, "@LeavingReason", DbType.String, objuser.LeavingReason);
+                    database.AddInParameter(command, "@Phone", DbType.String, objuser.phone);
+                    database.AddInParameter(command, "@Email", DbType.String, objuser.email);
+                    database.AddInParameter(command, "@IsEmailContactPreference", DbType.Boolean, objuser.IsEmailContactPreference);
+                    database.AddInParameter(command, "@IsCallContactPreference", DbType.Boolean, objuser.IsCallContactPreference);
+                    database.AddInParameter(command, "@IsTextContactPreference", DbType.Boolean, objuser.IsTextContactPreference);
+                    database.AddInParameter(command, "@IsMailContactPreference", DbType.Boolean, objuser.IsMailContactPreference);
+                    database.AddInParameter(command, "@Start_Date", DbType.String, objuser.StartDate);
+                    database.AddInParameter(command, "@EmpType", DbType.String, objuser.EmpType);
+                    database.AddInParameter(command, "@SalaryReq", DbType.String, objuser.SalaryReq);
+                    database.AddInParameter(command, "@CruntEmployement", DbType.Boolean, Convert.ToBoolean(objuser.CruntEmployement));
+                    database.AddInParameter(command, "@DrugTest", DbType.Boolean, Convert.ToBoolean(objuser.DrugTest));
+                    database.AddInParameter(command, "@FELONY", DbType.Boolean, Convert.ToBoolean(objuser.FELONY));
+                    database.AddInParameter(command, "@PrevApply", DbType.Boolean, Convert.ToBoolean(objuser.PrevApply));
+                    database.AddInParameter(command, "@Notes", DbType.String, objuser.Notes);
+                    database.AddInParameter(command, "@Picture", DbType.String, objuser.picture);
+                    database.AddInParameter(command, "@ResumePath", DbType.String, objuser.ResumePath);
+                    
+
+                    database.ExecuteScalar(command);
+                    
+                    return true;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return false;
+
+            }
+        }
+
     }
 }

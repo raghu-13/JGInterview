@@ -15,6 +15,7 @@ using System.Linq;
 using System.Net.Mail;
 using System.Text;
 using System.Web;
+using System.Web.Services;
 using System.Web.UI;
 using System.Web.UI.HtmlControls;
 using System.Web.UI.WebControls;
@@ -28,7 +29,7 @@ namespace JG_Prospect.Sr_App.Controls
         #region '--Members--'
 
         private List<string> lstSubTaskFiles = new List<string>();
-
+        public int loggedInUserId = 0;
         private DataTable dtSubTasks = new DataTable();
 
         #endregion '--Members--'
@@ -153,13 +154,14 @@ namespace JG_Prospect.Sr_App.Controls
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            loggedInUserId = JGSession.UserId;
             if (!IsPostBack)
             {
                 FillInitialData();
                 hdnAdminMode.Value = this.IsAdminMode.ToString();
             }
 
-            repSubTasks_CustomPager.OnPageIndexChanged += repSubTasks_CustomPager_OnPageIndexChanged;
+            //repSubTasks_CustomPager.OnPageIndexChanged += repSubTasks_CustomPager_OnPageIndexChanged;
         }
 
         #endregion '--Page Events--'
@@ -1472,7 +1474,7 @@ namespace JG_Prospect.Sr_App.Controls
             char[] delimiterChars = { '#' };
             string[] TaskLvlandInstallId = lnkpop.CommandName.Split(delimiterChars);
 
-            hdTaskLvl.Value = TaskLvlandInstallId[0];
+            hdTaskLvl.Value = (int.Parse(TaskLvlandInstallId[0]) + 1).ToString();
             hdParentTaskId.Value = TaskLvlandInstallId[2];
 
             //int intRowIndex = Convert.ToInt32(e.CommandArgument);
@@ -2017,11 +2019,12 @@ namespace JG_Prospect.Sr_App.Controls
 
         protected void btnSaveGridAttachment_Click(object sender, EventArgs e)
         {
-            Button lnkpop = (Button)sender;
+            //Button lnkpop = (Button)sender;
             int vTaskid = Convert.ToInt32(hdDropZoneTaskId.Value.ToString());
             UploadUserAttachements(null, Convert.ToInt64(vTaskid), hdnGridAttachment.Value, JGConstant.TaskFileDestination.SubTask);
             hdnGridAttachment.Value = hdDropZoneTaskId.Value = string.Empty;
-            SetSubTaskDetails();
+            Response.Redirect(Request.RawUrl);
+            //SetSubTaskDetails();
         }
 
         protected void btnUpdateRepeater_Click(object sender, EventArgs e)
@@ -2234,14 +2237,13 @@ namespace JG_Prospect.Sr_App.Controls
                     string strBody = dsEmailTemplate.Tables[0].Rows[0]["HTMLBody"].ToString();
                     string strFooter = dsEmailTemplate.Tables[0].Rows[0]["HTMLFooter"].ToString();
                     string strsubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString();
+                    string strTaskLinkTitle = CommonFunction.GetTaskLinkTitleForAutoEmail(intTaskId);
 
                     strBody = strBody.Replace("#Fname#", fullname);
-                    strBody = strBody.Replace("#TaskLink#", string.Format("{0}://{1}/sr_app/TaskGenerator.aspx?TaskId={2}", Request.Url.Scheme, Request.Url.Host.ToString(), intTaskId));
+                    strBody = strBody.Replace("#TaskLink#", string.Format("{0}://{1}/sr_app/TaskGenerator.aspx?TaskId={2}&{3}", Request.Url.Scheme, Request.Url.Host.ToString(), intTaskId, strTaskLinkTitle));
 
-                    // Added by Zubair Ahmed Khan for displaying proper text for task link
-                    string strTaskLinkTitle = CommonFunction.GetTaskLinkTitleForAutoEmail(intTaskId);
-                    strBody = strBody.Replace("#TaskLinkTitle#", strTaskLinkTitle);
                     
+                    strBody = strBody.Replace("#TaskTitle#", string.Format("{0}?TaskId={1}", Request.Url.ToString().Split('?')[0],intTaskId));
 
                     strBody = strHeader + strBody + strFooter;
 
@@ -2476,80 +2478,81 @@ namespace JG_Prospect.Sr_App.Controls
 
         private DataSet GetSubTasks(int intHighlightedTaskId)
         {
-            string strSortExpression = this.SubTaskSortExpression + " " + (this.SubTaskSortDirection == SortDirection.Ascending ? "ASC" : "DESC");
+            //string strSortExpression = this.SubTaskSortExpression + " " + (this.SubTaskSortDirection == SortDirection.Ascending ? "ASC" : "DESC");
 
-            return TaskGeneratorBLL.Instance.GetSubTasks
-                                                (
-                                                    TaskId,
-                                                    CommonFunction.CheckAdminAndItLeadMode(),
-                                                    strSortExpression,
-                                                    txtSearch.Text,
-                                                    repSubTasks_CustomPager.PageIndex,
-                                                    repSubTasks_CustomPager.PageSize,
-                                                    intHighlightedTaskId
-                                                );
+            //return TaskGeneratorBLL.Instance.GetSubTasks
+            //                                    (
+            //                                        TaskId,
+            //                                        CommonFunction.CheckAdminAndItLeadMode(),
+            //                                        strSortExpression,
+            //                                        txtSearch.Text,
+            //                                        repSubTasks_CustomPager.PageIndex,
+            //                                        repSubTasks_CustomPager.PageSize,
+            //                                        intHighlightedTaskId
+            //                                    );
+            return null;
         }
 
         protected void drpPageSize_SelectedIndexChanged(object sender, EventArgs e)
         {
-            repSubTasks_CustomPager.PageSize = Convert.ToInt32(drpPageSize.SelectedValue);
-            repSubTasks_CustomPager.PageIndex = 0;
+            //repSubTasks_CustomPager.PageSize = Convert.ToInt32(drpPageSize.SelectedValue);
+            //repSubTasks_CustomPager.PageIndex = 0;
 
             SetSubTaskDetails();
         }
 
         protected void btnSearch_Click(object sender, EventArgs e)
         {
-            repSubTasks_CustomPager.PageIndex = 0;
+            //repSubTasks_CustomPager.PageIndex = 0;
             SetSubTaskDetails();
         }
 
         public void SetSubTaskDetails(List<Task> lstSubtasks)
         {
             // TaskId,Title, [Description], [Status], DueDate,Tasks.[Hours], Tasks.CreatedOn, Tasks.InstallId, Tasks.CreatedBy, @AssigningUser AS AssigningManager
-            DataTable dtSubtasks = new DataTable();
-            dtSubtasks.Columns.Add("TaskId");
-            dtSubtasks.Columns.Add("Title");
-            dtSubtasks.Columns.Add("Description");
-            dtSubtasks.Columns.Add("Status");
-            dtSubtasks.Columns.Add("DueDate");
-            dtSubtasks.Columns.Add("Hours");
-            dtSubtasks.Columns.Add("InstallId");
-            dtSubtasks.Columns.Add("FristName");
-            dtSubtasks.Columns.Add("TaskType");
-            dtSubtasks.Columns.Add("attachment");
-            dtSubtasks.Columns.Add("TaskPriority");
-            dtSubtasks.Columns.Add("AdminStatus");
-            dtSubtasks.Columns.Add("TechLeadStatus");
-            dtSubtasks.Columns.Add("OtherUserStatus");
+            //DataTable dtSubtasks = new DataTable();
+            //dtSubtasks.Columns.Add("TaskId");
+            //dtSubtasks.Columns.Add("Title");
+            //dtSubtasks.Columns.Add("Description");
+            //dtSubtasks.Columns.Add("Status");
+            //dtSubtasks.Columns.Add("DueDate");
+            //dtSubtasks.Columns.Add("Hours");
+            //dtSubtasks.Columns.Add("InstallId");
+            //dtSubtasks.Columns.Add("FristName");
+            //dtSubtasks.Columns.Add("TaskType");
+            //dtSubtasks.Columns.Add("attachment");
+            //dtSubtasks.Columns.Add("TaskPriority");
+            //dtSubtasks.Columns.Add("AdminStatus");
+            //dtSubtasks.Columns.Add("TechLeadStatus");
+            //dtSubtasks.Columns.Add("OtherUserStatus");
 
-            foreach (Task objSubTask in lstSubtasks)
-            {
-                dtSubtasks.Rows.Add(
-                                        objSubTask.TaskId,
-                                        objSubTask.Title,
-                                        objSubTask.Description,
-                                        objSubTask.Status,
-                                        objSubTask.DueDate,
-                                        objSubTask.Hours,
-                                        objSubTask.InstallId,
-                                        string.Empty,
-                                        objSubTask.TaskType,
-                                        objSubTask.Attachment,
-                                        objSubTask.TaskPriority,
-                                        objSubTask.AdminStatus,
-                                        objSubTask.TechLeadStatus,
-                                        objSubTask.OtherUserStatus
-                                    );
-            }
+            //foreach (Task objSubTask in lstSubtasks)
+            //{
+            //    dtSubtasks.Rows.Add(
+            //                            objSubTask.TaskId,
+            //                            objSubTask.Title,
+            //                            objSubTask.Description,
+            //                            objSubTask.Status,
+            //                            objSubTask.DueDate,
+            //                            objSubTask.Hours,
+            //                            objSubTask.InstallId,
+            //                            string.Empty,
+            //                            objSubTask.TaskType,
+            //                            objSubTask.Attachment,
+            //                            objSubTask.TaskPriority,
+            //                            objSubTask.AdminStatus,
+            //                            objSubTask.TechLeadStatus,
+            //                            objSubTask.OtherUserStatus
+            //                        );
+            //}
 
-            repSubTasks.DataSource = dtSubtasks;
-            repSubTasks.DataBind();
+            //repSubTasks.DataSource = dtSubtasks;
+            //repSubTasks.DataBind();
 
-            //// do not show freezing option while adding new task.
-            //repSubTasks.Columns[6].Visible = false;
+            ////// do not show freezing option while adding new task.
+            ////repSubTasks.Columns[6].Visible = false;
 
-            upSubTasks.Update();
+            //upSubTasks.Update();
         }
 
         public void SetSubTaskDetails(int intTaskId = 0)
@@ -2582,63 +2585,63 @@ namespace JG_Prospect.Sr_App.Controls
                 intHighlightedTaskId = 0;
             }
 
-            repSubTasks_CustomPager.PageSize = Convert.ToInt32(drpPageSize.SelectedValue);
+            //repSubTasks_CustomPager.PageSize = Convert.ToInt32(drpPageSize.SelectedValue);
 
-            DataSet dsSubTaskDetails = GetSubTasks(intHighlightedTaskId);
-            if (dsSubTaskDetails != null)
-            {
-                if (dsSubTaskDetails.Tables[0].Rows.Count > 0)
-                {
-                    dtSubTasks = dsSubTaskDetails.Tables[0];
+            //DataSet dsSubTaskDetails = GetSubTasks(intHighlightedTaskId);
+            //if (dsSubTaskDetails != null)
+            //{
+            //    if (dsSubTaskDetails.Tables[0].Rows.Count > 0)
+            //    {
+            //        dtSubTasks = dsSubTaskDetails.Tables[0];
 
-                    DataTable dtSubTaskDetails = null;
+            //        DataTable dtSubTaskDetails = null;
 
-                    // bind first level tasks order by created date.
-                    DataView dvSubTaskDetails = dtSubTasks.AsDataView();
-                    dvSubTaskDetails.RowFilter = "ParentTaskId = " + TaskId.ToString();
-                    dvSubTaskDetails.Sort = "CreatedOn DESC";
+            //        // bind first level tasks order by created date.
+            //        DataView dvSubTaskDetails = dtSubTasks.AsDataView();
+            //        dvSubTaskDetails.RowFilter = "ParentTaskId = " + TaskId.ToString();
+            //        dvSubTaskDetails.Sort = "CreatedOn DESC";
 
-                    dtSubTaskDetails = dvSubTaskDetails.ToTable();
+            //        dtSubTaskDetails = dvSubTaskDetails.ToTable();
 
-                    if (dtSubTaskDetails.Rows.Count > 0)
-                    {
-                        BindMasterUserDropdown(dvSubTaskDetails);
+            //        if (dtSubTaskDetails.Rows.Count > 0)
+            //        {
+            //            BindMasterUserDropdown(dvSubTaskDetails);
 
-                        repSubTasks.DataSource = dtSubTaskDetails;
-                        repSubTasks.DataBind();
+            //            repSubTasks.DataSource = dtSubTaskDetails;
+            //            repSubTasks.DataBind();
 
-                        repSubTasks_CustomPager.PageIndex = Convert.ToInt32(dsSubTaskDetails.Tables[2].Rows[0]["PageIndex"]);
-                        repSubTasks_CustomPager.FillPager(Convert.ToInt32(dsSubTaskDetails.Tables[1].Rows[0]["TotalRecords"]));
+            //            repSubTasks_CustomPager.PageIndex = Convert.ToInt32(dsSubTaskDetails.Tables[2].Rows[0]["PageIndex"]);
+            //            repSubTasks_CustomPager.FillPager(Convert.ToInt32(dsSubTaskDetails.Tables[1].Rows[0]["TotalRecords"]));
 
-                        upSubTasks.Update();
-                    }
+            //            upSubTasks.Update();
+            //        }
 
-                    if (dtSubTaskDetails.Rows.Count > 0)
-                    {
-                        dvSubTaskDetails.Sort = "TaskId ASC";
-                        dtSubTaskDetails = dvSubTaskDetails.ToTable();
-                        //this.LastSubTaskSequence = dtSubTaskDetails.Rows[dtSubTaskDetails.Rows.Count - 1]["InstallId"].ToString();
-                        hdnLastSubTaskSequence.Value = dtSubTaskDetails.Rows[dtSubTaskDetails.Rows.Count - 1]["InstallId"].ToString();
-                    }
-                    else
-                    {
-                        //this.LastSubTaskSequence = String.Empty;
-                        hdnLastSubTaskSequence.Value = string.Empty;
-                    }
-                    ShowAddNewSubTaskSection(false);
-                }
-            }
+            //        if (dtSubTaskDetails.Rows.Count > 0)
+            //        {
+            //            dvSubTaskDetails.Sort = "TaskId ASC";
+            //            dtSubTaskDetails = dvSubTaskDetails.ToTable();
+            //            //this.LastSubTaskSequence = dtSubTaskDetails.Rows[dtSubTaskDetails.Rows.Count - 1]["InstallId"].ToString();
+            //            hdnLastSubTaskSequence.Value = dtSubTaskDetails.Rows[dtSubTaskDetails.Rows.Count - 1]["InstallId"].ToString();
+            //        }
+            //        else
+            //        {
+            //            //this.LastSubTaskSequence = String.Empty;
+            //            hdnLastSubTaskSequence.Value = string.Empty;
+            //        }
+            //        ShowAddNewSubTaskSection(false);
+            //    }
+            //}
 
-            if (repSubTasks.Items.Count == 0)
-            {
-                divSubTasks_List.Visible = false;
-                divSubTasks_Empty.Visible = true;
-            }
-            else
-            {
-                divSubTasks_List.Visible = true;
-                divSubTasks_Empty.Visible = false;
-            }
+            //if (repSubTasks.Items.Count == 0)
+            //{
+            //    divSubTasks_List.Visible = false;
+            //    divSubTasks_Empty.Visible = true;
+            //}
+            //else
+            //{
+            //    divSubTasks_List.Visible = true;
+            //    divSubTasks_Empty.Visible = false;
+            //}
 
             //rptImageGallery.DataSource = this.lstSubTaskFiles;
             //rptImageGallery.DataBind();
@@ -2651,8 +2654,8 @@ namespace JG_Prospect.Sr_App.Controls
 
             if (controlMode == "0")
             {
-                repSubTasks.DataSource = this.lstSubTasks;
-                repSubTasks.DataBind();
+                //repSubTasks.DataSource = this.lstSubTasks;
+                //repSubTasks.DataBind();
             }
         }
 
@@ -2880,7 +2883,7 @@ namespace JG_Prospect.Sr_App.Controls
             hdnTaskApprovalId.Value = "0";
             hdnSubTaskId.Value = "0";
             hdnSubTaskIndex.Value = "-1";
-            txtTaskListID.Text = string.Empty;
+            //txtTaskListID.Text = string.Empty;
             txtSubTaskTitle.Text =
             txtUrl.Text =
             txtSubTaskDescription.Text =
@@ -2953,7 +2956,7 @@ namespace JG_Prospect.Sr_App.Controls
             //rptSubTaskAttachments.DataBind();
 
             //upnlAttachments.Update();
-        }
+        }        
 
         private void UploadUserAttachements(int? taskUpdateId, long TaskId, string attachments, JG_Prospect.Common.JGConstant.TaskFileDestination objTaskFileDestination)
         {
@@ -3110,18 +3113,18 @@ namespace JG_Prospect.Sr_App.Controls
 
         public void DisableSubTaskAssignment(bool blEnabled)
         {
-            foreach (RepeaterItem objSubTaskItem in repSubTasks.Items)
-            {
-                Repeater repSubTasksNested = objSubTaskItem.FindControl("repSubTasksNested") as Repeater;
-                foreach (RepeaterItem objRepeaterItem in repSubTasksNested.Items)
-                {
-                    ListBox ddcbAssigned = objRepeaterItem.FindControl("ddcbAssigned") as ListBox;
+            //foreach (RepeaterItem objSubTaskItem in repSubTasks.Items)
+            //{
+            //    Repeater repSubTasksNested = objSubTaskItem.FindControl("repSubTasksNested") as Repeater;
+            //    foreach (RepeaterItem objRepeaterItem in repSubTasksNested.Items)
+            //    {
+            //        ListBox ddcbAssigned = objRepeaterItem.FindControl("ddcbAssigned") as ListBox;
 
-                    ddcbAssigned.AutoPostBack =
-                    ddcbAssigned.Enabled = blEnabled;
-                }
-            }
-            upSubTasks.Update();
+            //        ddcbAssigned.AutoPostBack =
+            //        ddcbAssigned.Enabled = blEnabled;
+            //    }
+            //}
+            //upSubTasks.Update();
         }
 
         public string GetInstallId(object objNestLevel, object objInstallId, object objLastSubTaskInstallId)
@@ -3159,7 +3162,7 @@ namespace JG_Prospect.Sr_App.Controls
         {
             String strTaskDesignations = dtSubTasks.Rows[0]["TaskDesignations"].ToString();
 
-            CommonFunction.BindAssignUserDropdown(strTaskDesignations, lstbUsersMaster);
+            //CommonFunction.BindAssignUserDropdown(strTaskDesignations, lstbUsersMaster);
         }
 
         /// <summary>

@@ -91,6 +91,7 @@
     <Compile Include="exceltoXml.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Extensions.cs" />
     <Compile Include="HTMLTemplates.cs" />
     <Compile Include="JGCommon.cs" />
     <Compile Include="JGConstant.cs" />
@@ -102,6 +103,7 @@
     <Compile Include="modal\AttachedQuotes.cs" />
     <Compile Include="modal\Availability.cs" />
     <Compile Include="modal\clsSku.cs" />
+    <Compile Include="modal\Common.cs" />
     <Compile Include="modal\Customer.cs" />
     <Compile Include="modal\CustomerDocument.cs" />
     <Compile Include="modal\CustomerLocationPics.cs" />
@@ -115,6 +117,7 @@
     <Compile Include="modal\MCQ_Option.cs" />
     <Compile Include="modal\MCQ_Question.cs" />
     <Compile Include="modal\NewVendorCategory.cs" />
+    <Compile Include="modal\Notes.cs" />
     <Compile Include="modal\period.cs" />
     <Compile Include="modal\ProductSoldDetails.cs" />
     <Compile Include="modal\prospect.cs" />

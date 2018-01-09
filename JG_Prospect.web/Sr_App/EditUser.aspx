@@ -79,6 +79,8 @@
             height: 30px;
             background: url(img/main-header-bg.png) repeat-x;
             color: #fff;
+            cursor: pointer;
+            border-radius: 5px;
         }
 
         /*Grid add Container END */
@@ -224,11 +226,212 @@
             height: 1275px !important;
         }
 
+        .scroll {
+            font-size: 12px;
+        }
+
         .right_panel {
             margin: 0 0 0 0 !important;
         }
-    </style>
 
+        .notes-container {
+            display: block;
+            height: 66px;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        .notes-table {
+            height: auto;
+            width: 100%;
+            margin: 0 5px;
+            font-size: 12px;
+        }
+
+            .notes-table tbody {
+                height: auto !important;
+            }
+
+            .notes-table th {
+                color: #fff;
+                padding: 5px !important;
+                background: #000 !important;
+                border: none;
+            }
+
+            .notes-table td {
+                padding: 2px !important;
+            }
+
+            .notes-table tr:nth-child(even) {
+                background: #A33E3F;
+                color: #fff;
+            }
+
+            .notes-table tr:nth-child(odd) {
+                background: #FFF;
+                color: #000;
+            }
+
+            .notes-table tr a {
+                font-size: 10px;
+            }
+
+            .notes-table tr:nth-child(even) a, .notes-popup tr:nth-child(even) a {
+                color: #fff;
+            }
+
+            .notes-table tr th:nth-child(1), .notes-table tr td:nth-child(1) {
+                width: 5%;
+            }
+
+            .notes-table tr th:nth-child(2), .notes-table tr td:nth-child(2) {
+                width: 27%;
+            }
+
+            .notes-table tr th:nth-child(3), .notes-table tr td:nth-child(3) {
+                width: 90px;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                white-space: nowrap;
+            }
+
+        .rejected {
+            background-color: #AEAEAE;
+        }
+
+        .deleted {
+            background-color: #565656;
+        }
+
+        .interview-date-expired {
+            background-color: #d3d3d3;
+        }
+
+        .applicant {
+            background-color: #FFFF00;
+        }
+
+        .install-prospect {
+            background-color: #FFA500;
+        }
+
+        table.notes-table tr.trHeader {
+            background: none !important;
+        }
+
+        .notes-popup {
+            display: none;
+            position: fixed;
+            top: 100px;
+            left: 300px;
+            width: 800px;
+            background: #fff;
+            z-index: 11;
+            border-radius: 5px;
+        }
+
+        .notes-popup-background {
+            display: none;
+            height: 100%;
+            width: 100%;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 10;
+            background: #000;
+            opacity: 0.5;
+        }
+
+        .notes-popup .heading {
+            width: 100%;
+            display: inline-block;
+            background: #A33E3F;
+            color: #fff;
+            padding: 5px 0;
+            border-radius: 5px 5px 0 0;
+        }
+
+            .notes-popup .heading .title {
+                padding: 0 5px;
+                float: left;
+            }
+
+        .notes-popup .content {
+            padding: 5px;
+        }
+
+        .notes-popup .heading .close {
+            float: right;
+            top: -11px;
+            font-size: 14px;
+            right: -8px;
+            background: #ccc;
+            border-radius: 19px;
+            cursor: pointer;
+        }
+
+        .notes-popup .content table {
+            width: 100%;
+        }
+
+            .notes-popup .content table th {
+                border: 1px solid #ccc;
+                text-align: left;
+                padding: 3px;
+                font-size: 13px;
+                color: #ddd;
+                background: #000;
+            }
+
+            .notes-popup .content table td {
+                padding: 3px;
+                font-size: 12px;
+                border: 1px solid #ccc;
+            }
+
+            .notes-popup .content table tr:nth-child(even) {
+                background: #ba4f50;
+                color: #fff;
+            }
+
+            .notes-popup .content table tr:nth-child(odd) {
+                background: #FFF;
+                color: #000;
+            }
+
+            .notes-popup .content table tr th:nth-child(1), .notes-popup .content table tr td:nth-child(1) {
+                width: 185px;
+            }
+
+        .notes-popup .add-notes-container {
+            display: inline-block;
+            width: 98%;
+            padding: 5px;
+        }
+
+            .notes-popup .add-notes-container textarea {
+                width: 80% !important;
+                height: 50px !important;
+                padding: 5px !important;
+            }
+
+        .notes-container .note-desc {
+            width: 194px;
+            height: 29px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .notes-popup .notes-container .note-desc {
+            width: 194px;
+            height: 29px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+    </style>
     <style type="text/css">
         #hint {
             cursor: pointer;
@@ -289,10 +492,127 @@
         .noMargin span {
             margin: 0px !important;
         }
+
+        textarea.note-text {
+            height: 22px;
+            vertical-align: middle;
+            padding: 2px !important;
+            width: 255px;
+            margin: 0px;
+        }
     </style>
-
-
     <script type="text/javascript">
+
+        function addNotes(sender, uid, txtUid){
+            var note = $(sender).parent().find('.note-text').val();
+            if(note!='')
+                ajaxExt({
+                    url: '/Sr_App/edituser.aspx/AddNotes',
+                    type: 'POST',
+                    data: '{ id: ' + uid + ', note: "' + note + '", touchPointSource: ' + <%=(int)JG_Prospect.Common.TouchPointSource.EditUserPage %> + ' }',
+                    showThrobber: true,
+                    throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
+                    success: function (data, msg) {
+                        $(sender).parent().find('.note-text').val('');
+                        Paging(sender);
+                        LoadNotes(sender, txtUid, uid);
+                    }
+                });
+        }
+        //tribute.attach(document.querySelectorAll('.note-text'));
+        function LoadNotes(sender, installUserId, userid) {
+            ajaxExt({
+                url: '/Sr_App/edituser.aspx/GetUserTouchPointLogs',
+                type: 'POST',
+                data: '{ pageNumber: 0, pageSize: 5, userId: ' + userid + ' }',
+                showThrobber: true,
+                throbberPosition: { my: "left center", at: "right center", of: $('#user-' + userid), offset: "5 0" },
+                success: function (data, msg) {
+                    if (data.Data.length > 0) {
+                        var tbl = '<table class="notes-table" cellspacing="0" cellpadding="0">';
+                        $(data.Data).each(function (i) {
+                            tbl += '<tr iuid="'+ installUserId+'" uid="'+data.Data[i].UserID+'" id="' + data.Data[i].UserTouchPointLogID + '">' +
+                                        '<td>' + data.Data[i].SourceUsername + '- <a target="_blank" href="/Sr_App/ViewSalesUser.aspx?id='+data.Data[i].UpdatedByUserID+'">' + data.Data[i].SourceUserInstallId + '</a><br/>'+data.Data[i].ChangeDateTimeFormatted+'</td>' +
+                                        '<td title="' + data.Data[i].LogDescription + '"><div class="note-desc">' + data.Data[i].LogDescription + '</div></td>' +
+                                    '</tr>';
+                        });
+                        tbl += '</table>';
+                        var tdHeight = $('#user-' + userid).parents('tr').height();
+                        $('#user-' + userid).html(tbl);
+                        
+                        $('#user-' + userid).css('height',(tdHeight-36)+'px');
+                        var tuid = getUrlVars()["TUID"];
+                        var nid = getUrlVars()["NID"];
+                        if (tuid != undefined && nid!= undefined) {
+                            $('.notes-table tr#' + nid).addClass('blink-notes');
+                        }
+                        //tribute.attach(document.querySelectorAll('.note-text'));
+                        tribute.attach(document.getElementById('txt-'+userid));
+                    } else {
+                        var tbl = '<table class="notes-table" cellspacing="0" cellpadding="0">' +
+                                    '<tr><td>&nbsp;</td><td>&nbsp;</td></tr>'+
+                                    '<tr><td>&nbsp;</td><td>&nbsp;</td></tr>'+
+                                   '</table>';
+                        $('#user-' + userid).html(tbl);
+                        tribute.attach(document.getElementById('txt-'+userid));
+                    }
+                }
+            });
+        }
+
+        function Paging(sender) {
+            $('#PageIndex').val(paging.currentPage);
+            ajaxExt({
+                url: '/Sr_App/edituser.aspx/GetUserTouchPointLogs',
+                type: 'POST',
+                data: '{ pageNumber: ' + $('#PageIndex').val() + ', pageSize: ' + paging.pageSize + ', userId: ' + $('#popupNoteUserId').val() + ' }',
+                showThrobber: true,
+                throbberPosition: { my: "left center", at: "right center", of: $(sender), offset: "5 0" },
+                success: function (data, msg) {
+                    if (data.Data.length > 0) {
+                        PageNumbering(data.TotalResults);
+                        var tbl = '<table cellspacing="0" cellpadding="0"><tr><th>Updated By<br/>Created On</th><th>Note</th></tr>';
+                        $(data.Data).each(function (i) {
+                            tbl += '<tr id="' + data.Data[i].UserTouchPointLogID + '">' +
+                                        '<td>' + data.Data[i].SourceUsername + '- <a target="_blank" href="/Sr_App/ViewSalesUser.aspx?id='+data.Data[i].UpdatedByUserID+'">' + data.Data[i].SourceUserInstallId + '</a><br/>'+data.Data[i].ChangeDateTimeFormatted+'</td>' +
+                                        '<td title="' + data.Data[i].LogDescription + '"><div class="note-desc">' + data.Data[i].LogDescription + '</div></td>' +
+                                    '</tr>';
+                        });
+                        tbl += '</table>';
+                        $('.notes-popup .content').html(tbl);                        
+                        tribute.attach(document.getElementById('txt-popup'));
+                    } else {
+                        $('.notes-popup .content').html('Notes not found');
+                    }
+                }
+            });
+            return false;
+        }
+
+        $(document).on('click','.notes-table tr', function(e){
+            if(!$(e.target).is('a') ) {
+                $('.notes-popup').css({ left: ($(window).width() / 2) - 400 });
+                $('#popupNoteUserId').val($(this).attr('uid'));
+                $('#popupNoteTxtUserId').val($(this).attr('iuid'));
+                $('.notes-popup').show();
+                $('.notes-popup-background').show();
+                Paging($(this));
+            }
+        });
+
+        function addPopupNotes(sender){
+            var userId = $('#popupNoteUserId').val();
+            var txtUserId=$('#popupNoteTxtUserId').val();
+            addNotes(sender, userId, txtUserId);
+        }
+
+        function closeNotesPopup() {
+            paging.currentPage = 0;
+            $('.notes-popup .content').html('Loading Notes...');
+            $('.notes-popup').hide();
+            $('.notes-popup-background').hide();
+
+        }
 
         function validateContact(event, obj) {
             var selValue = $(obj).parent().find('select.typeDrop option:selected').text().toLowerCase();
@@ -390,11 +710,21 @@
 
     </script>
     <script>
+        $(document).on('keyup','.txtSearch', function(e){
+            if (e.keyCode == 13) {
+                $('.btnSearchGridData').trigger('click');
+            }
+        });
+
+        $(document).on('click','.ClearSearch', function(e){
+            $('.txtSearch').val('');
+            $('.btnSearchGridData').trigger('click');
+        });
+
         function pageLoad() {
 
 
             $(document).ready(function () {
-
 
                 $(".GrdHeader").click(function () {
 
@@ -547,12 +877,8 @@
         }
     </style>
     <link href="../Styles/dd.css" rel="stylesheet" />
-
-
-
 </asp:Content>
 <asp:Content ID="Content2" ContentPlaceHolderID="ContentPlaceHolder1" runat="server">
-
     <link href="../css/dropzone/css/basic.css" rel="stylesheet" />
     <link href="../css/dropzone/css/dropzone.css" rel="stylesheet" />
     <script type="text/javascript" src="../js/dropzone.js"></script>
@@ -852,8 +1178,9 @@
                             <asp:Label ID="lblselectedchk" runat="server" Style="font-weight: bold;" />
                         </div>
                         <div style="float: right;">
-                            <asp:TextBox ID="txtSearch" runat="server" CssClass="textbox" placeholder="search users" MaxLength="15" />
-                            <asp:Button ID="btnSearchGridData" runat="server" Text="Search" Style="display: none;" class="btnSearc" OnClick="btnSearchGridData_Click" />
+                            <input type="button" class="btnSearc ClearSearch" value="Clear" />
+                            <asp:TextBox ID="txtSearch" runat="server" CssClass="textbox txtSearch" placeholder="search users" MaxLength="15" />
+                            <asp:Button ID="btnSearchGridData" runat="server" Text="Search" Style="display: none;" class="btnSearc btnSearchGridData" OnClick="btnSearchGridData_Click" />
 
                             Number of Records: 
                             <asp:DropDownList ID="ddlPageSize_grdUsers" runat="server" AutoPostBack="true"
@@ -871,77 +1198,58 @@
                              of
                                 <asp:Label ID="PageTotalLabel" runat="server" Text="Label" />--%>
                         </div>
-                        <div>
-                            <asp:GridView ID="grdUsers" OnPreRender="grdUsers_PreRender" runat="server" CssClass="scroll" Width="100%" EmptyDataText="No Data"
-                                AutoGenerateColumns="False" DataKeyNames="Id,DesignationID" AllowSorting="true" AllowPaging="true" AllowCustomPaging="true" PageSize="25"
-                                OnRowDataBound="grdUsers_RowDataBound" OnRowCommand="grdUsers_RowCommand" OnSorting="grdUsers_Sorting"
-                                OnPageIndexChanging="grdUsers_PageIndexChanging">
-                                <PagerSettings Mode="NumericFirstLast" NextPageText="Next" PreviousPageText="Previous" Position="Bottom" />
-                                <PagerStyle HorizontalAlign="Right" CssClass="pagination-ys" />
-                                <Columns>
-                                    <asp:TemplateField HeaderText="Action <br/> Picture" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center"
-                                        HeaderStyle-Width="1%"
-                                        ItemStyle-Width="3.5%" SortExpression="BookmarkedInstallUserId">
-                                        <ItemTemplate>
-                                            <asp:HiddenField runat="server" ID="bmId" Value='<%#  string.Format("{0}# - {1} {2} {3} ", Eval("BookmarkByInstallUserId"),Eval("BookmarkBy"), Environment.NewLine,  Eval("BookmarkTime"))%>' />
-                                            <asp:HiddenField runat="server" Value='<%#Eval("Id")%>' ID="hdId" />
-                                            <asp:HiddenField runat="server" Value='<%#Eval("picture")%>' ID="hdimgsource" />
 
-
-                                            <%--<asp:CheckBox ID="chkSelected" AutoPostBack="true" data-userid='<%#Eval("Id")%>' OnCheckedChanged="chkSelected_CheckedChanged" runat="server" CssClass="useraction" Style="position: relative; top: 2px; right: 30px;" />--%>
-                                            <asp:CheckBox ID="chkSelected" AutoPostBack="false" data-userid='<%#Eval("Id")%>' data-designationid='<%#Eval("DesignationID")%>' runat="server" CssClass="useraction" Style="position: relative; top: 2px; right: 30px;" />
-
-
-                                            <%-- <asp:Image CssClass="starimg"  ID="starblankimg"  runat="server" ImageUrl= "../img/star.png"    ></asp:Image> --%>
-
-
-                                            <a href='<%# String.Concat("ViewSalesUser.aspx?ID=", Eval("Id")) %>'>
-                                                <asp:Image Style="width: 100%; height: 85%; margin-top: -20px" ID="imgprofile" runat="server"></asp:Image></a>
-
-                                            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                             <asp:ImageButton ID="starredimg" CssClass="starimg" runat="server"
-                                                 ImageUrl='<%#( Convert.ToInt32( Eval("PreviousStatus")) == 0 ? "../img/star.png" :"../img/yellowstar.png"  )%>'
-                                                 OnClientClick=<%# "GotoStarUser('" + Eval("Id") + "','" + Eval("PreviousStatus") +  "','"  + ((GridViewRow)Container).FindControl("starredimg").ClientID  + "')" %>
-                                                 onmouseover=<%# "ShowToolTipForStarredUser('" + Eval("Id") + "','" + Eval("PreviousStatus") +  "','"  + ((GridViewRow)Container).FindControl("starredimg").ClientID  + "')" %>
-                                                 onmouseleave = "HideToolTip()"
-                                                 ></asp:ImageButton>
-                                                
-                                            <br />
-                                            <%--ToolTip='<%#( Convert.ToInt32( Eval("PreviousStatus")) == 0 ? string.Empty: string.Format("{0}# <a>{1} </a>{2} {3} ", Eval("BookmarkByInstallUserId"),Eval("BookmarkBy"),Environment.NewLine,Convert.ToDateTime(Eval("BookmarkTime")).ToString("MM/dd/yyyy h:mm:ss tt")))%>'--%>
-
-                                            <asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server" CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
-                                            <%--<asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server" Visible='<%# Eval("picture").ToString()!="" && Eval("picture")!= null ? true :  false %>' CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>--%>
-                                            <%-- <asp:LinkButton ID="lnkDeactivate" Text="Deactivate" CommandName="DeactivateSalesUser" runat="server" OnClientClick="return confirm('Are you sure you want to deactivate this user?')"
+                        <asp:GridView ID="grdUsers" OnPreRender="grdUsers_PreRender" runat="server" CssClass="scroll" Width="100%" EmptyDataText="No Data"
+                            AutoGenerateColumns="False" DataKeyNames="Id,DesignationID" AllowSorting="true" AllowPaging="true" AllowCustomPaging="true" PageSize="25"
+                            OnRowDataBound="grdUsers_RowDataBound" OnRowCommand="grdUsers_RowCommand" OnSorting="grdUsers_Sorting"
+                            OnPageIndexChanging="grdUsers_PageIndexChanging">
+                            <PagerSettings Mode="NumericFirstLast" NextPageText="Next" PreviousPageText="Previous" Position="Bottom" />
+                            <PagerStyle HorizontalAlign="Right" CssClass="pagination-ys" />
+                            <Columns>
+                                <asp:TemplateField HeaderText="Action <br/> Picture" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="1%"
+                                    ItemStyle-Width="1%">
+                                    <ItemTemplate>
+                                        <asp:HiddenField runat="server" ID="bmId" Value='<%#Eval("bookmarkedUser")%>' />
+                                        <asp:HiddenField runat="server" Value='<%#Eval("Id")%>' ID="hdId" />
+                                        <asp:HiddenField runat="server" Value='<%#Eval("picture")%>' ID="hdimgsource" />
+                                        <%--<asp:CheckBox ID="chkSelected" AutoPostBack="true" data-userid='<%#Eval("Id")%>' OnCheckedChanged="chkSelected_CheckedChanged" runat="server" CssClass="useraction" Style="position: relative; top: 2px; right: 30px;" />--%>
+                                        <asp:CheckBox ID="chkSelected" AutoPostBack="false" data-userid='<%#Eval("Id")%>' data-designationid='<%#Eval("DesignationID")%>' runat="server" CssClass="useraction" Style="position: relative; top: 2px; right: 30px;" />
+                                        <%-- <asp:Image CssClass="starimg"  ID="starblankimg"  runat="server" ImageUrl= "../img/star.png"    ></asp:Image> --%>
+                                        <%-- <asp:ImageButton ID="starredimg" CssClass="starimg" runat="server" ImageUrl="~/img/starred.png" OnClientClick=<%# "GotoStarUser('" + Eval("Id") + "','1')" %>></asp:ImageButton>--%>
+                                        <a href='<%# String.Concat("ViewSalesUser.aspx?ID=", Eval("Id")) %>'>
+                                            <asp:Image Style="width: 100%; margin-top: -20px" ID="imgprofile" runat="server"></asp:Image></a>
+                                        <asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server" CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
+                                        <%--<asp:LinkButton ID="lbltest" Text="Edit" CommandName="EditSalesUser" runat="server" Visible='<%# Eval("picture").ToString()!="" && Eval("picture")!= null ? true :  false %>' CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>--%>
+                                        <%-- <asp:LinkButton ID="lnkDeactivate" Text="Deactivate" CommandName="DeactivateSalesUser" runat="server" OnClientClick="return confirm('Are you sure you want to deactivate this user?')"
                                             CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>--%>
-                                            <asp:LinkButton ID="lnkDelete" Text="Delete" CommandName="DeleteSalesUser" runat="server" OnClientClick="return confirm('Are you sure you want to delete this user?')"
-                                                CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
-                                        </ItemTemplate>
-                                    </asp:TemplateField>
-                                    <asp:TemplateField ShowHeader="True" HeaderText="ID# <br/>  Designation<br/> F&LName" HeaderStyle-HorizontalAlign="Center"
-                                        ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="6%" ItemStyle-Width="6%" ControlStyle-ForeColor="Black"
-                                        Visible="true" SortExpression="Designation">
-                                        <EditItemTemplate>
-                                            <asp:TextBox ID="txtid" runat="server" MaxLength="30" Text='<%#Eval("Id")%>'></asp:TextBox>
-                                        </EditItemTemplate>
-                                        <ItemTemplate>
-                                            <asp:Label ID="lblid" Visible="false" runat="server" Text='<%#Eval("Id")%>'></asp:Label>
-                                            <asp:LinkButton ID="lnkID" Text='<%#Eval("UserInstallId")%>' CommandName="EditSalesUser" runat="server"
-                                                CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
-                                            <br />
-                                            <asp:HiddenField ID="lblDesignationID" runat="server" Value='<%#Eval("DesignationID")%>'></asp:HiddenField>
-                                            <asp:HiddenField ID="lblDesignation" runat="server" Value='<%#Eval("Designation")%>'></asp:HiddenField>
-                                            <asp:DropDownList ID="drpDesig" Width="140px" Style="text-align: left; width: 95%;" AutoPostBack="true" OnSelectedIndexChanged="drpDesig_SelectedIndexChanged" runat="server">
-                                            </asp:DropDownList>
-                                            <br />
-                                            <asp:Label ID="lblFirstName" runat="server" Text='<%#Eval("FristName").ToString().Trim()%>'></asp:Label>
-                                            <asp:Label ID="lblLastName" runat="server" Text='<%# Eval("Lastname").ToString().Trim() %>'></asp:Label>
-                                        </ItemTemplate>
-                                        <ControlStyle ForeColor="Black" />
-                                        <ControlStyle ForeColor="Black" />
-                                        <ItemStyle HorizontalAlign="Center"></ItemStyle>
-                                    </asp:TemplateField>
+                                        <asp:LinkButton ID="lnkDelete" Text="Delete" CommandName="DeleteSalesUser" runat="server" OnClientClick="return confirm('Are you sure you want to delete this user?')"
+                                            CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField ShowHeader="True" HeaderText="ID# <br/>  Designation<br/> F&LName" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="1%" ItemStyle-Width="1%" ControlStyle-ForeColor="Black"
+                                    Visible="true" SortExpression="Designation">
+                                    <EditItemTemplate>
+                                        <asp:TextBox ID="txtid" runat="server" MaxLength="30" Text='<%#Eval("Id")%>'></asp:TextBox>
+                                    </EditItemTemplate>
+                                    <ItemTemplate>
+                                        <asp:Label ID="lblid" Visible="false" runat="server" Text='<%#Eval("Id")%>'></asp:Label>
+                                        <asp:LinkButton ID="lnkID" Text='<%#Eval("UserInstallId")%>' CommandName="EditSalesUser" runat="server"
+                                            CommandArgument='<%#Eval("Id")%>'></asp:LinkButton>
+                                        <br />
+                                        <asp:HiddenField ID="lblDesignationID" runat="server" Value='<%#Eval("DesignationID")%>'></asp:HiddenField>
+                                        <asp:HiddenField ID="lblDesignation" runat="server" Value='<%#Eval("Designation")%>'></asp:HiddenField>
+                                        <asp:DropDownList ID="drpDesig" Width="140px" Style="text-align: left; width: 95%;" AutoPostBack="true" OnSelectedIndexChanged="drpDesig_SelectedIndexChanged" runat="server">
+                                        </asp:DropDownList>
+                                        <br />
+                                        <asp:Label ID="lblFirstName" runat="server" Text='<%#Eval("FristName").ToString().Trim()%>'></asp:Label>
+                                        <asp:Label ID="lblLastName" runat="server" Text='<%# Eval("Lastname").ToString().Trim() %>'></asp:Label>
+                                    </ItemTemplate>
+                                    <ControlStyle ForeColor="Black" />
+                                    <ControlStyle ForeColor="Black" />
+                                    <ItemStyle HorizontalAlign="Center"></ItemStyle>
+                                </asp:TemplateField>
 
-                                    <%--    <asp:TemplateField ShowHeader="True" HeaderText="Install Id" Visible="false" SortExpression="Id" ControlStyle-ForeColor="Black"
+                                <%--    <asp:TemplateField ShowHeader="True" HeaderText="Install Id" Visible="false" SortExpression="Id" ControlStyle-ForeColor="Black"
                                     ItemStyle-HorizontalAlign="Center">
                                     <EditItemTemplate>
                                         <asp:TextBox ID="txtInstallid" runat="server" MaxLength="30" Text='<%#Eval("InstallId")%>'></asp:TextBox>
@@ -960,7 +1268,7 @@
                                     </ItemTemplate>
                                 </asp:TemplateField>--%>
 
-                                    <%--<asp:TemplateField ShowHeader="True" HeaderText="First Name<br />Last Name" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="15%" ItemStyle-Width="15%" SortExpression="FristName" ControlStyle-ForeColor="Black">
+                                <%--<asp:TemplateField ShowHeader="True" HeaderText="First Name<br />Last Name" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="15%" ItemStyle-Width="15%" SortExpression="FristName" ControlStyle-ForeColor="Black">
                                     <EditItemTemplate>
                                         <asp:TextBox ID="txtFirstName" runat="server" MaxLength="30" Text='<%#Eval("FristName")%>'></asp:TextBox>
                                     </EditItemTemplate>
@@ -974,110 +1282,104 @@
                                     <ItemStyle HorizontalAlign="Center"></ItemStyle>
                                 </asp:TemplateField>--%>
 
-                                    <asp:TemplateField HeaderText="Last name" Visible="false" SortExpression="Lastname" ItemStyle-HorizontalAlign="Center">
-                                        <EditItemTemplate>
-                                            <asp:TextBox ID="txtlastname" runat="server" Text='<%# Bind("Lastname") %>'></asp:TextBox>
-                                        </EditItemTemplate>
-                                        <ItemTemplate>
-                                        </ItemTemplate>
-                                    </asp:TemplateField>
-                                    <asp:TemplateField HeaderText="Designation" Visible="false" SortExpression="Designation" ItemStyle-HorizontalAlign="Center">
-                                        <EditItemTemplate>
-                                            <asp:TextBox ID="txtDesignation" runat="server" Text='<%#Eval("Designation")%>'></asp:TextBox>
-                                        </EditItemTemplate>
-                                        <ItemTemplate>
-                                            <asp:Label ID="lblGrdDesignation" runat="server" Text='<%#Eval("Designation")%>'></asp:Label>
-                                        </ItemTemplate>
-                                        <ItemStyle HorizontalAlign="Center"></ItemStyle>
-                                    </asp:TemplateField>
-                                    <asp:TemplateField HeaderText="Status" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center"
-                                        HeaderStyle-Width="10%" ItemStyle-Width="8.2%" SortExpression="Status">
-                                        <ItemTemplate>
-                                            <asp:HiddenField ID="lblStatus" runat="server" Value='<%#Eval("Status")%>'></asp:HiddenField>
-                                            <asp:HiddenField ID="lblOrderStatus" runat="server" Value='<%#(Eval("OrderStatus") == null || Eval("OrderStatus") == "") ? -99 : Eval("OrderStatus")%>'></asp:HiddenField>
-                                            <%--<asp:DropDownList ID="ddlStatus" CssClass="grd-status" Style="width: 95%;" AutoPostBack="true" OnSelectedIndexChanged="grdUsers_ddlStatus_SelectedIndexChanged" runat="server" OnPreRender="ddlUserStatus_PreRender"> </asp:DropDownList><br />--%>
-                                            <asp:DropDownList ID="ddlStatus" Width="400px" CssClass="grd-status" Style="text-align: left; width: 95%;" OnSelectedIndexChanged="grdUsers_ddlStatus_SelectedIndexChanged" runat="server" onchange="javascript:GridstatusChanged(event,this);" OnPreRender="ddlUserStatus_PreRender">
-                                            </asp:DropDownList>
-                                            <asp:Label ID="hdnlblEmail" runat="server" CssClass="OffferMadeEmail hide" Text='<%#Eval("Email")%>'></asp:Label>
-                                            <asp:Label ID="hdnlblFname" runat="server" CssClass="OffferMadeFirstName hide" Text='<%#Eval("FristName")%>'></asp:Label>
-                                            <asp:Label ID="hdnlblLName" runat="server" CssClass="OffferMadeLastName hide" Text='<%#Eval("LastName")%>'></asp:Label>
-                                            <asp:Label ID="hdnlblDesignation" runat="server" CssClass="OffferMadeDesignation hide" Text='<%#Eval("Designation")%>'></asp:Label>
-                                            <asp:Label ID="hdnlblOldStatus" runat="server" CssClass="OffferMadeOldStatus hide" Text='<%#Eval("Status")%>'></asp:Label>
-                                            <asp:Label ID="hdnlblUserID" runat="server" CssClass="OffferMadeUserID hide" Text='<%#Eval("Id")%>'></asp:Label>
-                                            <asp:Label ID="hdnlblUserDesiID" runat="server" CssClass="OffferMadeUserDesignID hide" Text='<%#Eval("DesignationID")%>'></asp:Label>
+                                <asp:TemplateField HeaderText="Last name" Visible="false" SortExpression="Lastname" ItemStyle-HorizontalAlign="Center">
+                                    <EditItemTemplate>
+                                        <asp:TextBox ID="txtlastname" runat="server" Text='<%# Bind("Lastname") %>'></asp:TextBox>
+                                    </EditItemTemplate>
+                                    <ItemTemplate>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Designation" Visible="false" SortExpression="Designation" ItemStyle-HorizontalAlign="Center">
+                                    <EditItemTemplate>
+                                        <asp:TextBox ID="txtDesignation" runat="server" Text='<%#Eval("Designation")%>'></asp:TextBox>
+                                    </EditItemTemplate>
+                                    <ItemTemplate>
+                                        <asp:Label ID="lblGrdDesignation" runat="server" Text='<%#Eval("Designation")%>'></asp:Label>
+                                    </ItemTemplate>
+                                    <ItemStyle HorizontalAlign="Center"></ItemStyle>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Status" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center" HeaderStyle-Width="10%" ItemStyle-Width="10%" SortExpression="Status">
+                                    <ItemTemplate>
+                                        <asp:HiddenField ID="lblStatus" runat="server" Value='<%#Eval("Status")%>'></asp:HiddenField>
+                                        <asp:HiddenField ID="lblOrderStatus" runat="server" Value='<%#(Eval("OrderStatus") == null || Eval("OrderStatus") == "") ? -99 : Eval("OrderStatus")%>'></asp:HiddenField>
+                                        <%--<asp:DropDownList ID="ddlStatus" CssClass="grd-status" Style="width: 95%;" AutoPostBack="true" OnSelectedIndexChanged="grdUsers_ddlStatus_SelectedIndexChanged" runat="server" OnPreRender="ddlUserStatus_PreRender"> </asp:DropDownList><br />--%>
+                                        <asp:DropDownList ID="ddlStatus" Width="400px" CssClass="grd-status" Style="text-align: left; width: 95%;" OnSelectedIndexChanged="grdUsers_ddlStatus_SelectedIndexChanged" runat="server" onchange="javascript:GridstatusChanged(event,this);" OnPreRender="ddlUserStatus_PreRender">
+                                        </asp:DropDownList>
+                                        <asp:Label ID="hdnlblEmail" runat="server" CssClass="OffferMadeEmail hide" Text='<%#Eval("Email")%>'></asp:Label>
+                                        <asp:Label ID="hdnlblFname" runat="server" CssClass="OffferMadeFirstName hide" Text='<%#Eval("FristName")%>'></asp:Label>
+                                        <asp:Label ID="hdnlblLName" runat="server" CssClass="OffferMadeLastName hide" Text='<%#Eval("LastName")%>'></asp:Label>
+                                        <asp:Label ID="hdnlblDesignation" runat="server" CssClass="OffferMadeDesignation hide" Text='<%#Eval("Designation")%>'></asp:Label>
+                                        <asp:Label ID="hdnlblOldStatus" runat="server" CssClass="OffferMadeOldStatus hide" Text='<%#Eval("Status")%>'></asp:Label>
+                                        <asp:Label ID="hdnlblUserID" runat="server" CssClass="OffferMadeUserID hide" Text='<%#Eval("Id")%>'></asp:Label>
+                                        <asp:Label ID="hdnlblUserDesiID" runat="server" CssClass="OffferMadeUserDesignID hide" Text='<%#Eval("DesignationID")%>'></asp:Label>
 
-                                            <br />
-                                            <%--<asp:Literal ID="ltlStatusReason" runat="server" Text='<%#  string.Format(Eval("StatusReason").ToString() == "" ? "" : Eval("StatusReason").ToString() + "{0}", "<br />") %>'></asp:Literal>--%>
-                                            <asp:Literal ID="ltlRejectedDetails" runat="server" Text='<%#  string.Format(Convert.ToString(Eval("RejectDetail")) == "" ? "" : Convert.ToString( Eval("RejectDetail"))+ "{0}", "<br />") %>'></asp:Literal>
-                                            <%--<span><%#Eval("RejectedByUserName")%></span>
+                                        <br />
+                                        <asp:Literal ID="ltlStatusReason" runat="server" Text='<%#  string.Format(Eval("StatusReason").ToString() == "" ? "" : Eval("StatusReason").ToString() + "{0}", "<br />") %>'></asp:Literal>
+                                        <asp:Literal ID="ltlRejectedDetails" runat="server" Text='<%#  string.Format(Eval("RejectDetail").ToString() == "" ? "" : Eval("RejectDetail").ToString() + "{0}", "<br />") %>'></asp:Literal>
+                                        <span><%#Eval("RejectedByUserName")%></span>
                                         <asp:HyperLink runat="server" Visible='<%#(string.IsNullOrEmpty(Eval("RejectedByUserInstallId").ToString())) ? false : true%>' NavigateUrl='<%#(string.IsNullOrEmpty(Eval("RejectedUserId").ToString())) ? "#" : "ViewSalesUser.aspx?id=" + Eval("RejectedUserId")%>'
-                                            Text='<%#(string.IsNullOrEmpty(Eval("RejectedByUserInstallId").ToString())) ? "" : "- " + Eval("RejectedByUserInstallId")%>'>
-
-                                        </asp:HyperLink>--%>
-                                            <br />
-                                            <span><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString()) ? "" : Eval("InterviewDetail").ToString().Split(' ')[0]%></span>&nbsp<span style="color: red"><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString()) ? "" : Eval("InterviewDetail").ToString().Remove(0, Eval("InterviewDetail").ToString().IndexOf(' ') + 1)%></span>&nbsp<span><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString()) ? "" : "(EST)"%></span>
-                                            <asp:Label ID="lblInterviewDetail" runat="server" Visible="false" Text='<%#Eval("InterviewDetail") %>'></asp:Label>
-                                            <asp:HyperLink ID="hypTechTask" runat="server" Visible="false" />
-                                        </ItemTemplate>
-                                        <ItemStyle HorizontalAlign="Center"></ItemStyle>
-                                    </asp:TemplateField>
-                                    <asp:TemplateField HeaderText="Source<br/>Added By<br/>Added On" HeaderStyle-Width="4%" ItemStyle-Width="5%" SortExpression="Source" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center">
-                                        <ItemTemplate>
-                                            <asp:Label ID="lblSource" runat="server" Text='<%#Eval("Source")%>'></asp:Label>
-                                            <br />
-                                            <span><%#Eval("AddedBy")%></span>
-                                            <a href='<%#(string.IsNullOrEmpty(Eval("AddedById").ToString())) ? "#" : "ViewSalesUser.aspx?id=" + Eval("AddedById")%>'><%#(string.IsNullOrEmpty(Eval("AddedByUserInstallId").ToString())) ? "" : "- " + Eval("AddedByUserInstallId")%></a>
-                                            <%--<asp:LinkButton ID="lnkAddedByUserInstallId" Text='<%#(string.IsNullOrEmpty(Eval("AddedByUserInstallId").ToString()))?"":"-"+ Eval("AddedByUserInstallId")%>' CommandName="EditAddedByUserInstall" runat="server"
+                                            Text='<%#(string.IsNullOrEmpty(Eval("RejectedByUserInstallId").ToString())) ? "" : "- " + Eval("RejectedByUserInstallId")%>'></asp:HyperLink>
+                                        <br />
+                                        <span><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString()) ? "" : Eval("InterviewDetail").ToString().Split(' ')[0]%></span>&nbsp<span style="color: red"><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString()) ? "" : Eval("InterviewDetail").ToString().Remove(0, Eval("InterviewDetail").ToString().IndexOf(' ') + 1)%></span>&nbsp<span><%#string.IsNullOrEmpty(Eval("InterviewDetail").ToString()) ? "" : "(EST)"%></span><asp:Label ID="lblInterviewDetail" runat="server" Visible="false" Text='<%#Eval("InterviewDetail") %>'></asp:Label>
+                                        <asp:HyperLink ID="hypTechTask" runat="server" Visible="false" />
+                                    </ItemTemplate>
+                                    <ItemStyle HorizontalAlign="Center"></ItemStyle>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Source<br/>Added By<br/>Added On" HeaderStyle-Width="4%" ItemStyle-Width="4%" SortExpression="Source" ItemStyle-HorizontalAlign="Center" HeaderStyle-HorizontalAlign="Center">
+                                    <ItemTemplate>
+                                        <asp:Label ID="lblSource" runat="server" Text='<%#Eval("Source")%>'></asp:Label>
+                                        <br />
+                                        <span><%#Eval("AddedBy")%></span>
+                                        <a href='<%#(string.IsNullOrEmpty(Eval("AddedById").ToString())) ? "#" : "ViewSalesUser.aspx?id=" + Eval("AddedById")%>'><%#(string.IsNullOrEmpty(Eval("AddedByUserInstallId").ToString())) ? "" : "- " + Eval("AddedByUserInstallId")%></a>
+                                        <%--<asp:LinkButton ID="lnkAddedByUserInstallId" Text='<%#(string.IsNullOrEmpty(Eval("AddedByUserInstallId").ToString()))?"":"-"+ Eval("AddedByUserInstallId")%>' CommandName="EditAddedByUserInstall" runat="server"
                                             CommandArgument='<%#(string.IsNullOrEmpty(Eval("AddedById").ToString()))?"":Eval("AddedById")%>' Enabled='<%#(string.IsNullOrEmpty(Eval("AddedByUserInstallId").ToString()))?false:true%>'></asp:LinkButton>--%>
-                                            <br />
-                                            <span><%#String.Format("{0:M/d/yyyy}", Eval("CreatedDateTime"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("CreatedDateTime"))%></span>&nbsp<span>(EST)</span>
-                                        </ItemTemplate>
-                                    </asp:TemplateField>
-                                    <asp:TemplateField HeaderText="Added On" Visible="false" SortExpression="CreatedDateTime" HeaderStyle-HorizontalAlign="Center"
-                                        ItemStyle-HorizontalAlign="Center">
-                                        <ItemTemplate>
-                                        </ItemTemplate>
-                                    </asp:TemplateField>
+                                        <br />
+                                        <span><%#String.Format("{0:M/d/yyyy}", Eval("CreatedDateTime"))%></span>&nbsp<span style="color: red"><%#String.Format("{0:hh:mm:ss tt}", Eval("CreatedDateTime"))%></span>&nbsp<span>(EST)</span>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Added On" Visible="false" SortExpression="CreatedDateTime" HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center">
+                                    <ItemTemplate>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
 
-                                    <asp:TemplateField HeaderText="Email<br/>Phone Type - Phone" HeaderStyle-Width="18%" ItemStyle-Width="12.5%"
-                                        ItemStyle-HorizontalAlign="left" SortExpression="Phone">
-                                        <ItemTemplate>
-                                            <%-- ControlStyle-CssClass="wordBreak" <asp:Label ID="lblPhone" runat="server" Text='<%# Bind("Phone") %>'></asp:Label>--%>
-                                            <%--onclick="<%# "javascript:grdUsers_Email_OnClick(this,'" + Eval("Email") + "');"%>"--%>
-                                            <div class="GrdPrimaryEmail">
-                                                <asp:LinkButton ID="lbtnEmail" runat="server" Text='<%# Eval("Email") %>' ToolTip='<%# Eval("Email") %>'
-                                                    CommandName="send-email" CommandArgument='<%# Container.DataItemIndex %>' />
-                                            </div>
-                                            <asp:Label ID="lblPrimaryPhone" CssClass="grd-lblPrimaryPhone" data-click-to-call="true" runat="server" Text='<%# Eval("PrimaryPhone") %>'></asp:Label>
-                                            <br />
-                                            <%-- <label style="font-size: 16px; color: red;"><%#Eval("Id") %></label><br />--%>
-                                            <ul class="contactGrid">
-                                                <li>
-                                                    <asp:CheckBox ID="chkEmailPrimary" CssClass="liCheck" AutoPostBack="true" OnCheckedChanged="chkPrimary_CheckedChanged" runat="server"></asp:CheckBox>&nbsp;
+                                <asp:TemplateField HeaderText="Email<br/>Phone Type - Phone" HeaderStyle-Width="15%" ItemStyle-Width="15%" ItemStyle-HorizontalAlign="left" SortExpression="Phone">
+                                    <ItemTemplate>
+                                        <%-- ControlStyle-CssClass="wordBreak" <asp:Label ID="lblPhone" runat="server" Text='<%# Bind("Phone") %>'></asp:Label>--%>
+                                        <%--onclick="<%# "javascript:grdUsers_Email_OnClick(this,'" + Eval("Email") + "');"%>"--%>
+                                        <div class="GrdPrimaryEmail">
+                                            <asp:LinkButton ID="lbtnEmail" runat="server" Text='<%# Eval("Email") %>' ToolTip='<%# Eval("Email") %>'
+                                                CommandName="send-email" CommandArgument='<%# Container.DataItemIndex %>' />
+                                        </div>
+                                        <asp:Label ID="lblPrimaryPhone" CssClass="grd-lblPrimaryPhone" data-click-to-call="true" runat="server" Text='<%# Eval("PrimaryPhone") %>'></asp:Label>
+                                        <br />
+                                        <%-- <label style="font-size: 16px; color: red;"><%#Eval("Id") %></label><br />--%>
+                                        <ul class="contactGrid">
+                                            <li>
+                                                <asp:CheckBox ID="chkEmailPrimary" CssClass="liCheck" AutoPostBack="true" OnCheckedChanged="chkPrimary_CheckedChanged" runat="server"></asp:CheckBox>&nbsp;
                                                 <asp:DropDownList runat="server" CssClass="mail" ID="ddlEmail"></asp:DropDownList>
-                                                </li>
-                                                <li>
-                                                    <asp:CheckBox ID="chkPhonePrimary" AutoPostBack="true" OnCheckedChanged="chkPrimary_CheckedChanged" runat="server"></asp:CheckBox>
-                                                    <asp:DropDownList runat="server" CssClass="phone" ID="ddlPhone"></asp:DropDownList>
-                                                    <!-- over here -->
-                                                    <asp:DropDownList runat="server" OnPreRender="PhoneTypeDropdown_PreRender" Enabled="false" CssClass="typeDrop"
-                                                        ID="ddlPhoneTypeDisplay">
-                                                    </asp:DropDownList>
-                                                </li>
-                                                <li>
-                                                    <asp:DropDownList runat="server" OnPreRender="PhoneTypeDropdown_PreRender" CssClass="typeDrop"
-                                                        ID="ddlPhoneType" Width="114px">
-                                                    </asp:DropDownList>
-                                                    <asp:CheckBox ID="chkPrimary" runat="server"></asp:CheckBox>
-                                                    <asp:TextBox ID="txtContact" placeholder="Phone" CssClass="phone" runat="server" onkeydown="return validateContact(event, this);"></asp:TextBox>
-                                                    <!-- over here -->
-                                                    <asp:Button ID="btnAddContact" CssClass="GrdBtnAdd" runat="server" Text="Add" CommandName="AddNewContact"
-                                                        CommandArgument='<%# Eval("Id") %>'></asp:Button>
-                                                </li>
-                                            </ul>
-                                            <asp:Label ID="lblExt" CssClass="ext" runat="server" Visible="false"></asp:Label>
-                                            <asp:TextBox ID="txtExt" Visible="false" placeholder="Ext" MaxLength="8" CssClass="ext" runat="server"></asp:TextBox>
-                                            <%-- <div class="GrdContainer" style="width: 90%">
+                                            </li>
+                                            <li>
+                                                <asp:CheckBox ID="chkPhonePrimary" AutoPostBack="true" OnCheckedChanged="chkPrimary_CheckedChanged" runat="server"></asp:CheckBox>
+                                                <asp:DropDownList runat="server" CssClass="phone" ID="ddlPhone"></asp:DropDownList>
+                                                <!-- over here -->
+                                                <asp:DropDownList runat="server" OnPreRender="PhoneTypeDropdown_PreRender" Enabled="false" CssClass="typeDrop"
+                                                    ID="ddlPhoneTypeDisplay">
+                                                </asp:DropDownList>
+                                            </li>
+                                            <li>
+                                                <asp:DropDownList runat="server" OnPreRender="PhoneTypeDropdown_PreRender" CssClass="typeDrop"
+                                                    ID="ddlPhoneType" Width="114px">
+                                                </asp:DropDownList>
+                                                <asp:CheckBox ID="chkPrimary" runat="server"></asp:CheckBox>
+                                                <asp:TextBox ID="txtContact" placeholder="Phone" CssClass="phone" runat="server" onkeydown="return validateContact(event, this);"></asp:TextBox>
+                                                <!-- over here -->
+                                                <asp:Button ID="btnAddContact" CssClass="GrdBtnAdd" runat="server" Text="Add" CommandName="AddNewContact"
+                                                    CommandArgument='<%# Eval("Id") %>'></asp:Button>
+                                            </li>
+                                        </ul>
+                                        <asp:Label ID="lblExt" CssClass="ext" runat="server" Visible="false"></asp:Label>
+                                        <asp:TextBox ID="txtExt" Visible="false" placeholder="Ext" MaxLength="8" CssClass="ext" runat="server"></asp:TextBox>
+                                        <%-- <div class="GrdContainer" style="width: 90%">
                                             <div class="GrdHeader">
                                                 <span>Click To Add Phone /Email</span>
                                             </div>
@@ -1099,60 +1401,54 @@
                                                 </ul>
                                             </div>
                                         </div>--%>
-                                        </ItemTemplate>
-                                    </asp:TemplateField>
-                                    <asp:TemplateField HeaderText="Country-Zip-City<br/>Type-Apptitude Test %<br/>Resume Attachment" HeaderStyle-Width="4%"
-                                        ItemStyle-Width="5%" ItemStyle-HorizontalAlign="Center" SortExpression="Zip" ControlStyle-CssClass="wordBreak">
-                                        <ItemTemplate>
-                                            <div title='<%#Eval("Country") %>' style='<%# string.IsNullOrEmpty(Eval("CountryCode").ToString()) == true ? "": "background-image:url(img/flags24.png);background-repeat:no-repeat;float:left;height:22px;width:24px;margin-top:-5px;" %>' class='<%#Eval("CountryCode").ToString().ToLower()%>'>
-                                            </div>
-                                            <%--<span><%# Eval("Zip") %></span>--%>
-                                            <asp:Label ID="lblCity" runat="server" Text='<%#Eval("City") %>'></asp:Label>
-                                            <asp:Label ID="lblZip" runat="server" Text='<%# " - " + Eval("Zip") %>'></asp:Label>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderText="Country-Zip-City<br/>Type-Apptitude Test %<br/>Resume Attachment" HeaderStyle-Width="4%" ItemStyle-Width="4%" ItemStyle-HorizontalAlign="Center" SortExpression="Zip" ControlStyle-CssClass="wordBreak">
+                                    <ItemTemplate>
+                                        <div title='<%#Eval("Country") %>' style='<%# string.IsNullOrEmpty(Eval("CountryCode").ToString()) == true ? "": "background-image:url(img/flags24.png);background-repeat:no-repeat;float:left;height:22px;width:24px;margin-top:-5px;" %>' class='<%#Eval("CountryCode").ToString().ToLower()%>'>
+                                        </div>
+                                        <%--<span><%# Eval("Zip") %></span>--%>
+                                        <asp:Label ID="lblCity" runat="server" Text='<%#Eval("City") %>'></asp:Label>
+                                        <asp:Label ID="lblZip" runat="server" Text='<%# " - " + Eval("Zip") %>'></asp:Label>
 
-                                            <asp:HiddenField ID="hdnUserInstallId" Value='<%#Eval("Id")%>' runat="server"></asp:HiddenField>
-                                            <asp:Label ID="lblExamResults" runat="server" Text=""></asp:Label>
+                                        <asp:HiddenField ID="hdnUserInstallId" Value='<%#Eval("Id")%>' runat="server"></asp:HiddenField>
+                                        <asp:Label ID="lblExamResults" runat="server" Text=""></asp:Label>
 
-                                            <asp:HiddenField ID="lblEmployeeType" runat="server" Value='<%#Eval("EmpType")%>'></asp:HiddenField>
-                                            <asp:DropDownList ID="ddlEmployeeType" Style="width: 95%;" AutoPostBack="true" runat="server" OnSelectedIndexChanged="ddlEmployeeType_SelectedIndexChanged">
-                                                <asp:ListItem Text="Select" Value="0"></asp:ListItem>
-                                                <asp:ListItem Text="Temp" Value="1"></asp:ListItem>
-                                                <asp:ListItem Text="Internship" Value="2"></asp:ListItem>
-                                                <asp:ListItem Text="Part Time - Remote" Value="3"></asp:ListItem>
-                                                <asp:ListItem Text="Part Time - Onsite" Value="4"></asp:ListItem>
-                                                <asp:ListItem Text="Full Time - Remote" Value="5"></asp:ListItem>
-                                                <asp:ListItem Text="Full Time - Onsite" Value="6"></asp:ListItem>
-                                                <asp:ListItem Text="Full Time Hourly" Value="7"></asp:ListItem>
-                                                <asp:ListItem Text="Full Time Salary" Value="8"></asp:ListItem>
-                                                <asp:ListItem Text="Part Time" Value="9"></asp:ListItem>
-                                                <asp:ListItem Text="Sub" Value="10"></asp:ListItem>
-                                            </asp:DropDownList><br />
-                                            <%--  <span><%# (Eval("EmpType").ToString() =="0")?"Not Selected -":Eval("EmpType") +" -" %></span>--%>
-                                            <span class='<%# (string.IsNullOrEmpty(Eval("Aggregate").ToString())) ? "hide" : (Convert.ToDouble(Eval("Aggregate")) > JG_Prospect.Common.JGApplicationInfo.GetAcceptiblePrecentage()) ? "greentext" : "redtext" %>'><%#(string.IsNullOrEmpty(Eval("Aggregate").ToString())) ? "N/A" : string.Format("{0:#,##}", Eval("Aggregate")) + "%" %></span>
-                                            <div style="max-width: 100px; overflow: hidden;">
-                                                <a href='<%# Eval("Resumepath") %>' id="aReasumePath" runat="server" target="_blank"><%# System.IO.Path.GetFileName(Eval("Resumepath").ToString()) %></a>
-                                            </div>
-                                            <%--<span><%# Eval("EmpType") %></span> <span> - <span><%#(string.IsNullOrEmpty(Eval("Aggregate").ToString()))?"N/A":string.Format("{0:#,##}",Eval("Aggregate"))+ "%" %></span>--%>
-                                        </ItemTemplate>
-                                    </asp:TemplateField>
-                                    <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="17%"
-                                        ItemStyle-Width="12%" ItemStyle-CssClass="noMargin">
-                                        <HeaderTemplate>
-                                            Notes
-                                        <table class="table gridtbl" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse;">
-                                            <thead>
-                                                <tr class="trHeader " style="color: White;">
-                                                    <th scope="col" style="width: 19%;">User ID</th>
+                                        <asp:HiddenField ID="lblEmployeeType" runat="server" Value='<%#Eval("EmpType")%>'></asp:HiddenField>
+                                        <asp:DropDownList ID="ddlEmployeeType" Style="width: 95%;" AutoPostBack="true" runat="server" OnSelectedIndexChanged="ddlEmployeeType_SelectedIndexChanged">
+                                            <asp:ListItem Text="Select" Value="0"></asp:ListItem>
+                                            <asp:ListItem Text="Temp" Value="1"></asp:ListItem>
+                                            <asp:ListItem Text="Internship" Value="2"></asp:ListItem>
+                                            <asp:ListItem Text="Part Time - Remote" Value="3"></asp:ListItem>
+                                            <asp:ListItem Text="Part Time - Onsite" Value="4"></asp:ListItem>
+                                            <asp:ListItem Text="Full Time - Remote" Value="5"></asp:ListItem>
+                                            <asp:ListItem Text="Full Time - Onsite" Value="6"></asp:ListItem>
+                                            <asp:ListItem Text="Full Time Hourly" Value="7"></asp:ListItem>
+                                            <asp:ListItem Text="Full Time Salary" Value="8"></asp:ListItem>
+                                            <asp:ListItem Text="Part Time" Value="9"></asp:ListItem>
+                                            <asp:ListItem Text="Sub" Value="10"></asp:ListItem>
+                                        </asp:DropDownList><br />
+                                        <%--  <span><%# (Eval("EmpType").ToString() =="0")?"Not Selected -":Eval("EmpType") +" -" %></span>--%>
+                                        <span class='<%# (string.IsNullOrEmpty(Eval("Aggregate").ToString())) ? "hide" : (Convert.ToDouble(Eval("Aggregate")) > JG_Prospect.Common.JGApplicationInfo.GetAcceptiblePrecentage()) ? "greentext" : "redtext" %>'><%#(string.IsNullOrEmpty(Eval("Aggregate").ToString())) ? "N/A" : string.Format("{0:#,##}", Eval("Aggregate")) + "%" %></span>
 
-                                                    <th scope="col" style="width: 25%;">Date&Time</th>
-                                                    <th scope="col" style="width: 56%;">Note/Status</th>
-
-                                                </tr>
-                                            </thead>
+                                        <a href='<%# "~/Employee/Resume/"+Eval("Resumepath") %>' id="aReasumePath" runat="server" target="_blank"><%# System.IO.Path.GetFileName(Eval("Resumepath").ToString()) %></a>
+                                        <%--<span><%# Eval("EmpType") %></span> <span> - <span><%#(string.IsNullOrEmpty(Eval("Aggregate").ToString()))?"N/A":string.Format("{0:#,##}",Eval("Aggregate"))+ "%" %></span>--%>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                                <asp:TemplateField HeaderStyle-HorizontalAlign="Center" ItemStyle-HorizontalAlign="Center" HeaderStyle-Width="22%"
+                                    ItemStyle-Width="22%" ItemStyle-CssClass="noMargin">
+                                    <HeaderTemplate>
+                                        Notes
+                                        <table class="table gridtbl notes-table" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse;">
+                                            <tr class="trHeader " style="color: White;">
+                                                <th>User ID<br />
+                                                    Date&nbsp;&&nbsp;Time</th>
+                                                <th>Note/Status</th>
+                                            </tr>
                                         </table>
-                                        </HeaderTemplate>
-                                        <ItemTemplate>
-                                            <%--<div class="GrdContainer">
+                                    </HeaderTemplate>
+                                    <ItemTemplate>
+                                        <%--<div class="GrdContainer">
                                             <div class="GrdHeader">
                                                 <span>+</span>
                                             </div>
@@ -1160,44 +1456,31 @@
                                                 
                                             </div>
                                         </div>--%>
-                                            <%--<asp:PlaceHolder runat="server" ID="placeNotes"></asp:PlaceHolder>--%>
-                                            <div style="max-height: 200px; overflow: auto;">
-                                                <asp:Repeater ID="rptNotes" runat="server">
-                                                    <HeaderTemplate>
-                                                        <table class="table gridtbl" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse; font-size: 11px;">
-                                                            <tbody>
-                                                    </HeaderTemplate>
-                                                    <ItemTemplate>
-                                                        <tr class='<%# Container.ItemIndex % 2 == 0? "FirstRow" : "AlternateRow" %>'>
-                                                            <td style="width: 20%;"><a class="bluetext" href='CreateSalesUser.aspx?id=<%#Eval("UpdatedByUserID")%>' target="_blank"><%#Eval("UpdatedUserInstallID")%></a></td>
-                                                            <td style="width: 25%;"><%#Eval("CreatedDate")%></td>
-                                                            <td style="width: 55%;"><%#Eval("LogDescription")%></td>
-                                                        </tr>
-                                                    </ItemTemplate>
-                                                    <FooterTemplate>
-                                                        </tbody>
-                                                </table>
-                                                    </FooterTemplate>
-                                                </asp:Repeater>
-                                            </div>
-                                            <div style="text-align: left;">
-                                                <asp:TextBox runat="server" ID="txtNewNote" TextMode="MultiLine" Rows="3"
-                                                    Style="vertical-align: middle; padding: 0px!important; width: 100%" CssClass="textbox"></asp:TextBox><br />
-                                                <asp:Button runat="server" ID="btnAddNotes" CssClass="GrdBtnAdd" Text="Add Notes" CommandName="AddNotes"
-                                                    CommandArgument='<%# Eval("Id") %>' Style="vertical-align: middle; overflow: hidden;" />
+                                        <%--<asp:PlaceHolder runat="server" ID="placeNotes"></asp:PlaceHolder>--%>
 
-                                            </div>
-                                        </ItemTemplate>
-                                    </asp:TemplateField>
-                                </Columns>
-                            </asp:GridView>
-                        </div>
+                                        <div class="notes-container" uid="<%#Eval("UserInstallId")%>" id="user-<%#Eval("Id")%>">
+                                            Loading Notes...
+                                        </div>
+                                        <div style="text-align: left; padding: 2px;">
+                                            <input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addNotes(this, '<%# Eval("Id") %>    ','<%#Eval("UserInstallId")%>    ')" />
+                                            <textarea class="note-text textbox" id="txt-<%# Eval("Id") %>"></textarea>
+                                        </div>
+                                        <%--<div style="text-align: left; padding: 4px;">
+                                            <asp:TextBox runat="server" ID="txtNewNote" TextMode="MultiLine" Rows="3"
+                                                Style="height: 36px; vertical-align: middle; padding: 2px!important; width: 70%; float: left; margin-right: 5px;" CssClass="textbox"></asp:TextBox>
+                                            <asp:Button runat="server" ID="btnAddNotes" CssClass="GrdBtnAdd" Text="Add Notes" CommandName="AddNotes"
+                                                CommandArgument='<%# Eval("Id") %>' Style="vertical-align: middle; overflow: hidden;" />
+
+                                        </div>--%>
+                                    </ItemTemplate>
+                                </asp:TemplateField>
+                            </Columns>
+                        </asp:GridView>
                     </ContentTemplate>
                     <Triggers>
                         <asp:AsyncPostBackTrigger ControlID="lbtnDeactivateSelected" EventName="Click" />
                         <asp:AsyncPostBackTrigger ControlID="lbtnDeleteSelected" EventName="Click" />
                         <asp:AsyncPostBackTrigger ControlID="lbtnChangeStatusForSelected" EventName="Click" />
-
                     </Triggers>
                 </asp:UpdatePanel>
             </div>
@@ -1224,7 +1507,7 @@
                                     </div>
                                 </div>
                                 <div class="btn_sec" style="float: left;">
-                                    <asp:Button ID="btnUploadNew" runat="server" Text="Upload" OnClick="btnUploadNew_Click" CssClass="ui-button" Style="padding: 0px 10px 0px 10px!important;" />
+                                    <asp:Button ID="btnUploadNew" runat="server" Text="Upload" OnClick="btnUploadNew_Click" OnClientClick="showBulkUploadProgressPopup()" CssClass="ui-button" Style="padding: 0px 10px 0px 10px!important;" />
                                 </div>
                                 <div class="hide">
                                     <input id="hdnBulkUploadFile" runat="server" type="hidden" />
@@ -1583,73 +1866,213 @@
     </div>
     <%--Modal Popup Ends--%>
     <%--Popup Stars--%>
+    <div id="bulkUpload" class="modal hide">
+        <asp:UpdatePanel ID="upnlBulkUploadStatus" runat="server" UpdateMode="Conditional">
+            <ContentTemplate>
+                <div id="divBulkUploadUserErrors" runat="server" title="Information" data-width="900px">
+
+                    <div>
+                        <h2>Incomplete users</h2>
+                        <table class="table" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse;">
+
+                            <asp:Repeater ID="rptIncorrectRecords" runat="server">
+                                <HeaderTemplate>
+                                    <thead>
+                                        <tr class="trHeader ">
+                                            <th scope="col" style="width: 75px;">FirstName*</th>
+                                            <th scope="col" style="width: 75px;">LastName*</th>
+                                            <th scope="col" style="width: 90px;">Email*</th>
+                                            <th scope="col" style="width: 75px;">Designation*</th>
+                                            <th scope="col" style="width: 50px;">Status*</th>
+                                            <th scope="col" style="width: 60px;">Source*</th>
+                                            <th scope="col" style="width: 90px;">Primary Contact Phone*</th>
+                                            <th scope="col" style="width: 60px;">Phone Type*</th>
+                                            <th scope="col" style="width: 50px;">Zip*</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                </HeaderTemplate>
+                                <ItemTemplate>
+                                    <tr class="<%# Container.ItemIndex % 2 == 0 ? "FirstRow" : "AlternateRow" %>" style="border-style: Solid;">
+                                        <td style="width: 10%;"><%#Eval("FirstName") %>
+                                        </td>
+                                        <td style="width: 10%;"><%#Eval("LastName") %>
+                                        </td>
+                                        <td style="width: 15%;"><%#Eval("Email") %>
+                                        </td>
+                                        <td style="width: 10%;"><%#Eval("Designation") %>
+                                        </td>
+                                        <td style="width: 10%;"><%#Eval("Status") %>
+                                        </td>
+                                        <td style="width: 10%;"><%#Eval("Source") %></td>
+                                        <td style="width: 15%;"><%#Eval("Phone1") %>
+                                        </td>
+                                        <td style="width: 10%;"><%#Eval("Phone1Type") %></td>
+                                        <td style="width: 5%;"><%#Eval("Zip") %></td>
+                                    </tr>
+                                </ItemTemplate>
+                                <FooterTemplate>
+                                    </tbody>
+                                </FooterTemplate>
+                            </asp:Repeater>
+
+                        </table>
+
+                    </div>
+
+                    <div style="margin-top: 10px;">
+                        <h2>Duplicate users</h2>
+                        <div>
+                            <table class="table" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse;">
+                                <asp:Repeater ID="rptDuplicateRecords" runat="server">
+                                    <HeaderTemplate>
+                                        <thead>
+                                            <tr class="trHeader ">
+                                                <th scope="col" style="width: 75px;">FirstName*</th>
+                                                <th scope="col" style="width: 75px;">LastName*</th>
+                                                <th scope="col" style="width: 90px;">Email*</th>
+                                                <th scope="col" style="width: 75px;">Designation*</th>
+                                                <th scope="col" style="width: 50px;">Status*</th>
+                                                <th scope="col" style="width: 60px;">Source*</th>
+                                                <th scope="col" style="width: 90px;">Primary Contact Phone*</th>
+                                                <th scope="col" style="width: 60px;">Phone Type*</th>
+                                                <th scope="col" style="width: 50px;">Zip*</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                    </HeaderTemplate>
+                                    <ItemTemplate>
+                                        <tr class="<%# Container.ItemIndex % 2 == 0 ? "FirstRow" : "AlternateRow" %>" style="border-style: Solid;">
+                                            <td style="width: 10%;"><%#Eval("FirstName") %>
+                                            </td>
+                                            <td style="width: 10%;"><%#Eval("LastName") %>
+                                            </td>
+                                            <td style="width: 15%;"><%#Eval("Email") %>
+                                            </td>
+                                            <td style="width: 10%;"><%#Eval("Designation") %>
+                                            </td>
+                                            <td style="width: 10%;"><%#Eval("Status") %>
+                                            </td>
+                                            <td style="width: 10%;"><%#Eval("Source") %></td>
+                                            <td style="width: 15%;"><%#Eval("phone") %>
+                                            </td>
+                                            <td style="width: 10%;"><%#Eval("phonetype") %></td>
+                                            <td style="width: 5%;"><%#Eval("Zip") %></td>
+                                        </tr>
+                                    </ItemTemplate>
+                                    <FooterTemplate>
+                                        </tbody>
+                                    </FooterTemplate>
+                                </asp:Repeater>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 10px;">
+                        <h2>Users to be Added</h2>
+                        <div>
+                            <table class="table" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse;">
+                                <asp:Repeater ID="rptUserstoBeAdded" runat="server">
+                                    <HeaderTemplate>
+                                        <thead>
+                                            <tr class="trHeader ">
+                                                <th scope="col" style="width: 75px;">FirstName*</th>
+                                                <th scope="col" style="width: 75px;">LastName*</th>
+                                                <th scope="col" style="width: 90px;">Email*</th>
+                                                <th scope="col" style="width: 75px;">Designation*</th>
+                                                <th scope="col" style="width: 50px;">Status*</th>
+                                                <th scope="col" style="width: 60px;">Source*</th>
+                                                <th scope="col" style="width: 90px;">Primary Contact Phone*</th>
+                                                <th scope="col" style="width: 60px;">Phone Type*</th>
+                                                <th scope="col" style="width: 50px;">Zip*</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                    </HeaderTemplate>
+                                    <ItemTemplate>
+                                        <tr class="<%# Container.ItemIndex % 2 == 0 ? "FirstRow" : "AlternateRow" %>" style="border-style: Solid;">
+                                            <td style="width: 10%;"><%#Eval("FirstName") %>
+                                            </td>
+                                            <td style="width: 10%;"><%#Eval("LastName") %>
+                                            </td>
+                                            <td style="width: 15%;"><%#Eval("Email") %>
+                                            </td>
+                                            <td style="width: 10%;"><%#Eval("Designation") %>
+                                            </td>
+                                            <td style="width: 10%;"><%#Eval("Status") %>
+                                            </td>
+                                            <td style="width: 10%;"><%#Eval("Source") %></td>
+                                            <td style="width: 15%;"><%#Eval("Phone1") %>
+                                            </td>
+                                            <td style="width: 10%;"><%#Eval("Phone1Type") %></td>
+                                            <td style="width: 5%;"><%#Eval("Zip") %></td>
+                                        </tr>
+                                    </ItemTemplate>
+                                    <FooterTemplate>
+                                        </tbody>
+                                    </FooterTemplate>
+                                </asp:Repeater>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 10px;">
+                        <h2>Successfully entered users</h2>
+                        <div>
+                            <table class="table" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse;">
+                                <asp:Repeater ID="rptSuccessFullyEntered" runat="server">
+                                    <HeaderTemplate>
+                                        <thead>
+                                            <tr class="trHeader ">
+                                                <th scope="col" style="width: 75px;">FirstName*</th>
+                                                <th scope="col" style="width: 75px;">LastName*</th>
+                                                <th scope="col" style="width: 90px;">Email*</th>
+                                                <th scope="col" style="width: 75px;">Designation*</th>
+                                                <th scope="col" style="width: 50px;">Status*</th>
+                                                <th scope="col" style="width: 60px;">Source*</th>
+                                                <th scope="col" style="width: 90px;">Primary Contact Phone*</th>
+                                                <th scope="col" style="width: 60px;">Phone Type*</th>
+                                                <th scope="col" style="width: 50px;">Zip*</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                    </HeaderTemplate>
+                                    <ItemTemplate>
+                                        <tr class="<%# Container.ItemIndex % 2 == 0 ? "FirstRow" : "AlternateRow" %>" style="border-style: Solid;">
+                                            <td style="width: 10%;"><%#Eval("FirstName") %>
+                                            </td>
+                                            <td style="width: 10%;"><%#Eval("LastName") %>
+                                            </td>
+                                            <td style="width: 15%;"><%#Eval("Email") %>
+                                            </td>
+                                            <td style="width: 10%;"><%#Eval("Designation") %>
+                                            </td>
+                                            <td style="width: 10%;"><%#Eval("Status") %>
+                                            </td>
+                                            <td style="width: 10%;"><%#Eval("Source") %></td>
+                                            <td style="width: 15%;"><%#Eval("Phone1") %>
+                                            </td>
+                                            <td style="width: 10%;"><%#Eval("Phone1Type") %></td>
+                                            <td style="width: 5%;"><%#Eval("Zip") %></td>
+                                        </tr>
+                                    </ItemTemplate>
+                                    <FooterTemplate>
+                                        </tbody>
+                                    </FooterTemplate>
+                                </asp:Repeater>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </ContentTemplate>
+            <Triggers>
+                <asp:AsyncPostBackTrigger ControlID="btnUploadNew" EventName="Click" />
+            </Triggers>
+        </asp:UpdatePanel>
+    </div>
     <div class="hide">
-        <div id="divBulkUploadUserErrors" runat="server" title="Information" data-width="900px">
-            <div style="padding: 5px 10px;">
-                Below records contain empty values for mandatory fields. Please update cells marked by <span style="color: blue; font-weight: bold; text-align: center; font-size: 20px;">x</span> below in your file and upload again. If you see several empty rows at the end of the records, please delete those empty lines from your file.
-            </div>
-            <div style="max-height: 500px; height: 500px; overflow: auto;">
-                <asp:UpdatePanel ID="upnlBUPError" runat="server" UpdateMode="Conditional">
-                    <ContentTemplate>
-                        <asp:GridView ID="grdBulkUploadUserErrors" runat="server" AutoGenerateColumns="false"
-                            CssClass="table" Width="100%" CellSpacing="0" CellPadding="0" GridLines="Vertical">
-                            <EmptyDataRowStyle ForeColor="White" HorizontalAlign="Center" />
-                            <HeaderStyle CssClass="trHeader " />
-                            <RowStyle CssClass="FirstRow" BorderStyle="Solid" />
-                            <AlternatingRowStyle CssClass="AlternateRow " />
-                            <Columns>
-                                <asp:TemplateField HeaderText="FirstName*" HeaderStyle-Width="75" ItemStyle-Width="75">
-                                    <ItemTemplate>
-                                        <%#Eval("FirstName")%>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                                <asp:TemplateField HeaderText="FirstName*" HeaderStyle-Width="75" ItemStyle-Width="75">
-                                    <ItemTemplate>
-                                        <%#Eval("LastName")%>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Email*" HeaderStyle-Width="90" ItemStyle-Width="90">
-                                    <ItemTemplate>
-                                        <%#Eval("Email")%>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Designation*" HeaderStyle-Width="75" ItemStyle-Width="75">
-                                    <ItemTemplate>
-                                        <%#Eval("Designation")%>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Status*" HeaderStyle-Width="50" ItemStyle-Width="50">
-                                    <ItemTemplate>
-                                        <%#Eval("Status")%>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Source*" HeaderStyle-Width="60" ItemStyle-Width="60">
-                                    <ItemTemplate>
-                                        <%#Eval("Source")%>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Primary Contact Phone*" HeaderStyle-Width="90" ItemStyle-Width="90">
-                                    <ItemTemplate>
-                                        <%#Eval("Phone1")%>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Phone Type*" HeaderStyle-Width="60" ItemStyle-Width="60">
-                                    <ItemTemplate>
-                                        <%#Eval("Phone1Type")%>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                                <asp:TemplateField HeaderText="Zip*" HeaderStyle-Width="50" ItemStyle-Width="50">
-                                    <ItemTemplate>
-                                        <%#Eval("Zip")%>
-                                    </ItemTemplate>
-                                </asp:TemplateField>
-                            </Columns>
-                        </asp:GridView>
-                    </ContentTemplate>
-                </asp:UpdatePanel>
-            </div>
-            <br />
-        </div>
+
         <%--Send Email To User Popup--%>
         <div id="divSendEmailToUser" runat="server" title="Send Email">
             <asp:UpdatePanel ID="upSendEmailToUser" runat="server" UpdateMode="Conditional">
@@ -1814,11 +2237,10 @@
                         <th style="width: 17%; text-align: center;">Notes<br>
                             <table class="table gridtbl" cellspacing="0" cellpadding="0" rules="cols" border="1" style="width: 100%; border-collapse: collapse;">
                                 <thead>
-                                    <tr class="trHeader " style="color: White;">
-                                        <th scope="col" style="width: 19%;">User ID</th>
-
-                                        <th scope="col" style="width: 25%;">Date&Time</th>
-                                        <th scope="col" style="width: 56%;">Note/Status</th>
+                                    <tr>
+                                        <th>User ID</th>
+                                        <th>Date&Time</th>
+                                        <th>Note/Status</th>
 
                                     </tr>
                                 </thead>
@@ -1935,16 +2357,40 @@
 
     </div>
     <%--Popup Ends--%>
+    <input type="hidden" id="popupNoteUserId" />
+    <input type="hidden" id="popupNoteTxtUserId" />
+    <!-- Notes Popup -->
+    <div class="notes-popup-background"></div>
+    <div class="notes-popup">
+        <div class="heading">
+            <div class="title">User Touch Point Logs</div>
+            <div class="close" onclick="closeNotesPopup()">
+                <img src="../img/close.png" />
+            </div>
+            <input type="hidden" id="PageIndex" value="0" />
+        </div>
+        <div class="content">
+            Loading Notes...
+        </div>
+        <div class="pagingWrapper">
+            <div class="total-results">Total <span class="total-results-count"></span>Results</div>
+            <div class="pager">
+                <span class="first">« First</span> <span class="previous">Previous</span> <span class="numeric"></span><span class="next">Next</span> <span class="last">Last »</span>
+            </div>
+            <div class="pageInfo">
+            </div>
+        </div>
+        <div class="add-notes-container">
+            <textarea class="note-text textbox" id="txt-popup"></textarea>
+            <input type="button" class="GrdBtnAdd" value="Add Notes" onclick="addPopupNotes(this)" />
+        </div>
+    </div>
     <script src="../Scripts/angular.min.js"></script>
     <script src="../js/angular/scripts/jgapp.js"></script>
     <script src="../js/angular/scripts/edituser-angular.js"></script>
     <script src="../js/jquery.dd.min.js"></script>
     <script type="text/javascript" src="../js/jquery.timepicker.js"></script>
     <script src="../js/edituser.js"></script>
-
-
-
-
 
     <script type="text/javascript">
 
@@ -2056,35 +2502,81 @@
 
         function grdUsers_Email_OnClick(sender, email) {
             $('#<%=lblEmailTo.ClientID%>').html(email);
-                                                $('#<%=hdnEmailTo.ClientID%>').val(email);
+            $('#<%=hdnEmailTo.ClientID%>').val(email);
             <%--SetCKEditor('<%=txtEmailHeader.ClientID%>');
             SetCKEditor('<%=txtEmailBody.ClientID%>');
             SetCKEditor('<%=txtEmailFooter.ClientID%>');--%>
-                                                ShowPopupWithTitle('#<%=divSendEmailToUser.ClientID%>', 'Send Email');
-                                            }
+            ShowPopupWithTitle('#<%=divSendEmailToUser.ClientID%>', 'Send Email');
+        }
 
 
-                                            //============= Start DP =============
+        //============= Start DP =============
+        function GotoStarUser(bookmarkedUser, isdel, obj) {
+            //alert(isdel);
+            //alert(obj);
+            //alert(bookmarkedUser);
+            $(".loading").show();
+            $.ajax({
+                type: "POST",
+                url: "ajaxcalls.aspx/StarBookMarkUsers",
+                data: '{bookmarkedUser: ' + bookmarkedUser + ',isdelete:' + isdel + ' }',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    //alert("Hello: " + response + " ");
 
+                    var d = new Date();
+                    if (isdel == "0") {
+                        // alert("if");
+                        //alert($("#" + obj));
+                        $("#" + obj).removeAttr("src").prop('src', 'http://localhost:61394/img/starred.png?dummy=' + d.getTime());
+                        $("#" + obj).removeAttr("class").attr('class', 'starimgred');
+                        $("#" + obj).removeAttr("alt").attr('alt', bookmarkedUser);
+                        $("#" + obj).removeAttr("onclick").attr('onclick', 'GotoStarUser("' + bookmarkedUser + '","1","' + obj + '")')
+                    }
+                    else {
+                        $("#" + obj).removeAttr("src").prop('src', 'http://localhost:61394/img/star.png?dummy=' + d.getTime());
+                        $("#" + obj).removeAttr("class").attr('class', 'starimg');
+                        $("#" + obj).removeAttr("alt").attr('alt', bookmarkedUser);
+                        $("#" + obj).removeAttr("onclick").attr('onclick', 'GotoStarUser("' + bookmarkedUser + '","0","' + obj + '")')
+                    }
+                    $(".loading").show();
+                },
+                complete: function () {
+                    // Schedule the next request when the current one has been completed
+                    // setTimeout(ajaxInterval, 4000);
+                    $(".loading").hide();
+                },
+                failure: function (response) {
+                    // alert(response.responseText);
+                    $(".loading").hide();
+                },
+                error: function (response) {
+                    // alert(response.responseText);
+                    $(".loading").hide();
+                }
+            });
 
-                                            function GridstatusChanged(event, dropdown) {
+        }
 
-                                                var selectedValue = $(dropdown).val();
+        function GridstatusChanged(event, dropdown) {
 
-                                                // If user status is offermade than dont postback.
-                                                if (selectedValue == "6") {
-                                                    OverlayPopupOfferMade();
-                                                    var statustr = $(dropdown).closest("tr");
+            var selectedValue = $(dropdown).val();
 
-                                                    var Email = $(statustr).find(".OffferMadeEmail").html();
-                                                    var FirstName = $(statustr).find(".OffferMadeFirstName").html();
-                                                    var LastName = $(statustr).find(".OffferMadeLastName").html();
-                                                    var Designation = $(statustr).find(".OffferMadeDesignation").html();
-                                                    var OldStatus = $(statustr).find(".OffferMadeOldStatus").html();
-                                                    var DesignationID = $(statustr).find(".OffferMadeUserDesignID").html();
-                                                    var UserID = $(statustr).find(".OffferMadeUserID").html();
+            // If user status is offermade than dont postback.
+            if (selectedValue == "6") {
+                OverlayPopupOfferMade();
+                var statustr = $(dropdown).closest("tr");
 
-                                                    $('#<%=lblName_OfferMade.ClientID%>').html(FirstName + ' ' + LastName);
+                var Email = $(statustr).find(".OffferMadeEmail").html();
+                var FirstName = $(statustr).find(".OffferMadeFirstName").html();
+                var LastName = $(statustr).find(".OffferMadeLastName").html();
+                var Designation = $(statustr).find(".OffferMadeDesignation").html();
+                var OldStatus = $(statustr).find(".OffferMadeOldStatus").html();
+                var DesignationID = $(statustr).find(".OffferMadeUserDesignID").html();
+                var UserID = $(statustr).find(".OffferMadeUserID").html();
+
+                $('#<%=lblName_OfferMade.ClientID%>').html(FirstName + ' ' + LastName);
                 $('#<%=lblDesignation_OfferMade.ClientID%>').html(Designation);
 
 
@@ -2143,10 +2635,21 @@
 
         }
 
-      
-        function ShowToolTipForStarredUser(bookmarkedUser, action, obj) {
+        $(document).ready(function () {
+            var notesEmail = '<%=notesUserEmail %>';
+            if(notesEmail!=''){
+                $('.txtSearch').val(notesEmail);
+                $('.btnSearchGridData').trigger('click');
+            }
+            var changeTooltipPosition = function (event) {
+                var tooltipX = event.pageX - 8;
+                var tooltipY = event.pageY + 8;
+                $('div.startooltip').css({ top: tooltipY, left: tooltipX });
+            };
 
-            if (action == 1) {
+            var showTooltip = function (event) {
+                //$(".loading").show();
+                var bookmarkedUser = $(this).attr('alt');
 
                 $.ajax({
                     type: "POST",
@@ -2160,24 +2663,16 @@
                             var parsed = $.parseJSON(data.d);
 
                             $.each(parsed, function (i, item) {
-                                str = str + '<a href=' + 'ViewSalesUser.aspx?ID=' +
-                                    item.UserInstallId + '>' + item.UserInstallId + "# " +
-                                    item.FristName + " " + item.LastName + '</a>' + "<br/>" +
-                                    item.createdDate +
-                                    '<span style=' + 'color:' + 'red' + '> ' + item.createdTime + '</span>' +
-                                    " (EST)" + "<br/> ";
+                                var vBookmarkDate = new Date(parseInt(item.createdDateTime.substr(6)));
+                                str = str + item.UserInstallId + " - " + item.FristName + " " + item.LastName + " & " + vBookmarkDate + "<br/> ";
                             });
 
                             $('div.startooltip').remove();
                             $('<div class="startooltip">' + str + '</div>')
                                   .appendTo('body');
-                           
-
-                            var tooltipX = $("#" + obj).position().left - 8;
-                            var tooltipY = $("#" + obj).position().top + 8;
-                            $('div.startooltip').css({ top: tooltipY, left: tooltipX });
+                            changeTooltipPosition(event);
                         }
-                        
+                        // $(".loading").show();
                     },
                     complete: function () {
                         // Schedule the next request when the current one has been completed
@@ -2185,83 +2680,57 @@
                         //$(".loading").hide();
                     },
                     failure: function (response) {
+                        // alert(response.responseText);
                         // $(".loading").hide();
                     },
                     error: function (response) {
+                        // alert(response.responseText);
                         // $(".loading").hide();
                     }
                 });
-            }
-        }
 
-        //============== End DP ==============
-        function GotoStarUser(bookmarkedUser, action, obj) {
+            };
 
-            var isdel = 0;
+            var hideTooltip = function () {
+                $('div.startooltip').remove();
+                //$(".loading").hide();
+            };
 
-            //action is the current status of the bookmark
-            if (action == 0)
-                isdel = 1;
-            else
-                isdel = 0;
+            $(".starimgred").bind({
+                mousemove: changeTooltipPosition,
+                mouseenter: showTooltip,
+                mouseleave: hideTooltip
 
-
-            $(".loading").show();
-
-            $.ajax({
-                type: "POST",
-                url: "ajaxcalls.aspx/BookmarkUnStarInstallUser",
-                data: '{bookmarkedUser: ' + bookmarkedUser + ',isdelete:' + isdel + ' }',
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function (response) {
-
-                    if (isdel == "0") {
-                                               
-                        $("#" + obj).removeAttr("class").attr('class', 'starimgred');
-                        $("#" + obj).removeAttr("title")      
-                        $("#" + obj).removeAttr("onclick").attr('onclick', 'GotoStarUser("' + bookmarkedUser + '","0","' + obj + '")')
-                        $("#" + obj).removeAttr("src").prop('src', '../img/star.png');
-                        $("#" + obj).removeAttr("onmouseover").attr('onmouseover', 'ShowToolTipForStarredUser("' + bookmarkedUser + '","0","' + obj + '")');
-                    }
-                    else {
-                        
-                        $("#" + obj).removeAttr("class").attr('class', 'starimg');
-                        $("#" + obj).removeAttr("title");
-                        $("#" + obj).removeAttr("src").prop('src', '../img/yellowstar.png');
-                        $("#" + obj).removeAttr("onclick").attr('onclick', 'GotoStarUser("' + bookmarkedUser + '","1","' + obj + '")');
-                        ShowToolTipForStarredUser(bookmarkedUser, 1, obj);
-                        $("#" + obj).removeAttr("onmouseover").attr('onmouseover', 'ShowToolTipForStarredUser("' + bookmarkedUser + '","1","' + obj + '")');
-                    }
-                    $(".loading").hide();
-
-                },
-                complete: function () {
-                    // Schedule the next request when the current one has been completed
-                    // setTimeout(ajaxInterval, 4000);
-
-                    $(".loading").hide();
-                },
-                failure: function (response) {
-
-                    $(".loading").hide();
-                },
-                error: function (response) {
-
-                    $(".loading").hide();
-                }
             });
+            ReLoadNotes();
+        });
 
-        }
+            function ReLoadNotes() {
+                $('.notes-container').each(function (i) {
+                    var id = $(this).attr('id').split('-')[1];
+                    var installUserId = $(this).attr('uid');
+                    LoadNotes($('#user' + id), installUserId, id);
+                });
+            }
+            //============== End DP ==============
 
+            function showBulkUploadProgressPopup() {
 
-        function HideToolTip() {
-            $('div.startooltip').remove();
-        }
+                $('#bulkUpload').removeClass('hide');               
 
+                $('#bulkUpload').dialog({
+                    modal: false,
+                    height: 700,
+                    width: 1000,
+                    title: "Bulk upload progress...",
+                    
+                }).parent().appendTo($("form:first"));
+
+                $('#bulkUpload').show();
+                
+                
+                
+                return true;
+            }
     </script>
-
-
-
 </asp:Content>
-

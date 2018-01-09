@@ -1548,10 +1548,10 @@ input.fz-Beta, .fz-Beta > input {
 }
 
 .yellowthickborder {
-    animation: blink 1s step-end infinite alternate;
+    animation: blinkrow 1s step-end infinite alternate;
 }
 
-@keyframes blink {
+@keyframes blinkrow {
     50% {
         background-color: yellow;
     }
@@ -1581,8 +1581,9 @@ input.fz-Beta, .fz-Beta > input {
 .greentext {
     color: darkgreen !important;
 }
+
 .blacktext {
-color: black !important;
+    color: black !important;
 }
 
 .haligncenter {
@@ -2009,8 +2010,11 @@ th.subtask-actionid, th.subtask-taskdetails, th.subtask-assign, th.subtask-attch
 }
 
 .divtdetails img {
-    max-width: 100%;
+    max-width: 100px;
     height: inherit;
+}
+.divtdetails p {
+    margin: 0px;
 }
 
 .form_panel_custom ul.stulli li {
@@ -2363,7 +2367,7 @@ p.mcqQuestion {
 .div-table-nested {
     display: table;
     border-spacing: 2px; /* cellspacing:poor IE support for  this */
-    width: 95%;
+    width: 99%;
     border: 1px solid #a1a0a0;
     margin: 10px;
     border-radius: 5px;
@@ -2391,19 +2395,19 @@ p.mcqQuestion {
 }
 
 .seq-number {
-    width: 10%;
+    width: 9%;
 }
 
 .seq-taskid {
-    width: 15%;
+    width: 9%;
 }
 
 .seq-tasktitle {
-    width: 30%;
+    width: 24%;
 }
 
 .seq-taskstatus {
-    width: 10%;
+    width: 14%;
 }
 
 .seq-taskduedate {
@@ -2411,7 +2415,7 @@ p.mcqQuestion {
 }
 
 .seq-notes {
-    width: 17%;
+    width: 26%;
 }
 
 input[type='checkbox'].largecheckbox {
@@ -2428,16 +2432,257 @@ input[type='checkbox']:checked.largecheckbox {
 }
 
 .rejectedUser {
-background-color: #AEAEAE;
+    background-color: #AEAEAE;
 }
 
 .gridtbl tbody {
-max-height:40px !important;
+    max-height: 40px !important;
 }
 
 .gridtbl thead tr:after {
-    content:none !important;
+    content: none !important;
 }
+
 .gridtbl thead th {
     background-color: #000;
+}
+ /* The Modal (background) */
+ .modal{
+    display: none; /* Hidden by default */
+    position: fixed; /* Stay in place */
+    z-index: 1; /* Sit on top */
+    padding-top: 100px; /* Location of the box */
+    left: 0;
+    top: 0;
+    width: 100%; /* Full width */
+    height: 100%; /* Full height */
+    overflow: auto; /* Enable scroll if needed */
+    background-color: rgb(0,0,0); /* Fallback color */
+    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+/* Modal Content */
+.modal-content {
+    position: relative;
+    background-color: #fefefe;
+    margin: auto;
+    padding: 0;
+    border: 1px solid #888;
+    width: 32%;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2),0 6px 20px 0 rgba(0,0,0,0.19);
+    -webkit-animation-name: animatetop;
+    -webkit-animation-duration: 0.4s;
+    animation-name: animatetop;
+    animation-duration: 0.4s
+}
+
+/* Add Animation */
+@-webkit-keyframes animatetop {
+    from {
+        top: -300px;
+        opacity: 0
+    }
+
+    to {
+        top: 0;
+        opacity: 1
+    }
+}
+
+@keyframes animatetop {
+    from {
+        top: -300px;
+        opacity: 0
+    }
+
+    to {
+        top: 0;
+        opacity: 1
+    }
+}
+
+/* The Close Button */
+.close {
+    color: gray;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+    .close:hover,
+    .close:focus {
+        color: #000;
+        text-decoration: none;
+        cursor: pointer;
+    }
+
+.modal-header {
+    padding: 2px 16px;
+    background-color: #fff;
+    color: white;
+}
+.modal-header h2 {margin-left: 0px !important}
+.modal-body {
+    padding: 2px 16px;
+}
+
+.modal-footer {
+    padding: 2px 16px;
+    background-color: #fff;
+    color: white;
+    text-align: right;
+}
+.mui-btn--primary.mui-btn--flat {
+    color: #2196F3;
+    background-color: transparent;
+}
+
+.mui-btn.mui-btn--flat {
+    color: rgba(0,0,0,.87);
+    background-color: transparent;
+}
+
+.mui-btn--small {
+    height: 30.6px;
+    line-height: 30.6px;
+    padding: 0 16px;
+    font-size: 13px;
+}
+
+.mui-btn--primary {
+    color: #FFF;
+    background-color: #2196F3;
+}
+
+.mui-btn--flat {
+    background-color: transparent;
+}
+
+.mui-btn {
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 18px;
+    text-transform: uppercase;
+    color: rgba(0,0,0,.87);
+    background-color: #FFF;
+    -webkit-transition: all .2s ease-in-out;
+    transition: all .2s ease-in-out;
+    display: inline-block;
+    height: 36px;
+    padding: 0 26px;
+    margin: 6px 0;
+    border: none;
+    border-radius: 2px;
+    cursor: pointer;
+    -ms-touch-action: manipulation;
+    touch-action: manipulation;
+    background-image: none;
+    text-align: center;
+    line-height: 36px;
+    vertical-align: middle;
+    white-space: nowrap;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    font-size: 14px;
+    font-family: inherit;
+    letter-spacing: .03em;
+    position: relative;
+    overflow: hidden;
+}
+
+[type=reset], [type=submit], button, html [type=button] {
+    -webkit-appearance: button;
+}
+
+button, select {
+    text-transform: none;
+}
+
+input {
+    overflow: visible;
+}
+
+button, input, optgroup, select, textarea {
+    font-family: sans-serif;
+    font-size: 100%;
+    line-height: 1.15;
+    margin: 0;
+}
+.modal-icons img{
+    height:32px;
+    width:32px;
+}
+
+.modal-body input {
+    margin-top: 20px;
+    width: 100%;
+    border-left-width: 0px;
+    border-right-width: 0px;
+    border-top-width: 0px;
+    font-size: 20px;
+}
+ul.auto-complete-users {
+    width: 400px;
+    list-style: none;
+    margin-top: 61px;
+    padding: 0px 0 0 0px;
+    background: #fff;
+    display: inline-block;
+    border: 1px solid #aaa;
+    position: absolute;
+    left: 16px;
+    top: 116px;
+}
+
+.auto-complete-users li {
+    margin: 0;
+    padding: 0;
+    display: inline-block;
+    width: 100%;
+}
+
+.employeeinstruction {
+    font-size: 10px;
+    border: 1px solid gray;
+    padding: 15px;
+    max-height: 400px;
+    /* min-height: 100px; */
+    margin: 10px 0;
+    /* -webkit-border-radius: 12px; */
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+}
+ul.auto-complete-users {
+    width: 400px;
+    list-style: none;
+    margin-top: 0px;
+    padding: 0px 0 0 0px;
+    background: #fff;
+    display: inline-block;
+    border: 0px solid #aaa;
+    border-radius: 0px;
+    position: absolute;
+    left: 17px;
+    top: 180px;
+    box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+}
+.auto-complete-users li {
+    margin: 0;
+    padding: 0;
+    display: inline-block;width: 100%;
+}
+.auto-complete-users li div{padding: 5px;
+    width: 100%;}
+.auto-complete-users li:hover{cursor:pointer;background:#007506;color:#fff;}
+.employeeinstruction a {
+    color: blue !important;
+}
+.attachmentImageDiv {
+    font-size: 10px;
+    border: solid;
+    border-width: 1px;
+    border-color: gainsboro;
+    padding: 4px;
 }

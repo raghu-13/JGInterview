@@ -12,7 +12,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.Script.Serialization;
 using System.Web.Script.Services;
-
+using JG_Prospect.Common.modal;
 
 namespace JG_Prospect.Sr_App
 {
@@ -97,6 +97,58 @@ namespace JG_Prospect.Sr_App
         }
 
         [WebMethod]
+        public static string GetTaskUsersForDashBoard(string searchterm)
+        {
+            DataSet dsSuggestions;
+
+            string SearchSuggestions = string.Empty;
+
+            dsSuggestions = InstallUserBLL.Instance.GetTaskUsersForDashBoard(searchterm);
+
+            if (dsSuggestions != null && dsSuggestions.Tables.Count > 0 && dsSuggestions.Tables[0].Rows.Count > 0)
+            {
+                SearchSuggestions = JsonConvert.SerializeObject(dsSuggestions.Tables[0]);
+            }
+
+            return SearchSuggestions;
+        }
+
+        [WebMethod]
+        public static string GetUsersByDesignationId(string designationId)
+        {
+            DataSet dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, designationId);
+            string SearchSuggestions = string.Empty;
+
+            if (dsUsers != null && dsUsers.Tables.Count > 0 && dsUsers.Tables[0].Rows.Count > 0)
+            {
+                SearchSuggestions = JsonConvert.SerializeObject(dsUsers.Tables[0]);
+            }
+
+            return SearchSuggestions;
+        }
+
+        [WebMethod]
+        public static string GetUsersByDesignationIdWithUserStatus(string designationId, int userStatus)
+        {
+            DataSet dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, designationId, userStatus);
+            string SearchSuggestions = string.Empty;
+
+            if (dsUsers != null && dsUsers.Tables.Count > 0 && dsUsers.Tables[0].Rows.Count > 0)
+            {
+                SearchSuggestions = JsonConvert.SerializeObject(dsUsers.Tables[0]);
+            }
+
+            return SearchSuggestions;
+        }
+
+        [WebMethod]
+        public static string GetInstallUsersByPrefix(string keyword)
+        {
+            ActionOutput<LoginUser> users = TaskGeneratorBLL.Instance.GetInstallUsersByPrefix(keyword);
+            return new JavaScriptSerializer().Serialize(users);
+        }
+
+        [WebMethod]
         public static string StarBookMarkUsers(int bookmarkedUser,   int isdelete)
         {
             string strReturn = "true";
@@ -117,11 +169,9 @@ namespace JG_Prospect.Sr_App
 
         public static string GetBookMarkingUserDetails(int bookmarkedUser)
         {
-            DataSet dsBook = null;
-            TimeZone localZone = TimeZone.CurrentTimeZone;
+            DataSet dsBook = new DataSet();
             try
             {
-               
                 dsBook = InstallUserBLL.Instance.GetBookMarkingUserDetails(bookmarkedUser);
             }
             catch (Exception ex)
@@ -129,23 +179,19 @@ namespace JG_Prospect.Sr_App
                 dsBook = null;
             }
 
-          List<object> listdata = new List<object>();
-
-            if (dsBook != null)
-           {
-                for (int i = 0; i < dsBook.Tables[0].Rows.Count; i++)
+            List<object> listdata = new List<object>();
+            for (int i = 0; i < dsBook.Tables[0].Rows.Count;i++ )
+            {
+                listdata.Add(new
                 {
-                    listdata.Add(new
-                    {
-                        Id = dsBook.Tables[0].Rows[i]["Id"],
-                        FristName = dsBook.Tables[0].Rows[i]["FristName"],
-                        LastName = dsBook.Tables[0].Rows[i]["LastName"],
-                        UserInstallId = dsBook.Tables[0].Rows[i]["BookmarkByInstallUserID"],
-                        createdDate =  Convert.ToDateTime(dsBook.Tables[0].Rows[i]["BookmarkTime"]).ToString("MM/dd/yyyy"),
-                        createdTime= Convert.ToDateTime(dsBook.Tables[0].Rows[i]["BookmarkTime"]).ToString("h:mm tt")
-
-                    });
-                }
+                    Id = dsBook.Tables[0].Rows[i]["Id"],
+                    FristName = dsBook.Tables[0].Rows[i]["FristName"],
+                    LastName = dsBook.Tables[0].Rows[i]["LastName"],
+                    Designation = dsBook.Tables[0].Rows[i]["Designation"],
+                    Email = dsBook.Tables[0].Rows[i]["Email"],
+                    UserInstallId = dsBook.Tables[0].Rows[i]["UserInstallId"],
+                    createdDateTime = dsBook.Tables[0].Rows[i]["createdDateTime"]
+                });
             }
 
             return new JavaScriptSerializer().Serialize(listdata); 
@@ -153,23 +199,7 @@ namespace JG_Prospect.Sr_App
 
         //---------- End DP ---------
 
-        [WebMethod]
-        public static string BookmarkUnStarInstallUser(int bookmarkedUser, int isdelete)
-        {
-            bool strReturn = true;
-            
-            try
-            {
-                int userId = Convert.ToInt16(HttpContext.Current.Session[JG_Prospect.Common.SessionKey.Key.UserId.ToString()]);
-                strReturn = InstallUserBLL.Instance.BookmarkUnStarInstallUser(userId, bookmarkedUser, isdelete);
-                
-            }
-            catch (Exception ex)
-            {
-                strReturn = false;
-            }
-             return strReturn.ToString();
-        }
+
         #endregion
 
         #region "-- Chat --"

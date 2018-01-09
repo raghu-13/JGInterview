@@ -17,12 +17,13 @@ function SetLatestSequenceForAddNewSubTask() {
 
 function ShowTaskSequence(editlink, designationDropdownId) {
 
-
+    debugger;
     var edithyperlink = $(editlink);
 
     var TaskID = edithyperlink.attr('data-taskid');
     var TechTask = edithyperlink.attr('data-task-TechTask');
     var DesignationIds = edithyperlink.attr('data-task-designationids');
+    //debugger;
     //console.log("Task designation is: " + DesignationIds);
     if (DesignationIds) {
 
@@ -30,7 +31,7 @@ function ShowTaskSequence(editlink, designationDropdownId) {
 
         // console.log("Splited designation ids are:", $.trim(DesignationToSelect));
 
-        // sequenceScope.UserSelectedDesigIds = DesignationIds.split(",");
+        sequenceScope.UserSelectedDesigIds = DesignationIds.split(",");
         $(ddlDesigSeqClientID).val($.trim(DesignationToSelect));
         //    $.each(DesignationIds.split(","), function (index, value) {
 
@@ -40,7 +41,11 @@ function ShowTaskSequence(editlink, designationDropdownId) {
         //        }
         //    });
     }
+    sequenceScope.UserStatus = 0;
 
+    sequenceScope.StartDate = "";
+
+    sequenceScope.EndDate = "";
 
     // console.log("Master Dropdown selected designation is: " + $(ddlDesigSeqClientID).val());
 
@@ -62,7 +67,7 @@ function ShowTaskSequence(editlink, designationDropdownId) {
 
     var defaultTabIndex;
 
-    if (TechTask == true) {
+    if (TechTask == true || TechTask === 'true') {
         defaultTabIndex = 1;
     }
     else {
@@ -85,7 +90,7 @@ function ShowTaskSequence(editlink, designationDropdownId) {
 
     //console.log(TechTask);
 
-    if (TechTask === 'True') {
+    if (TechTask === 'True' || TechTask === 'true') {
         //console.log("calling search tech task after popup initialized....");
         sequenceScope.IsTechTask = true;
         sequenceScope.getTechTasks();
@@ -98,11 +103,183 @@ function ShowTaskSequence(editlink, designationDropdownId) {
         sequenceScope.getTasks();
         applyTaskSequenceTabs(0);
     }
+}
 
+function ShowFrozenTaskSequenceDashBoard(DesId, UserId) {
 
+    //debugger;
+    //var TechTask = false;
+    var DesignationIds = DesId;
+    //console.log("Task designation is: " + DesignationIds);    
+    //debugger;
+    //Set if tech task than load tech task related sequencing.
+    //sequenceScopeFrozenTasks.IsTechTask = TechTask;
+    sequenceScopeFrozenTasks.UserId = UserId;
+    sequenceScope.UserSelectedDesigIdsFrozenTaks = DesId;
+    //search initially all tasks with sequencing.
+
+    // set designation id to be search by default
+    sequenceScopeFrozenTasks.SetDesignForSearch(DesignationIds, false);
+
+    // Bind Assign user master dropdown for selected designation.
+    sequenceScopeFrozenTasks.getAssignUsers();
+
+    var defaultTabIndex;
+
+    var dlg = $('#pnlNewFrozenTask').dialog({
+        width: 1200,
+        height: 900,
+        show: 'slide',
+        hide: 'slide',
+        position: 'top',
+        autoOpen: true,
+        modal: true,
+        beforeClose: function (event, ui) {
+            $('#pnlNewFrozenTask').addClass("hide");
+        }
+    }).removeClass("hide");
+
+    if (sequenceScopeFrozenTasks.IsTechTask == true) {
+        defaultTabIndex = 1;
+        //console.log("calling search tech task after popup initialized....");
+        sequenceScopeFrozenTasks.IsTechTask = true;
+        sequenceScopeFrozenTasks.getFrozenTasks();
+        //sequenceUIGridScope.getUITechTasks();
+        applyTaskSequenceTabsFrozen(1);
+    }
+
+    else {
+        defaultTabIndex = 0;
+        //console.log("calling search staff task after popup initialized....");
+        sequenceScopeFrozenTasks.IsTechTask = false;
+        sequenceScopeFrozenTasks.getFrozenTasks();
+        applyTaskSequenceTabsFrozen(0);
+    }
+
+    sequenceScopeFrozenTasks.getAssignUsers();
 
 }
 
+function ShowNonFrozenTaskSequenceDashBoard(DesId, UserId) {
+
+    //debugger;
+    //var TechTask = false;
+    var DesignationIds = DesId;
+    //console.log("Task designation is: " + DesignationIds);    
+    //debugger;
+    //Set if tech task than load tech task related sequencing.
+    //sequenceScopeNonFrozenTasks.IsTechTask = TechTask;
+    sequenceScopeNonFrozenTasks.UserId = UserId;
+    sequenceScopeNonFrozenTasks.UserSelectedDesigIdsFrozenTaks = DesId;
+    //search initially all tasks with sequencing.
+
+    // set designation id to be search by default
+    sequenceScopeNonFrozenTasks.SetDesignForSearch(DesignationIds, false);
+
+    // Bind Assign user master dropdown for selected designation.
+    sequenceScopeNonFrozenTasks.getAssignUsers();
+
+    //debugger;
+
+    var defaultTabIndex;
+    //console.log(TechTask);
+
+    if (sequenceScopeNonFrozenTasks.IsTechTask == true) {
+        defaultTabIndex = 1;
+        //console.log("calling search tech task after popup initialized....");
+        sequenceScopeNonFrozenTasks.IsTechTask = true;
+        sequenceScopeNonFrozenTasks.getNonFrozenTasks();
+        //sequenceUIGridScope.getUITechTasks();
+        applyTaskSequenceTabsNonFrozen(1);
+    }
+    else {
+        defaultTabIndex = 0;
+        //console.log("calling search staff task after popup initialized....");
+        sequenceScopeNonFrozenTasks.IsTechTask = false;
+        sequenceScopeNonFrozenTasks.getNonFrozenTasks();
+        applyTaskSequenceTabsNonFrozen(0);
+    }
+
+    sequenceScopeNonFrozenTasks.getAssignUsers();
+
+}
+
+function ShowTaskSequenceDashBoard(DesId, UserId) {
+
+    //debugger;
+    //var TechTask = false;
+    var DesignationIds = DesId;
+
+    sequenceScope.UserId = UserId;    
+    //search initially all tasks with sequencing.
+
+    // set designation id to be search by default
+    sequenceScope.SetDesignForSearch(DesignationIds, false);
+
+    // Bind Assign user master dropdown for selected designation.
+    sequenceScope.getAssignUsers();
+
+    //debugger;
+
+    var defaultTabIndex;
+    var UserStatus = $('#ddlUserStatus').val();
+    if (UserStatus != undefined)
+        sequenceScope.UserStatus = UserStatus;
+    else
+        sequenceScope.UserStatus = 0;
+
+    var StartDate = $('#ContentPlaceHolder1_txtfrmdate').val();
+    if (StartDate != undefined)
+        sequenceScope.StartDate = StartDate;
+    else
+        sequenceScope.StartDate = "";
+
+    var EndDate = $('#ContentPlaceHolder1_txtTodate').val();
+    if (EndDate != undefined)
+        sequenceScope.EndDate = EndDate;
+    else
+        sequenceScope.EndDate = "";
+
+    if (sequenceScope.IsTechTask == true) {
+        defaultTabIndex = 1;
+        //console.log("calling search tech task after popup initialized....");
+        sequenceScope.IsTechTask = true;
+        sequenceScope.getTechTasks();
+        //sequenceUIGridScope.getUITechTasks();
+        applyTaskSequenceTabs(1);
+    }
+    else {
+        defaultTabIndex = 0;
+        sequenceScope.IsTechTask = false;
+        sequenceScope.getTasks();
+        applyTaskSequenceTabs(0);
+    }
+
+    sequenceScope.getAssignUsers();
+
+}
+
+function ShowAllClosedTasksDashBoard(DesIds, UserId, pageSize) {
+
+    //debugger;
+    sequenceScope.pageSize = pageSize;
+    sequenceScope.UserSelectedDesigIdsClosedTaks = DesIds;
+    //console.log("Task designation is: " + DesignationIds);    
+    //debugger;
+    //Set if tech task than load tech task related sequencing.
+    sequenceScope.UserId = UserId;
+    //search initially all tasks with sequencing.
+
+    // set designation id to be search by default
+    //sequenceScope.SetDesignForSearch(DesignationIds, false);
+
+    // Bind Assign user master dropdown for selected designation.
+
+    //debugger;
+
+    sequenceScopeClosedTasks.getClosedTasks();
+
+}
 
 //function showEditTaskSequence(element) {
 
@@ -209,7 +386,6 @@ function setDropDownChangedData(dropdown) {
 
 }
 
-
 function setFirstRowAutoData() {
 
     var element = $("#autoClick" + sequenceScope.BlinkTaskId);
@@ -257,7 +433,6 @@ function setFirstRowAutoData() {
 
 
 }
-
 
 function getLastAvailableSequence(TaskID, DesignationID, isFromDropDown) {
     ShowAjaxLoader();
@@ -586,6 +761,43 @@ function setActiveTab(isTechTask) {
 
 }
 
+function applyTaskSequenceTabsFrozen(activeTab) {
+
+    $('#taskSequenceTabsFrozen').tabs({
+        active: activeTab,
+        activate: function (event, ui) {
+            //console.log("called tabs select");
+            if (ui.newPanel.attr('id') == "TechTaskFrozen") {
+
+                sequenceScopeFrozenTasks.IsTechTask = true;
+                sequenceScopeFrozenTasks.getFrozenTasks();
+            }
+            else {
+                sequenceScopeFrozenTasks.IsTechTask = false;
+                sequenceScopeFrozenTasks.getFrozenTasks();
+            }
+        }
+    });
+}
+
+function applyTaskSequenceTabsNonFrozen(activeTab) {
+
+    $('#taskSequenceTabsNonFrozen').tabs({
+        active: activeTab,
+        activate: function (event, ui) {
+            //console.log("called tabs select");
+            if (ui.newPanel.attr('id') == "TechTaskNonFrozen") {
+
+                sequenceScopeNonFrozenTasks.IsTechTask = true;
+                sequenceScopeNonFrozenTasks.getNonFrozenTasks();
+            }
+            else {
+                sequenceScopeNonFrozenTasks.IsTechTask = false;
+                sequenceScopeNonFrozenTasks.getNonFrozenTasks();
+            }
+        }
+    });
+}
 
 function applyTaskSequenceTabs(activeTab) {
 
@@ -593,13 +805,24 @@ function applyTaskSequenceTabs(activeTab) {
         active: activeTab,
         activate: function (event, ui) {
             //console.log("called tabs select");
-            if (ui.newPanel.attr('id') == "TechTask") {
+            var StartDate = $('#ContentPlaceHolder1_txtfrmdate').val();
+            sequenceScope.StartDate = StartDate;
 
+            var EndDate = $('#ContentPlaceHolder1_txtTodate').val();
+            sequenceScope.EndDate = EndDate;
+
+            if (ui.newPanel.attr('id') == "TechTask") {
+                var UserStatus = $('#ddlUserStatus').val();
+                sequenceScope.UserStatus = UserStatus;
                 sequenceScope.IsTechTask = true;
+                sequenceScope.getAssignUsers();
                 sequenceScope.getTechTasks();
             }
             else {
+                var UserStatus = $('#ddlUserStatus').val();
+                sequenceScope.UserStatus = UserStatus;
                 sequenceScope.IsTechTask = false;
+                sequenceScope.getAssignUsers();
                 sequenceScope.getTasks();
             }
         }
@@ -619,7 +842,6 @@ function applyTaskSequenceTabs(activeTab) {
     //});
 
 }
-
 
 function setParentTaskDesignationToJqueryArray(DesignationDropdown) {
 
@@ -814,5 +1036,36 @@ function SaveTaskSubSequence(hyperlink) {
 
     }
 
+
+}
+
+
+function harddeleteTask(TaskId)
+{
+    var proceed = confirm('are you sure you want to delete this task and all its children with details?');
+
+    if (proceed == true) {
+        ShowAjaxLoader();
+
+        var postData = {
+            TaskId: TaskId
+        };
+
+        CallJGWebService('HardDeleteTask', postData, OnUpdateHardDeleteTaskSuccess, OnUpdateHardDeleteTaskError);
+
+        function OnUpdateHardDeleteTaskSuccess(response) {
+            HideAjaxLoader();
+
+            if (response) {                
+                HideAjaxLoader();
+                $(updateRepeaterButton).click();
+                alert('All tasks and related informations are deleted successfully!');
+            }
+        }
+
+        function OnUpdateHardDeleteTaskError(err) {
+            HideAjaxLoader();
+        }
+    }
 
 }

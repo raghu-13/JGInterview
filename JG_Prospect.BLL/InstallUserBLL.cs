@@ -24,6 +24,11 @@ namespace JG_Prospect.BLL
             private set {; }
         }
 
+        public ActionOutput<LoginUser> GetUsers(string keyword)
+        {
+            return InstallUserDAL.Instance.GetUsers(keyword);
+        }
+
         public void AddUserNotes(string Notes, int UserID, int AddedByID)
         {
             InstallUserDAL.Instance.AddUserNotes(Notes, UserID, AddedByID);
@@ -293,7 +298,10 @@ namespace JG_Prospect.BLL
         {
             return InstallUserDAL.Instance.getuserdetails(id);
         }
-
+        public DataSet getuserdetailsbyId(int id)
+        {
+            return InstallUserDAL.Instance.getuserdetailsbyId(id);
+        }
         public DataSet getalluserdetails()
         {
             return InstallUserDAL.Instance.getalluserdetails();
@@ -351,6 +359,11 @@ namespace JG_Prospect.BLL
         public DataSet getInstallerUserDetailsByLoginId(string loginid, bool blIncludeRejected = false)
         {
             return InstallUserDAL.Instance.getInstallerUserDetailsByLoginId(loginid, blIncludeRejected);
+        }
+
+        public ActionOutput<string> ExpireLoginCode(string loginCode)
+        {
+            return InstallUserDAL.Instance.ExpireLoginCode(loginCode);
         }
 
         public DataSet getCustomerUserDetails(string Email, string Password)
@@ -564,15 +577,16 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.GetTaskUsers(searchTerm);
         }
 
+        public DataSet GetTaskUsersForDashBoard(String searchTerm)
+        {
+            return InstallUserDAL.Instance.GetTaskUsersForDashBoard(searchTerm);
+        }
+
         public string GetStarBookMarkUsers(int bookmarkingUser, int bookmarkedUser, int isdelete)
         {
             return InstallUserDAL.Instance.GetStarBookMarkUsers(bookmarkingUser, bookmarkedUser, isdelete);
         }
 
-        public bool BookmarkUnStarInstallUser(int bookmarkingUser, int bookmarkedUser, int isdelete)
-        {
-            return InstallUserDAL.Instance.BookmarkUnStarInstallUser(bookmarkingUser, bookmarkedUser, isdelete);
-        }
         public DataSet GetBookMarkingUserDetails(int bookmarkedUser)
         {
             return InstallUserDAL.Instance.GetBookMarkingUserDetails(bookmarkedUser);
@@ -615,13 +629,6 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.GetTechTaskByUser(UserId);
         }
 
-
-
-        public int UpdateBookMarkingUserDetails(int UserId, int loginUserID)
-        {
-            return InstallUserDAL.Instance.UpdateBookMarkingUserDetails(UserId, loginUserID);
-        }
-
         public string AddNewPhoneType(string NewPhoneType, int AddedByID)
         {
             return InstallUserDAL.Instance.AddNewPhoneType(NewPhoneType, AddedByID);
@@ -632,9 +639,9 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.GetAllUserPhoneType();
         }
 
-        public void SetUserDisplayID(int UserId, string strDesignationsCode, string UpdateCurrentSequence)
+        public void SetUserDisplayID(int UserId, string strUserDesignationId, string UpdateCurrentSequence)
         {
-            InstallUserDAL.Instance.SetUserDisplayID(UserId, strDesignationsCode, UpdateCurrentSequence);
+            InstallUserDAL.Instance.SetUserDisplayID(UserId, strUserDesignationId, UpdateCurrentSequence);
         }
 
         public DataSet GetUsersNDesignationForSalesFilter()
@@ -664,9 +671,113 @@ namespace JG_Prospect.BLL
             return InstallUserDAL.Instance.AddUserPhone(isPrimaryPhone, phoneText, phoneType, UserID, PhoneExtNo, PhoneISDCode, ClearDataBeforInsert);
         }
 
-        public string AddTouchPointLogRecord(int LoginUserID, int UserID, string LoginUserInstallID, DateTime now, string ChangeLog, string strGUID)
+        public int AddTouchPointLogRecord(int LoginUserID, int UserID, string LoginUserInstallID, DateTime now, string ChangeLog, string strGUID, int touchPointSource)
         {
-            return InstallUserDAL.Instance.AddTouchPointLogRecord(LoginUserID, UserID, LoginUserInstallID, now, ChangeLog, strGUID);
+            var LastUserTouchPoint = InstallUserDAL.Instance.GetUserTouchPointLogs(0, 1, UserID).Data;
+
+            int UserTouchPointLogID = InstallUserDAL.Instance.AddTouchPointLogRecord(LoginUserID, UserID, LoginUserInstallID, now, ChangeLog, strGUID, touchPointSource);
+            // Send email to User / Recruiter
+            // Get Html Template
+            string messageUrl = string.Empty, toEmail = string.Empty, body = string.Empty;
+            string baseUrl = System.Web.HttpContext.Current.Request.Url.Scheme + "://" + System.Web.HttpContext.Current.Request.Url.Authority + System.Web.HttpContext.Current.Request.ApplicationPath.TrimEnd('/') + "/";
+            HTMLTemplatesMaster html = HTMLTemplateBLL.Instance.GetHTMLTemplateMasterById(HTMLTemplates.HR_EditSales_TouchpointLog_Email);
+            // sender details
+            var sender = getuserdetails(LoginUserID).Tables[0].Rows[0];
+            string pic = string.IsNullOrEmpty(sender["Picture"].ToString()) ? "default.jpg"
+                                : sender["Picture"].ToString().Replace("~/UploadeProfile/", "");
+            pic = baseUrl + "UploadeProfile/" + pic;
+            html.Body = html.Body.Replace("{ImageUrl}", pic);
+            html.Body = html.Body.Replace("{Name}", sender["FristName"].ToString() + " " + sender["LastName"].ToString());
+            html.Body = html.Body.Replace("{Designation}", sender["Designation"].ToString());
+            html.Body = html.Body.Replace("{UserInstallID}", sender["UserInstallID"].ToString());
+            html.Body = html.Body.Replace("{ProfileUrl}", baseUrl + "Sr_App/ViewSalesUser.aspx?id=" + sender["Id"].ToString());
+            html.Body = html.Body.Replace("{MessageContent}", ChangeLog.Replace("Note :", "").Trim());
+            //
+
+            // Generate auto login code
+            string loginCode = InstallUserDAL.Instance.GenerateLoginCode(UserID).Object;
+
+
+            if (LastUserTouchPoint == null && LoginUserID == UserID) // first entry
+            {
+                // send email to recruiter
+                toEmail = "hr@jmgroveconstruction.com";
+                messageUrl = baseUrl + "Sr_App/edituser.aspx?TUID=" + UserID + "&NID=" + UserTouchPointLogID+"&auth="+ loginCode;
+            }
+            else if (LastUserTouchPoint != null && LoginUserID == UserID) // send email to receiver
+            {
+                // send email to user
+                var lastSender = getuserdetails(LastUserTouchPoint.First().UpdatedByUserID).Tables[0].Rows[0];
+                if (Convert.ToInt32(lastSender["Id"]) == UserID)
+                {
+                    toEmail = lastSender["Email"].ToString();
+                    messageUrl = baseUrl + "Sr_App/TouchPointLog.aspx?TUID=" + UserID + "&NID=" + UserTouchPointLogID + "&auth=" + loginCode;
+                }
+                else
+                {
+                    toEmail = lastSender["Email"].ToString();
+                    messageUrl = baseUrl + "Sr_App/edituser.aspx?TUID=" + UserID + "&NID=" + UserTouchPointLogID + "&auth=" + loginCode;
+                }
+            }
+            else
+            {
+                var receiver = getuserdetails(UserID).Tables[0].Rows[0];
+                // send email to user
+                toEmail = receiver["Email"].ToString();
+                messageUrl = baseUrl + "Sr_App/TouchPointLog.aspx?TUID=" + UserID + "&NID=" + UserTouchPointLogID + "&auth=" + loginCode;
+            }
+            body = (html.Header + html.Body + html.Footer).Replace("{MessageUrl}", messageUrl);
+
+            EmailManager.SendEmail("Touch Point Log", toEmail, html.Subject, body, null);
+
+            // find all emails
+            List<string> emails = new List<string>();
+            // emails.Add(toEmail);
+            string[] allWords = ChangeLog.Split(new char[] { '@' }, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var item in allWords)
+            {
+                switch (item.Trim().ToLower().Substring(0, item.IndexOf(' ')))
+                {
+                    case "justin":
+                        if (toEmail != "jgrove.georgegrovee@gmail.com")
+                            emails.Add("jgrove.georgegrovee@gmail.com");//321
+                        // add touch point note entry 
+                        break;
+                    case "yogesh":
+                        if (toEmail != "kerconsultancy@hotmail.com")
+                            emails.Add("kerconsultancy@hotmail.com");//901
+                        break;
+                    default:
+                        break;
+                }
+            }
+            if (emails.Count > 1)
+                foreach (var item in emails.Distinct())
+                {
+                    switch (item)
+                    {
+                        case "jgrove.georgegrovee@gmail.com":
+                            UserTouchPointLogID = InstallUserDAL.Instance.AddTouchPointLogRecord(LoginUserID, 321, LoginUserInstallID, now, ChangeLog, strGUID, touchPointSource);
+                            messageUrl = baseUrl + "Sr_App/TouchPointLog.aspx?TUID=" + UserID + "&NID=" + UserTouchPointLogID + "&auth=" + loginCode;
+                            body = (html.Header + html.Body + html.Footer).Replace("{MessageUrl}", messageUrl);
+                            EmailManager.SendEmail("Touch Point Log", item, html.Subject, body, null);
+                            break;
+                        case "kerconsultancy@hotmail.com":
+                            UserTouchPointLogID = InstallUserDAL.Instance.AddTouchPointLogRecord(LoginUserID, 901, LoginUserInstallID, now, ChangeLog, strGUID, touchPointSource);
+                            messageUrl = baseUrl + "Sr_App/TouchPointLog.aspx?TUID=" + UserID + "&NID=" + UserTouchPointLogID + "&auth=" + loginCode;
+                            body = (html.Header + html.Body + html.Footer).Replace("{MessageUrl}", messageUrl);
+                            EmailManager.SendEmail("Touch Point Log", item, html.Subject, body, null);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+            return UserTouchPointLogID;
+        }
+
+        public PagingResult<Notes> GetUserTouchPointLogs(int pageNumber, int pageSize, int userId)
+        {
+            return InstallUserDAL.Instance.GetUserTouchPointLogs(pageNumber, pageSize, userId);
         }
 
         public DataSet GetTouchPointLogDataByUserID(int UserID)
@@ -727,5 +838,30 @@ namespace JG_Prospect.BLL
 
         }
 
+        public DataSet GetEmployeeInterviewDetails(int UserID)
+        {
+            return InstallUserDAL.Instance.GetEmployeeInterviewDetails(UserID);
+
+        }
+
+        public DataSet BulkIntsallUserDuplicateCheck(string xmlDoc)
+        {
+            return InstallUserDAL.Instance.BulkIntsallUserDuplicateCheck(xmlDoc);
+        }
+
+        public Boolean UpdateUserProfile(user objuser)
+        {
+            return InstallUserDAL.Instance.UpdateUserProfile(objuser);
+
+        }
+
+        public DataSet getInstallUserDetailsById(Int32 UserId) {
+            return InstallUserDAL.Instance.getInstallUserDetailsById(UserId);
+        }
+
+        public int QuickSaveInstallUser(user objInstallUser)
+        {
+            return InstallUserDAL.Instance.QuickSaveInstallUser(objInstallUser);
+        }
     }
 }

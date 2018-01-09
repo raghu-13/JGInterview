@@ -32,7 +32,7 @@ namespace JG_Prospect.BLL
 
         public DataSet GetAllTasksforSubSequencing(Int32 DesignationId, String DesiSeqCode, bool IsTechTask, Int64 TaskId)
         {
-            return TaskGeneratorDAL.Instance.GetAllTasksforSubSequencing(DesignationId,DesiSeqCode,IsTechTask,TaskId);
+            return TaskGeneratorDAL.Instance.GetAllTasksforSubSequencing(DesignationId, DesiSeqCode, IsTechTask, TaskId);
 
         }
 
@@ -46,6 +46,41 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.GetAllTaskWithSequence(page, pageSize, DesignationIds, IsTechTask, HighlightedTaskID);
         }
 
+        public DataSet GetAllInProAssReqTaskWithSequence(Int32 page, Int32 pageSize, String DesignationIds, int UserStatus, string StartDate, string EndDate)
+        {
+            return TaskGeneratorDAL.Instance.GetAllInProAssReqTaskWithSequence(page, pageSize, DesignationIds, UserStatus, StartDate, EndDate);
+        }
+
+        public DataSet GetAllPartialFrozenTaskWithSequence(Int32 page, Int32 pageSize, String DesignationIds, bool IsTechTask)
+        {
+            return TaskGeneratorDAL.Instance.GetAllPartialFrozenTaskWithSequence(page, pageSize, DesignationIds, IsTechTask);
+        }
+
+        public DataSet GetFrozenNonFrozenTaskCount()
+        {
+            return TaskGeneratorDAL.Instance.GetFrozenNonFrozenTaskCount();
+        }
+
+
+        public DataSet GetAllNonFrozenTaskWithSequence(Int32 page, Int32 pageSize, String DesignationIds, bool IsTechTask)
+        {
+            return TaskGeneratorDAL.Instance.GetAllNonFrozenTaskWithSequence(page, pageSize, DesignationIds, IsTechTask);
+        }
+
+        public DataSet GetAllNonFrozenUserTaskWithSequence(Int32 page, Int32 pageSize, bool IsTechTask, string UserId)
+        {
+            return TaskGeneratorDAL.Instance.GetAllNonFrozenUserTaskWithSequence(page, pageSize, IsTechTask, UserId);
+        }
+
+        public DataSet GetAllInProAssReqUserTaskWithSequence(Int32 page, Int32 pageSize, bool IsTechTask, string UserId, bool ForDashboard)
+        {
+            return TaskGeneratorDAL.Instance.GetAllInProAssReqUserTaskWithSequence(page, pageSize, IsTechTask, UserId, ForDashboard);
+        }
+
+        public DataSet GetAllPartialFrozenUserTaskWithSequence(Int32 page, Int32 pageSize, bool IsTechTask, string UserId)
+        {
+            return TaskGeneratorDAL.Instance.GetAllPartialFrozenUserTaskWithSequence(page, pageSize, IsTechTask, UserId);
+        }
 
         public int UpdateTaskSequence(Int64 Sequence, Int64 TaskID, Int32 DesignationID, bool IsTechTask)
         {
@@ -55,13 +90,13 @@ namespace JG_Prospect.BLL
 
         public DataSet GetInterviewDateSequences(Int32 DesignationId, Int32 UserCount)
         {
-            return TaskGeneratorDAL.Instance.GetInterviewDateSequences(DesignationId,UserCount);
+            return TaskGeneratorDAL.Instance.GetInterviewDateSequences(DesignationId, UserCount);
 
         }
 
         public bool UpdateTaskSubSequence(Int64 TaskID, Int64 TaskIdSeq, Int64 SubSeqTaskId, Int64 DesignationId)
         {
-            return TaskGeneratorDAL.Instance.UpdateTaskSubSequence( TaskID,  TaskIdSeq,  SubSeqTaskId,   DesignationId);
+            return TaskGeneratorDAL.Instance.UpdateTaskSubSequence(TaskID, TaskIdSeq, SubSeqTaskId, DesignationId);
 
         }
 
@@ -75,6 +110,13 @@ namespace JG_Prospect.BLL
         {
             return TaskGeneratorDAL.Instance.GetTaskByMaxId(parentTaskid, taskLVL);
         }
+
+        public DataSet GetMultilevelChildren(string ParentTaskId)
+        {
+            return TaskGeneratorDAL.Instance.GetMultilevelChildren(ParentTaskId);
+        }
+
+        //GetMultilevelChildren
 
         public bool SaveTaskDesignations(UInt64 TaskId, String strDesignations, String TaskIDCode)
         {
@@ -90,6 +132,11 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.SetTaskStatus(TaskId, TaskStatus);
         }
 
+        public bool SaveTaskMultiLevelChild(int ParentTaskId, string InstallId, string Description, int IndentLevel, string Class)
+        {
+            return TaskGeneratorDAL.Instance.SaveTaskMultiLevelChild(ParentTaskId, InstallId, Description, IndentLevel, Class);
+        }
+
         public bool SaveTaskAssignedToMultipleUsers(UInt64 TaskId, String UserId)
         {
             return TaskGeneratorDAL.Instance.SaveTaskAssignedToMultipleUsers(TaskId, UserId);
@@ -101,6 +148,11 @@ namespace JG_Prospect.BLL
         public bool AcceptTaskAssignmentRequests(UInt64 TaskId, String UserIds)
         {
             return TaskGeneratorDAL.Instance.AcceptTaskAssignmentRequests(TaskId, UserIds);
+        }
+
+        public DataSet GetTasksInformation(Int32 TaskId)
+        {
+            return TaskGeneratorDAL.Instance.GetTasksInformation(TaskId);
         }
 
         public bool UpdateTaskAcceptance(ref TaskUser objTaskUser)
@@ -141,14 +193,14 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.GetTaskDetails(TaskId);
         }
 
-        public DataSet GetTasksInformation(Int32 TaskId)
-        {
-            return TaskGeneratorDAL.Instance.GetTasksInformation(TaskId);
-        }
-        
         public DataSet GetSubTasks(Int32 TaskId, bool blIsAdmin, string strSortExpression, string vsearch = "", Int32? intPageIndex = 0, Int32? intPageSize = 0, int intHighlightTaskId = 0)
         {
             return TaskGeneratorDAL.Instance.GetSubTasks(TaskId, blIsAdmin, strSortExpression, vsearch, intPageIndex, intPageSize, intHighlightTaskId);
+        }
+
+        public DataSet GetTaskUserFileByFileName(string FileName)
+        {
+            return TaskGeneratorDAL.Instance.GetTaskUserFileByFileName(FileName);
         }
 
         public DataSet GetTaskUserFiles(Int32 TaskId, JGConstant.TaskFileDestination? objTaskFileDestination, Int32? intPageIndex, Int32? intPageSize)
@@ -164,6 +216,11 @@ namespace JG_Prospect.BLL
         public DataSet GetInstallUsers(int key, string Designation)
         {
             return TaskGeneratorDAL.Instance.GetInstallUsers(key, Designation);
+        }
+
+        public DataSet GetInstallUsers(int key, string Designation, int userstatus)
+        {
+            return TaskGeneratorDAL.Instance.GetInstallUsers(key, Designation, userstatus);
         }
 
         public DataSet GetInstallUserswithIds(int key, string Designation, string TaskId)
@@ -199,6 +256,11 @@ namespace JG_Prospect.BLL
         public DataSet GetTasksList(int? UserID, string Title, string Designation, Int16? Status, DateTime? CreatedFrom, DateTime? CreatedTo, string Statuses, string Designations, bool isAdmin, int Start, int PageLimit, string strSortExpression)
         {
             return TaskGeneratorDAL.Instance.GetTasksList(UserID, Title, Designation, Status, CreatedFrom, CreatedTo, Statuses, Designations, isAdmin, Start, PageLimit, strSortExpression);
+        }
+
+        public ActionOutput<LoginUser> GetInstallUsersByPrefix(string Prefix)
+        {
+            return TaskGeneratorDAL.Instance.GetInstallUsersByPrefix(Prefix);
         }
 
         public DataSet GetAllUsersNDesignationsForFilter()
@@ -273,6 +335,11 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.UpdateTaskURLById(tid, URL);
         }
 
+        public int UpdateTaskDescriptionChildById(string tid, string Description)
+        {
+            return TaskGeneratorDAL.Instance.UpdateTaskDescriptionChildById(tid, Description);
+        }
+
         public int UpdateTaskDescriptionById(string tid, string Description)
         {
             return TaskGeneratorDAL.Instance.UpdateTaskDescriptionById(tid, Description);
@@ -343,7 +410,7 @@ namespace JG_Prospect.BLL
         {
             return TaskGeneratorDAL.Instance.AcceptUserAssignedWithSequence(SequenceId);
         }
-        
+
         public DataSet GetDesignationTaskToAssignWithSequence(Int32 DesignationId, bool IsTechTask)
         {
             return TaskGeneratorDAL.Instance.GetDesignationTaskToAssignWithSequence(DesignationId, IsTechTask);
@@ -353,7 +420,10 @@ namespace JG_Prospect.BLL
         {
             return TaskGeneratorDAL.Instance.GetUserAssignedWithSequence(DesignationId, IsTechTask, UserID);
         }
-
+        public DataSet GetUserAssignedTaskHistory(Int32 UserID)
+        {
+            return TaskGeneratorDAL.Instance.GetUserAssignedTaskHistory(UserID);
+        }
         public DataSet RejectUserAssignedWithSequence(Int64 SequenceID, Int32 UserID, Int32 RejectedUserID)
         {
             return TaskGeneratorDAL.Instance.RejectUserAssignedWithSequence(SequenceID, UserID, RejectedUserID);
@@ -364,7 +434,10 @@ namespace JG_Prospect.BLL
             return TaskGeneratorDAL.Instance.InsertAssignedDesignationTaskWithSequence(DesignationId, IsTechTask, AssignedSequence, TaskId, UserId);
 
         }
-
+        public String HardDeleteTask(Int64 maintaskid)
+        {
+            return TaskGeneratorDAL.Instance.HardDeleteTask(maintaskid);
+        }
 
         #region TaskAcceptance
 

@@ -1,9 +1,0 @@
-C:\Users\hardik\Desktop\JmGrove\JmGrove\bin\Debug\JmGrove.exe.config
-C:\Users\hardik\Desktop\JmGrove\JmGrove\bin\Debug\JmGrove.exe
-C:\Users\hardik\Desktop\JmGrove\JmGrove\bin\Debug\JmGrove.pdb
-C:\Users\hardik\Desktop\JmGrove\JmGrove\obj\Debug\Bsnl.FrmDesignation.resources
-C:\Users\hardik\Desktop\JmGrove\JmGrove\obj\Debug\JmGrove.Properties.Resources.resources
-C:\Users\hardik\Desktop\JmGrove\JmGrove\obj\Debug\Bsnl.csproj.GenerateResource.Cache
-C:\Users\hardik\Desktop\JmGrove\JmGrove\obj\Debug\JmGrove.exe
-C:\Users\hardik\Desktop\JmGrove\JmGrove\obj\Debug\JmGrove.pdb
-C:\Users\hardik\Desktop\JmGrove\JmGrove\obj\Debug\Bsnl.csprojResolveAssemblyReference.cache

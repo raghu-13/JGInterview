@@ -150,9 +150,6 @@
       <HintPath>External Dependencies\MailServerApi.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.Office.Interop.Word, Version=14.0.0.0, Culture=neutral, PublicKeyToken=71e9bce111e9429c, processorArchitecture=MSIL">
-      <EmbedInteropTypes>True</EmbedInteropTypes>
-    </Reference>
     <Reference Include="Microsoft.Owin, Version=3.0.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>External Dependencies\Microsoft.Owin.dll</HintPath>
@@ -1381,6 +1378,8 @@
     <Content Include="Communication\webphone\sound\rtc_ringtone.wav" />
     <Content Include="Communication\webphone\sound\rtc_ringtone_orig.wav" />
     <Content Include="Communication\webphone\webphone_api.js" />
+    <Content Include="Content\paging.css" />
+    <Content Include="Content\touchPointlogs.css" />
     <Content Include="Content\ui-grid.css" />
     <Content Include="Content\ui-grid.min.css" />
     <Content Include="Content\ui-grid.svg" />
@@ -1417,7 +1416,9 @@
     <Content Include="css\msdropdown\dd_arrow.gif" />
     <Content Include="css\msdropdown\title-bg.gif" />
     <Content Include="css\pgwslideshow.min.css" />
+    <Content Include="css\popup.css" />
     <Content Include="css\TimeCircles.css" />
+    <Content Include="Customer_Panel.aspx" />
     <Content Include="Database Scripts\Bhavik\Dec\Dec_P2.sql" />
     <Content Include="Database Scripts\Bhavik\Dec\Dec_P2_Insert_Country.sql" />
     <Content Include="Database Scripts\Bhavik\Dec\Dec_P2_V2.sql" />
@@ -1435,8 +1436,10 @@
     <Content Include="Database Scripts\executed\bhavik\scripts oct _ITSN034_v0.1.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Script Nov_ITJN014_V1.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Script Nov_ITJN019_V1.sql" />
+    <Content Include="Database Scripts\executed\Kapil\Executed.sql" />
     <Content Include="Database Scripts\executed\shekhar\DB_Table_SP_Creation_With_Data_Nov_2016_ITSN0145_v1.0.sql" />
     <Content Include="Database Scripts\executed\yogesh\script April v0.1.sql" />
+    <Content Include="Database Scripts\executed\yogesh\Script August v0.1.sql" />
     <Content Include="Database Scripts\executed\yogesh\Script July v0.1.sql" />
     <Content Include="Database Scripts\executed\yogesh\scripts oct v0.1.sql" />
     <Content Include="Database Scripts\executed\shekhar\DB_Script_All_Only_Edit_User_Related_SQL_Changes_Needs_Deployment_20161130_Nov_2016_ITSN043_v1.1.sql" />
@@ -1482,6 +1485,19 @@
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Jan_2017_ITJN027_II_v0.2.sql" />
     <Content Include="Database Scripts\executed\Jaylem\Scripts_Jan_2017_ITSN043_I_e_v0.1.sql" />
     <Content Include="Database Scripts\executed\yogesh\script Feb v0.1.sql" />
+    <Content Include="Database Scripts\JitendraPancholi\AddDesignationCodeInUserDesigLastSequenceNo.sql" />
+    <Content Include="Database Scripts\JitendraPancholi\Alter &amp; Fix Data - tblUserDesigLastSequenceNo.sql" />
+    <Content Include="Database Scripts\JitendraPancholi\GetUsersByKeyword.sql" />
+    <Content Include="Database Scripts\JitendraPancholi\Procedure UDP_GetInstallerUserDetailsByLoginId.sql" />
+    <Content Include="Database Scripts\JitendraPancholi\Procedure UDP_IsValidInstallerUser.sql" />
+    <Content Include="Database Scripts\JitendraPancholi\Procedures.sql" />
+    <Content Include="Database Scripts\JitendraPancholi\Sp_InsertTouchPointLog.sql" />
+    <Content Include="Database Scripts\JitendraPancholi\Tables.sql" />
+    <Content Include="Database Scripts\JitendraPancholi\USP_SetUserDisplayID.sql" />
+    <Content Include="Database Scripts\Kapil\Executed_3.sql" />
+    <Content Include="Database Scripts\Kapil\Executed_4.sql" />
+    <Content Include="Database Scripts\Kapil\Latest.sql" />
+    <Content Include="Database Scripts\Kapil\Executed_2.sql" />
     <Content Include="Database Scripts\KetankumarGodhani\Database Script.sql" />
     <Content Include="Database Scripts\KetankumarGodhani\OLD\03-04-2017.sql" />
     <Content Include="Database Scripts\KetankumarGodhani\OLD\06-04-2017\GetFrozenTasks.sql" />
@@ -1497,7 +1513,12 @@
     <Content Include="Database Scripts\executed\yogesh\script May v0.1.sql" />
     <Content Include="Database Scripts\Leo\Scripts_May-2017_GitUserNameColumn Added.sql" />
     <Content Include="Database Scripts\executed\yogesh\Script July v0.1.sql" />
-    <Content Include="Database Scripts\yogesh\Script August v0.1.sql" />
+    <Content Include="Database Scripts\executed\yogesh\Script August v0.1.sql" />
+    <Content Include="Database Scripts\executed\yogesh\Script October v0.1.sql" />
+    <Content Include="Database Scripts\yogesh\CountryMaster.sql" />
+    <Content Include="Database Scripts\yogesh\FreeProjectQuote.sql" />
+    <Content Include="Database Scripts\yogesh\Script December v0.1.sql" />
+    <Content Include="Database Scripts\yogesh\Script November v0.1.sql" />
     <Content Include="datetime\jq\jquery.ui.position.min.js" />
     <Content Include="datetime\jq\jquery.ui.timepicker.css" />
     <Content Include="datetime\jq\jquery.ui.timepicker.js" />
@@ -1839,6 +1860,7 @@
     <Content Include="img\btn1.png" />
     <Content Include="img\chosen-sprite%402x.png" />
     <Content Include="img\chosen-sprite.png" />
+    <Content Include="img\close.png" />
     <Content Include="img\ContractFooter.png" />
     <Content Include="img\ContractHeader.jpg" />
     <Content Include="img\controls.png" />
@@ -1848,32 +1870,41 @@
     <Content Include="img\facebook.jpg" />
     <Content Include="img\fb_login.png" />
     <Content Include="img\File.png" />
-    <Content Include="img\FilledStar.gif" />
+    <Content Include="img\flags24.png" />
     <Content Include="img\folder.png" />
     <Content Include="img\gplus.png" />
+    <Content Include="img\icon_calendar.gif" />
+    <Content Include="img\icon_email.PNG" />
+    <Content Include="img\icon_jg.PNG" />
+    <Content Include="img\icon_share.JPG" />
     <Content Include="img\image-icon.png" />
+    <Content Include="img\indent_left.jpg" />
+    <Content Include="img\indent_right.jpg" />
+    <Content Include="img\jg-construction.jpg" />
     <Content Include="img\JG-Logo-white.gif" />
     <Content Include="img\JG-Logo.gif" />
+    <Content Include="img\JgLogo.jpg" />
     <Content Include="img\Loading-ring-alt.gif" />
     <Content Include="img\LoginwithFB.jpg" />
     <Content Include="img\LogoJG_PDF.png" />
     <Content Include="img\Logo_BG.png" />
+    <Content Include="img\microsoftlogin.png" />
     <Content Include="img\movies-icon.png" />
     <Content Include="img\pdf-icon.png" />
     <Content Include="img\pdf.jpg" />
     <Content Include="img\PlusMinus.png" />
     <Content Include="img\Resource.png" />
     <Content Include="img\sign-in-with-google.png" />
-    <Content Include="img\Star.gif" />
     <Content Include="img\star.png" />
+    <Content Include="img\starred.png" />
     <Content Include="img\twitter.jpg" />
     <Content Include="img\ui-anim_basic_16x16.png" />
     <Content Include="img\video-icon.png" />
-    <Content Include="img\WaitingStar.gif" />
+    <Content Include="img\whitetick.png" />
     <Content Include="img\word-icon.png" />
     <Content Include="img\word.jpg" />
     <Content Include="img\xls.png" />
-    <Content Include="img\yellowstar.png" />
+    <Content Include="img\yahoologin.png" />
     <Content Include="img\zip-icon.png" />
     <Content Include="Installer\ChangePassword.aspx" />
     <Content Include="Installer\InstallerHeader.ascx" />
@@ -1941,11 +1972,17 @@
     <Content Include="JGCalender\SalesCalender.aspx" />
     <Content Include="JGCalender\scripts\calendarscript.js" />
     <Content Include="JrAnnualCalendar.aspx" />
+    <Content Include="js\angular\scripts\ClosedTasls.js" />
+    <Content Include="js\angular\scripts\FrozenTask.js" />
     <Content Include="js\angular\scripts\jgappfactories.js" />
     <Content Include="js\angular\scripts\edituser-angular.js" />
+    <Content Include="js\angular\scripts\TaskGenerator.js" />
+    <Content Include="js\angular\scripts\TaskGeneratorHelper.js" />
     <Content Include="js\angular\scripts\TaskSequence-UiGrid.js" />
     <Content Include="js\angular\templates\sequence-header-template.html" />
     <Content Include="js\angular\templates\pager-template.html" />
+    <Content Include="js\common-js.js" />
+    <Content Include="js\createsales.js" />
     <Content Include="js\edituser.js" />
     <Content Include="js\flipclock.min.js" />
     <Content Include="js\angular\scripts\jgapp.js" />
@@ -2062,6 +2099,8 @@
     <Content Include="js\ice\lib\tinymce\jscripts\tiny_mce\utils\validate.js" />
     <Content Include="js\ice\src\ice.js" />
     <Content Include="js\intTel\intlTelInput.js" />
+    <Content Include="js\intTel\utils.js" />
+    <Content Include="js\jquery.magnific-popup.min.js" />
     <Content Include="js\JCarousel.js" />
     <Content Include="js\jg-common.js" />
     <Content Include="js\jquery-latest.js" />
@@ -2073,6 +2112,7 @@
     <Content Include="js\jquery.datetimepicker.css" />
     <Content Include="js\jquery.datetimepicker.js" />
     <Content Include="js\jquery.dd.min.js" />
+    <Content Include="js\jquery.form.js" />
     <Content Include="js\jquery.js" />
     <Content Include="js\jquery.MultiFile.js" />
     <Content Include="js\jquery.multiselect.js" />
@@ -2084,9 +2124,15 @@
     <Content Include="js\jquery.ui.position.min.js" />
     <Content Include="js\lightslider.js" />
     <Content Include="js\angular\scripts\TaskSequence.js" />
+    <Content Include="js\mention\bootstrap-typeahead.js" />
+    <Content Include="js\mention\mention.js" />
+    <Content Include="js\mention\recommended-styles.css" />
+    <Content Include="js\paging.js" />
     <Content Include="js\TaskSequencing.js" />
     <Content Include="js\TimeCircles.js" />
     <Content Include="js\TimerFunctions.js" />
+    <Content Include="js\tribute\tribute.css" />
+    <Content Include="js\tribute\tribute.min.js" />
     <Content Include="Location_img\Jellyfish.jpg" />
     <Content Include="Location_img\Lighthouse.jpg" />
     <Content Include="Location_img\Tulips.jpg" />
@@ -2095,7 +2141,10 @@
     <Content Include="MCQTest\ObjectiveExamSummary.aspx" />
     <Content Include="MCQTest\StartExam.aspx" />
     <Content Include="MCQTest\ViewResults.aspx" />
+    <Content Include="postdata.html" />
     <Content Include="Properties\PublishProfiles\DeveloperProfile.pubxml.user" />
+    <Content Include="screening-intermediate.aspx" />
+    <Content Include="screening-popup.aspx" />
     <Content Include="Scripts\angular-mocks.js" />
     <Content Include="Scripts\angular.js" />
     <Content Include="Scripts\angular.min.js" />
@@ -2146,7 +2195,6 @@
     <Content Include="Sr_App\img\Cell_Phone.png" />
     <Content Include="Sr_App\img\dark-blue-astrek.png" />
     <Content Include="Sr_App\img\Email art header.png" />
-    <Content Include="Sr_App\img\FilledStar.gif" />
     <Content Include="Sr_App\img\flags24.png" />
     <Content Include="Sr_App\img\green-astrek.png" />
     <Content Include="Sr_App\img\jmFooter.png" />
@@ -2161,9 +2209,7 @@
     <Content Include="Sr_App\img\red-astrek.png" />
     <Content Include="Sr_App\img\skype.ico" />
     <Content Include="Sr_App\img\skype.png" />
-    <Content Include="Sr_App\img\Star.gif" />
     <Content Include="Sr_App\img\SubmitButton.png" />
-    <Content Include="Sr_App\img\WaitingStar.gif" />
     <Content Include="Sr_App\img\WhatsApp.png" />
     <Content Include="Sr_App\img\white-astrek.png" />
     <Content Include="Sr_App\img\WorkPhone.png" />
@@ -2201,6 +2247,7 @@
     <Content Include="Sr_App\TaskGenerator.aspx" />
     <Content Include="Sr_App\TaskList.aspx" />
     <Content Include="Sr_App\Time_Material.aspx" />
+    <Content Include="Sr_App\TouchPointLog.aspx" />
     <Content Include="Sr_App\UploadFile.aspx" />
     <Content Include="Sr_App\UploadFileCustomerDocs.aspx" />
     <Content Include="Sr_App\userbulkupload.aspx" />
@@ -2362,7 +2409,10 @@
     <Content Include="Scripts\jquery-1.4.1.min.js" />
     <Content Include="Synapse.aspx" />
     <Content Include="TestGoogleMap.aspx" />
+    <Content Include="updateuserdetails.aspx" />
     <Content Include="upload.aspx" />
+    <Content Include="UploadedFiles\7162015111634AMKoala.jpg" />
+    <Content Include="UploadedFiles\7162015111655AMJellyfish.jpg" />
     <Content Include="UploadeProfile\default.jpg" />
     <Content Include="UserControl\UCAddress.ascx" />
     <Content Include="UserControl\ucAuditTrailByUser.ascx" />
@@ -2413,6 +2463,20 @@
     <Compile Include="ckeditor\plugins\uploadimage\fileuploader.aspx.designer.cs">
       <DependentUpon>fileuploader.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Customer_Panel.aspx.cs">
+      <DependentUpon>Customer_Panel.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Customer_Panel.aspx.designer.cs">
+      <DependentUpon>Customer_Panel.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="JGCustomer.Master.cs">
+      <DependentUpon>JGCustomer.Master</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="JGCustomer.Master.designer.cs">
+      <DependentUpon>JGCustomer.Master</DependentUpon>
+    </Compile>
     <Compile Include="JGApplicant.Master.cs">
       <DependentUpon>JGApplicant.Master</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2454,6 +2518,20 @@
     </Compile>
     <Compile Include="MCQTest\ViewResults.aspx.designer.cs">
       <DependentUpon>ViewResults.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="screening-intermediate.aspx.cs">
+      <DependentUpon>screening-intermediate.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="screening-intermediate.aspx.designer.cs">
+      <DependentUpon>screening-intermediate.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="screening-popup.aspx.cs">
+      <DependentUpon>screening-popup.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="screening-popup.aspx.designer.cs">
+      <DependentUpon>screening-popup.aspx</DependentUpon>
     </Compile>
     <Compile Include="Sr_App\add-edit-aptitude-test.aspx.cs">
       <DependentUpon>add-edit-aptitude-test.aspx</DependentUpon>
@@ -2567,6 +2645,13 @@
     <Compile Include="Sr_App\resumeupload.aspx.designer.cs">
       <DependentUpon>resumeupload.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Sr_App\TouchPointLog.aspx.cs">
+      <DependentUpon>TouchPointLog.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Sr_App\TouchPointLog.aspx.designer.cs">
+      <DependentUpon>TouchPointLog.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Sr_App\UploadFile.aspx.cs">
       <DependentUpon>UploadFile.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -2612,6 +2697,13 @@
     </Compile>
     <Compile Include="stafflogin.aspx.designer.cs">
       <DependentUpon>stafflogin.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="updateuserdetails.aspx.cs">
+      <DependentUpon>updateuserdetails.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="updateuserdetails.aspx.designer.cs">
+      <DependentUpon>updateuserdetails.aspx</DependentUpon>
     </Compile>
     <Compile Include="UserControl\ucRenewSession.ascx.cs">
       <DependentUpon>ucRenewSession.ascx</DependentUpon>
@@ -3481,7 +3573,6 @@
     <Folder Include="Resources\" />
     <Folder Include="Sr_App\MailDocument\MailAttachments\" />
     <Folder Include="Sr_App\UploadedFile\" />
-    <Folder Include="UploadedFiles\" />
     <Folder Include="UserImages\" />
   </ItemGroup>
   <ItemGroup>
@@ -3538,6 +3629,7 @@
     <Content Include="JGCalender\JsonResponse.ashx" />
     <Content Include="js\JCarousel.js.rej" />
     <Content Include="JGApplicant.Master" />
+    <Content Include="JGCustomer.Master" />
     <None Include="PDFS\Escrow_a.pdfEscrow_a.pdf" />
     <None Include="PDFS\Escrow_shyam.pdfEscrow_shyam.pdf" />
     <None Include="PDFS\FacePage_ennavation.pdfFacePage_ennavation.pdf" />
@@ -3563,7 +3655,19 @@
     <Content Include="UserFile\SalesSample.xlsx" />
     <None Include="Properties\PublishProfiles\DeveloperProfile.pubxml" />
     <None Include="Properties\PublishProfiles\LivePublish.pubxml" />
+    <None Include="Properties\PublishProfiles\LocalLive.pubxml" />
     <None Include="Properties\PublishProfiles\TestProfile.pubxml" />
+  </ItemGroup>
+  <ItemGroup>
+    <COMReference Include="Microsoft.Office.Interop.Word">
+      <Guid>{00020905-0000-0000-C000-000000000046}</Guid>
+      <VersionMajor>8</VersionMajor>
+      <VersionMinor>4</VersionMinor>
+      <Lcid>0</Lcid>
+      <WrapperTool>primary</WrapperTool>
+      <Isolated>False</Isolated>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
+    </COMReference>
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Service References\" />

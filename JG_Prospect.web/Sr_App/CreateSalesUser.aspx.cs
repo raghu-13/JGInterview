@@ -56,6 +56,8 @@ namespace JG_Prospect.Sr_App
         {
             CommonFunction.AuthenticateUser();
 
+            hdnAddedByUserId.Value = JGSession.LoginUserID;
+
             if (Session["Username"] != null)
             {
                 // txtSource.Text = Session["Username"].ToString();
@@ -806,13 +808,10 @@ namespace JG_Prospect.Sr_App
                         //    ddlSource.SelectedValue = ds.Tables[0].Rows[0][38].ToString();
                         //}
                         //if (ds.Tables[0].Rows[0][39].ToString() != "")
-                        
-
-                        if (ds.Tables[0].Columns.Contains("SourceID"))
-                            if (ds.Tables[0].Rows[0]["SourceID"].ToString() != "")
-                            {
-                                ddlSource.SelectedValue = ds.Tables[0].Rows[0]["SourceID"].ToString();
-                            }
+                        if (ds.Tables[0].Rows[0]["SourceID"].ToString() != "")
+                        {
+                            ddlSource.SelectedValue = ds.Tables[0].Rows[0]["SourceID"].ToString();
+                        }
                         {
                             txtNotes.Text = ds.Tables[0].Rows[0][39].ToString();
                         }
@@ -4783,16 +4782,13 @@ namespace JG_Prospect.Sr_App
                     string strBody = dsEmailTemplate.Tables[0].Rows[0]["HTMLBody"].ToString();
                     string strFooter = dsEmailTemplate.Tables[0].Rows[0]["HTMLFooter"].ToString();
                     string strsubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString();
+                    string strTaskLinkTitle = CommonFunction.GetTaskLinkTitleForAutoEmail(int.Parse(strTaskId));
 
                     strBody = strBody.Replace("#Fname#", fullname);
-                    strBody = strBody.Replace("#TaskLink#", string.Format("{0}?TaskId={1}", String.Concat(Request.Url.Scheme, Uri.SchemeDelimiter, Request.Url.Host.Split('?')[0], "/Sr_App/TaskGenerator.aspx"), strTaskId));
+                    strBody = strBody.Replace("#TaskLink#", string.Format("{0}?TaskId={1}&{2}", String.Concat(Request.Url.Scheme, Uri.SchemeDelimiter, Request.Url.Host.Split('?')[0], "/Sr_App/TaskGenerator.aspx"), strTaskId,strTaskLinkTitle));
 
-                    // Added by Zubair Ahmed Khan for displaying proper text for task link
-                    string strTaskLinkTitle = CommonFunction.GetTaskLinkTitleForAutoEmail(int.Parse(strTaskId));
-                    strBody = strBody.Replace("#TaskLinkTitle#", strTaskLinkTitle);
-
-
-
+                    
+                    strBody = strBody.Replace("#TaskTitle#", string.Format("{0}?TaskId={1}", Request.Url.ToString().Split('?')[0], strTaskId));
                     strBody = strHeader + strBody + strFooter;
 
                     List<Attachment> lstAttachments = new List<Attachment>();
@@ -6231,7 +6227,8 @@ namespace JG_Prospect.Sr_App
                     , strUserInstallId
                     , DateTime.Now
                     , strValueToAdd
-                    , UserGuid);
+                    , UserGuid
+                    , (int)TouchPointSource.CreateSalesUser);
 
                 BindTouchPointLog();
             }

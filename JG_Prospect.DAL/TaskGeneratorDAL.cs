@@ -41,7 +41,192 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@DesignationIds", SqlDbType.VarChar, DesignationIds);
                     database.AddInParameter(command, "@IsTechTask", SqlDbType.Bit, IsTechTask);
                     database.AddInParameter(command, "@HighLightedTaskID", SqlDbType.BigInt, HighlightedTaskID);
+                    command.CommandType = CommandType.StoredProcedure;
 
+                    DataSet result = database.ExecuteDataSet(command);
+
+                    return result;
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+
+        public DataSet GetAllInProAssReqTaskWithSequence(Int32 page, Int32 pageSize, String DesignationIds, int UserStatus, string StartDate, string EndDate)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_GetAllInProAssReqTaskWithSequence");
+
+                    database.AddInParameter(command, "@PageIndex", SqlDbType.Int, page);
+                    database.AddInParameter(command, "@PageSize", SqlDbType.Int, pageSize);
+                    database.AddInParameter(command, "@DesignationIds", SqlDbType.VarChar, DesignationIds);
+                    database.AddInParameter(command, "@UserStatus", SqlDbType.Int, UserStatus);
+                    database.AddInParameter(command, "@StartDate", SqlDbType.VarChar, StartDate.Equals("All") ? "" : StartDate);
+                    database.AddInParameter(command, "@EndDate", SqlDbType.VarChar, EndDate);
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    DataSet result = database.ExecuteDataSet(command);
+
+                    return result;
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+
+        public DataSet GetAllPartialFrozenTaskWithSequence(Int32 page, Int32 pageSize, String DesignationIds, bool IsTechTask)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_GetAllPartialFrozenTaskWithSequence");
+                    database.AddInParameter(command, "@PageIndex", SqlDbType.Int, page);
+                    database.AddInParameter(command, "@PageSize", SqlDbType.Int, pageSize);
+                    database.AddInParameter(command, "@DesignationIds", SqlDbType.VarChar, DesignationIds);
+                    database.AddInParameter(command, "@IsTechTask", SqlDbType.Bit, IsTechTask);
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    DataSet result = database.ExecuteDataSet(command);
+
+                    return result;
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+        public DataSet GetAllNonFrozenTaskWithSequence(Int32 page, Int32 pageSize, String DesignationIds, bool IsTechTask)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_GetAllNonFrozenTaskWithSequence");
+                    database.AddInParameter(command, "@PageIndex", SqlDbType.Int, page);
+                    database.AddInParameter(command, "@PageSize", SqlDbType.Int, pageSize);
+                    database.AddInParameter(command, "@DesignationIds", SqlDbType.VarChar, DesignationIds);
+                    database.AddInParameter(command, "@IsTechTask", SqlDbType.Bit, IsTechTask);
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    DataSet result = database.ExecuteDataSet(command);
+
+                    return result;
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+        public DataSet GetFrozenNonFrozenTaskCount()
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("GetFrozenNonFrozenTaskCount");
+                    command.CommandType = CommandType.StoredProcedure;
+                    DataSet result = database.ExecuteDataSet(command);
+                    return result;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+        public DataSet GetAllNonFrozenUserTaskWithSequence(Int32 page, Int32 pageSize, bool IsTechTask, string UserId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_GetAllNonFrozenUserTaskWithSequence");
+
+                    database.AddInParameter(command, "@PageIndex", SqlDbType.Int, page);
+                    database.AddInParameter(command, "@PageSize", SqlDbType.Int, pageSize);
+                    database.AddInParameter(command, "@UserId", SqlDbType.VarChar, UserId);
+                    database.AddInParameter(command, "@IsTechTask", SqlDbType.Bit, IsTechTask);
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    DataSet result = database.ExecuteDataSet(command);
+
+                    return result;
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+        public DataSet GetAllPartialFrozenUserTaskWithSequence(Int32 page, Int32 pageSize, bool IsTechTask, string UserId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_GetAllPartialFrozenUserTaskWithSequence");
+
+                    database.AddInParameter(command, "@PageIndex", SqlDbType.Int, page);
+                    database.AddInParameter(command, "@PageSize", SqlDbType.Int, pageSize);
+                    database.AddInParameter(command, "@UserId", SqlDbType.VarChar, UserId);
+                    database.AddInParameter(command, "@IsTechTask", SqlDbType.Bit, IsTechTask);
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    DataSet result = database.ExecuteDataSet(command);
+
+                    return result;
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+
+
+        public DataSet GetAllInProAssReqUserTaskWithSequence(Int32 page, Int32 pageSize, bool IsTechTask, string UserId, bool ForDashboard)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_GetAllInProAssReqUserTaskWithSequence");
+
+                    database.AddInParameter(command, "@PageIndex", SqlDbType.Int, page);
+                    database.AddInParameter(command, "@PageSize", SqlDbType.Int, pageSize);
+                    database.AddInParameter(command, "@UserId", SqlDbType.VarChar, UserId);
+                    database.AddInParameter(command, "@IsTechTask", SqlDbType.Bit, IsTechTask);
+                    database.AddInParameter(command, "@ForDashboard", SqlDbType.Bit, ForDashboard);
                     command.CommandType = CommandType.StoredProcedure;
 
                     DataSet result = database.ExecuteDataSet(command);
@@ -128,6 +313,30 @@ namespace JG_Prospect.DAL
                     database.AddInParameter(command, "@IsTechTask", SqlDbType.Bit, IsTechTask);
                     database.AddInParameter(command, "@UserID", SqlDbType.Int, UserID);
 
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    DataSet result = database.ExecuteDataSet(command);
+
+                    return result;
+
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+
+        public DataSet GetUserAssignedTaskHistory(Int32 UserID)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("GetUserAssignedTaskHistory");
+                    database.AddInParameter(command, "@UserID", SqlDbType.Int, UserID);
                     command.CommandType = CommandType.StoredProcedure;
 
                     DataSet result = database.ExecuteDataSet(command);
@@ -525,6 +734,45 @@ namespace JG_Prospect.DAL
 
         }
 
+        public String HardDeleteTask(Int64 maintaskid)
+        {
+            String filesToDelete = String.Empty;
+
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_HardDeleteTask");
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@TaskId", DbType.Int64, maintaskid);
+                    database.AddOutParameter(command, "@TaskAttachments", DbType.String,-1);
+                    database.AddOutParameter(command, "@AllDeleted", DbType.Boolean, -1);
+                                        
+                    int result = database.ExecuteNonQuery(command);
+
+                    if (result > 0)
+                    {
+                        Boolean allDeleted = Convert.ToBoolean(database.GetParameterValue(command, "@AllDeleted"));
+
+                        if (allDeleted)
+                        {
+                             filesToDelete = Convert.ToString(database.GetParameterValue(command, "@TaskAttachments"));
+                        }
+                    }
+                                        
+                }
+            }
+
+            catch (Exception ex)
+            {
+                
+            }
+
+            return filesToDelete;
+
+        }
+
         public int UpdateTaskStatus(Task objTask)
         {
             try
@@ -673,6 +921,40 @@ namespace JG_Prospect.DAL
             }
         }
 
+        public bool SaveTaskMultiLevelChild(int ParentTaskId, string InstallId, string Description, int IndentLevel, string Class)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("sp_AddMultiLevelChlild");
+
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@ParentTaskId", SqlDbType.Int, ParentTaskId);
+                    database.AddInParameter(command, "@InstallId", SqlDbType.VarChar, InstallId);
+                    database.AddInParameter(command, "@Description", SqlDbType.VarChar, Description);
+                    database.AddInParameter(command, "@IndentLevel", SqlDbType.Int, IndentLevel);
+                    database.AddInParameter(command, "@Class", SqlDbType.VarChar, Class);
+
+                    int result = database.ExecuteNonQuery(command);
+
+                    //if (result > 0)
+                    //{
+                    return true;
+                    //}
+                    //else
+                    //{
+                    //    return false;
+                    //}
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+
         public bool SetTaskStatus(int TaskId, string taskStatus)
         {
             try
@@ -784,6 +1066,33 @@ namespace JG_Prospect.DAL
                 return false;
             }
         }
+
+        //Get details for task with user and attachments
+        public DataSet GetTasksInformation(Int32 TaskId)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("GetTasksInformation");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@TaskId", DbType.Int32, TaskId);
+
+                    returndata = database.ExecuteDataSet(command);
+
+                    return returndata;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
+
 
         public bool SaveOrDeleteTaskNotes(ref TaskUser objTaskUser)
         {
@@ -1010,31 +1319,6 @@ namespace JG_Prospect.DAL
                 return null;
             }
         }
-        
-        //Get details for task 
-        public DataSet GetTasksInformation(Int32 TaskId)
-        {
-            try
-            {
-                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
-                {
-                    returndata = new DataSet();
-                    DbCommand command = database.GetStoredProcCommand("GetTasksInformation");
-                    command.CommandType = CommandType.StoredProcedure;
-
-                    database.AddInParameter(command, "@TaskId", DbType.Int32, TaskId);
-
-                    returndata = database.ExecuteDataSet(command);
-
-                    return returndata;
-                }
-            }
-
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
 
         public DataSet GetTaskByMaxId(string parentTaskid, short taskLVL)
         {
@@ -1110,6 +1394,31 @@ namespace JG_Prospect.DAL
             }
         }
 
+        public DataSet GetTaskUserFileByFileName(string FileName)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    returndata = new DataSet();
+                    DbCommand command = database.GetStoredProcCommand("usp_GetTaskUserFilesByFileName");
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@FileName", DbType.String, FileName);
+
+                    
+                    returndata = database.ExecuteDataSet(command);
+
+                    return returndata;
+                }
+            }
+
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+
         public DataSet GetTaskUserFiles(Int32 TaskId, JGConstant.TaskFileDestination? objTaskFileDestination, Int32? intPageIndex, Int32? intPageSize)
         {
             try
@@ -1146,6 +1455,37 @@ namespace JG_Prospect.DAL
             {
                 return null;
             }
+        }
+
+        public DataSet GetInstallUsers(int Key, string Designastion, int userstatus)
+        {
+            DataSet result = new DataSet();
+            try
+            {
+
+                string[] arrDesignation = Designastion.Split(new char[] { ',' }, StringSplitOptions.RemoveEmptyEntries);
+
+                for (int i = 0; i < arrDesignation.Length; i++)
+                {
+                    arrDesignation[i] = arrDesignation[i].Trim();
+                }
+
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("SP_GetInstallUsersWithStatus");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@Key", DbType.Int16, Key); ;
+                    database.AddInParameter(command, "@Designations", DbType.String, string.Join(",", arrDesignation));
+                    database.AddInParameter(command, "@UserStatus", DbType.Int32, userstatus);
+                    result = database.ExecuteDataSet(command);
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
         }
 
         public DataSet GetInstallUsers(int Key, string Designastion)
@@ -1215,6 +1555,45 @@ namespace JG_Prospect.DAL
 
         }
 
+        public ActionOutput<LoginUser> GetInstallUsersByPrefix(string Prefix)
+        {
+            List<LoginUser> users = new List<LoginUser>();
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("usp_GetInstallUsersByPrefix");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@Prefix", DbType.String, Prefix);
+                    returndata = database.ExecuteDataSet(command);
+
+                    if (returndata != null && returndata.Tables[0] != null && returndata.Tables[0].Rows.Count > 0)
+                    {
+                        foreach (DataRow item in returndata.Tables[0].Rows)
+                        {
+                            users.Add(new LoginUser
+                            {
+                                ID = Convert.ToInt32(item["Id"].ToString()),
+                                FirstName = item["Name"].ToString(),
+                                Email = item["Email"].ToString(),
+                            });
+                        }
+                    }
+                    return new ActionOutput<LoginUser>
+                    {
+                        Results = users,
+                        Status = ActionStatus.Successfull
+                    };
+                }
+
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+
         public DataSet GetAllActiveTechTask()
         {
             DataSet result = new DataSet();
@@ -1224,6 +1603,27 @@ namespace JG_Prospect.DAL
                 {
                     DbCommand command = database.GetStoredProcCommand("SP_GetAllActiveTechTask");
                     command.CommandType = CommandType.StoredProcedure;
+                    result = database.ExecuteDataSet(command);
+                }
+                return result;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+
+        }
+
+        public DataSet GetMultilevelChildren(string ParentTaskId)
+        {
+            DataSet result = new DataSet();
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("sp_GetMultiLevelList");
+                    command.CommandType = CommandType.StoredProcedure;
+                    database.AddInParameter(command, "@ParentTaskId", DbType.String, ParentTaskId);
                     result = database.ExecuteDataSet(command);
                 }
                 return result;
@@ -1748,6 +2148,27 @@ namespace JG_Prospect.DAL
                 return -1;
             }
         }
+        public int UpdateTaskDescriptionChildById(string tid, string Description)
+        {
+            try
+            {
+                SqlDatabase database = MSSQLDataBase.Instance.GetDefaultDatabase();
+                {
+                    DbCommand command = database.GetStoredProcCommand("UpdateTaskDescriptionChildById");
+
+                    command.CommandType = CommandType.StoredProcedure;
+
+                    database.AddInParameter(command, "@TaskId", DbType.Int64, tid);
+                    database.AddInParameter(command, "@Description", DbType.String, Description);
+
+                    return database.ExecuteNonQuery(command);
+                }
+            }
+            catch
+            {
+                return -1;
+            }
+        }
 
         public int UpdateTaskDescriptionById(string tid, string Description)
         {
@@ -2229,5 +2650,6 @@ namespace JG_Prospect.DAL
         //------------- End DP--------------
 
         #endregion
+        
     }
 }

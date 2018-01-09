@@ -24,6 +24,7 @@ using Newtonsoft.Json;
 using System.Linq;
 using System.Web.UI.HtmlControls;
 using CKEditor.NET;
+using System.Web.Script.Serialization;
 
 #endregion
 
@@ -244,34 +245,34 @@ namespace JG_Prospect.Sr_App
             objucSubTasks_Admin.DisableSubTaskAssignment(false);
             objucSubTasks_User.DisableSubTaskAssignment(false);
 
-            LoadUsersByDesgination();
+            //LoadUsersByDesgination();
 
             ddlAssignedUsers_SelectedIndexChanged(sender, e);
 
-            ddlUserDesignation.Texts.SelectBoxCaption = "Select";
+            //ddlUserDesignation.Texts.SelectBoxCaption = "Select";
 
-            foreach (ListItem item in ddlUserDesignation.Items)
-            {
-                if (item.Selected)
-                {
-                    ddlUserDesignation.Texts.SelectBoxCaption = item.Text;
-                    break;
-                }
-            }
+            //foreach (ListItem item in ddlUserDesignation.Items)
+            //{
+            //    if (item.Selected)
+            //    {
+            //        ddlUserDesignation.Texts.SelectBoxCaption = item.Text;
+            //        break;
+            //    }
+            //}
         }
 
         protected void ddlAssignedUsers_SelectedIndexChanged(object sender, EventArgs e)
         {
-            ddlAssignedUsers.Texts.SelectBoxCaption = "--Open--";
+            //ddlAssignedUsers.Texts.SelectBoxCaption = "--Open--";
 
-            foreach (ListItem item in ddlAssignedUsers.Items)
-            {
-                if (item.Selected)
-                {
-                    ddlAssignedUsers.Texts.SelectBoxCaption = item.Text;
-                    break;
-                }
-            }
+            //foreach (ListItem item in ddlAssignedUsers.Items)
+            //{
+            //    if (item.Selected)
+            //    {
+            //        ddlAssignedUsers.Texts.SelectBoxCaption = item.Text;
+            //        break;
+            //    }
+            //}
         }
 
         protected void rptAttachment_ItemCommand(object source, RepeaterCommandEventArgs e)
@@ -797,12 +798,12 @@ namespace JG_Prospect.Sr_App
             ddlTUStatus.DataBind();
             //ddlTUStatus.Items.FindByValue(Convert.ToByte(JGConstant.TaskStatus.SpecsInProgress).ToString()).Enabled = false;
 
-            DataSet ds = DesignationBLL.Instance.GetActiveDesignationByID(0, 1);
-            ddlUserDesignation.Items.Clear();
-            ddlUserDesignation.DataSource = ds.Tables[0];
-            ddlUserDesignation.DataTextField = "DesignationName";
-            ddlUserDesignation.DataValueField = "ID";
-            ddlUserDesignation.DataBind();
+            //DataSet ds = DesignationBLL.Instance.GetActiveDesignationByID(0, 1);
+            //ddlUserDesignation.Items.Clear();
+            //ddlUserDesignation.DataSource = ds.Tables[0];
+            //ddlUserDesignation.DataTextField = "DesignationName";
+            //ddlUserDesignation.DataValueField = "ID";
+            //ddlUserDesignation.DataBind();
         }
 
         private void DeletaTask(string TaskId)
@@ -910,26 +911,6 @@ namespace JG_Prospect.Sr_App
             return prefix;
         }
 
-        private void LoadUsersByDesgination()
-        {
-            DataSet dsUsers;
-
-            // DropDownCheckBoxes ddlAssign = (FindControl("ddlAssignedUsers") as DropDownCheckBoxes);
-            // DropDownList ddlDesignation = (DropDownList)sender;
-
-            string designations = GetSelectedDesignationsString();
-
-            dsUsers = TaskGeneratorBLL.Instance.GetInstallUsers(2, designations);
-
-            ddlAssignedUsers.Items.Clear();
-            ddlAssignedUsers.DataSource = dsUsers;
-            ddlAssignedUsers.DataTextField = "FristName";
-            ddlAssignedUsers.DataValueField = "Id";
-            ddlAssignedUsers.DataBind();
-
-            HighlightInterviewUsers(dsUsers.Tables[0], ddlAssignedUsers, null);
-        }
-
         private void HighlightInterviewUsers(DataTable dtUsers, DropDownCheckBoxes ddlUsers, DropDownList ddlFilterUsers)
         {
             HyperLink lnkUserId = new HyperLink();
@@ -995,13 +976,13 @@ namespace JG_Prospect.Sr_App
             String returnVal = string.Empty;
             StringBuilder sbDesignations = new StringBuilder();
 
-            foreach (ListItem item in ddlUserDesignation.Items)
-            {
-                if (item.Selected)
-                {
-                    sbDesignations.Append(String.Concat(item.Value, ","));
-                }
-            }
+            //foreach (ListItem item in ddlUserDesignation.Items)
+            //{
+            //    if (item.Selected)
+            //    {
+            //        sbDesignations.Append(String.Concat(item.Value, ","));
+            //    }
+            //}
 
             if (sbDesignations.Length > 0)
             {
@@ -1070,10 +1051,10 @@ namespace JG_Prospect.Sr_App
             objucSubTasks_User.ClearSubTaskData();
             txtTaskTitle.Text = string.Empty;
             txtDescription.Text = string.Empty;
-            ddlUserDesignation.ClearSelection();
-            ddlUserDesignation.Texts.SelectBoxCaption = "Select";
-            ddlAssignedUsers.Items.Clear();
-            ddlAssignedUsers.Texts.SelectBoxCaption = "--Open--";
+            //ddlUserDesignation.ClearSelection();
+            //ddlUserDesignation.Texts.SelectBoxCaption = "Select";
+            //ddlAssignedUsers.Items.Clear();
+            //ddlAssignedUsers.Texts.SelectBoxCaption = "--Open--";
             cmbStatus.ClearSelection();
             ddlUserAcceptance.ClearSelection();
             ddlTaskPriority.SelectedValue = "0";
@@ -1098,7 +1079,7 @@ namespace JG_Prospect.Sr_App
             SaveTaskDesignations();
 
             // save details of users to whom task is assgined.
-            SaveAssignedTaskUsers(ddlAssignedUsers, (JGConstant.TaskStatus)Convert.ToByte(cmbStatus.SelectedItem.Value));
+            SaveAssignedTaskUsers((JGConstant.TaskStatus)Convert.ToByte(cmbStatus.SelectedItem.Value));
 
             if (controlMode.Value == "0")
             {
@@ -1147,7 +1128,7 @@ namespace JG_Prospect.Sr_App
             objTask.Hours = txtHours.Text;
             objTask.CreatedBy = userId;
             objTask.Mode = Convert.ToInt32(controlMode.Value);
-            objTask.InstallId = GetInstallIdFromDesignation(ddlUserDesignation.SelectedValue);
+            objTask.InstallId = GetInstallIdFromDesignation(ddlDesignationSeq.Value);            
             objTask.IsTechTask = chkTechTask.Checked;
 
             Int64 ItaskId = TaskGeneratorBLL.Instance.SaveOrDeleteTask(objTask,0,0);    // save task master details
@@ -1163,7 +1144,8 @@ namespace JG_Prospect.Sr_App
             //if task id is available to save its note and attachement.
             if (hdnTaskId.Value != "0")
             {
-                String designations = GetSelectedDesignationsString();
+                //String designations = GetSelectedDesignationsString();
+                String designations = hdnSelectedDesig.Value;
                 if (!string.IsNullOrEmpty(designations))
                 {
                     int indexofComma = designations.IndexOf(',');
@@ -1179,21 +1161,13 @@ namespace JG_Prospect.Sr_App
         /// <summary>
         /// Save user's to whom task is assigned. 
         /// </summary>
-        private void SaveAssignedTaskUsers(DropDownCheckBoxes ddlAssigned, JGConstant.TaskStatus objTaskStatus)
+        private void SaveAssignedTaskUsers(JGConstant.TaskStatus objTaskStatus)
         {
             //if task id is available to save its note and attachement.
             if (hdnTaskId.Value != "0")
             {
                 string strUsersIds = string.Empty;
-
-                foreach (ListItem item in ddlAssigned.Items)
-                {
-                    if (item.Selected)
-                    {
-                        strUsersIds = strUsersIds + (item.Value + ",");
-                    }
-                }
-
+                strUsersIds = hdnSelectedUsers.Value;
                 // removes any extra comma "," from the end of the string.
                 strUsersIds = strUsersIds.TrimEnd(',');
 
@@ -1302,14 +1276,13 @@ namespace JG_Prospect.Sr_App
                     string strBody = dsEmailTemplate.Tables[0].Rows[0]["HTMLBody"].ToString();
                     string strFooter = dsEmailTemplate.Tables[0].Rows[0]["HTMLFooter"].ToString();
                     string strsubject = dsEmailTemplate.Tables[0].Rows[0]["HTMLSubject"].ToString();
+                    string strTaskLinkTitle = CommonFunction.GetTaskLinkTitleForAutoEmail(int.Parse(hdnTaskId.Value));
 
                     strBody = strBody.Replace("#Fname#", fullname);
-                    strBody = strBody.Replace("#TaskLink#", string.Format("{0}?TaskId={1}", Request.Url.ToString().Split('?')[0], hdnTaskId.Value));
+                    strBody = strBody.Replace("#TaskLink#", string.Format("{0}?TaskId={1}&{2}", Request.Url.ToString().Split('?')[0], hdnTaskId.Value, strTaskLinkTitle));
 
-                    // Added by Zubair Ahmed Khan for displaying proper text for task link
-                    string strTaskLinkTitle = CommonFunction.GetTaskLinkTitleForAutoEmail(int.Parse(hdnTaskId.Value));
-                    strBody = strBody.Replace("#TaskLinkTitle#", strTaskLinkTitle);
                     
+                    strBody = strBody.Replace("#TaskTitle#", string.Format("{0}?TaskId={1}", Request.Url.ToString().Split('?')[0], hdnTaskId.Value));
 
                     strBody = strHeader + strBody + strFooter;
 
@@ -1483,33 +1456,20 @@ namespace JG_Prospect.Sr_App
 
         private bool SetTaskAssignedUsers(DataTable dtTaskAssignedUserDetails)
         {
+            string SelectedUser = "";
             string firstAssignedUser = string.Empty;
             foreach (DataRow row in dtTaskAssignedUserDetails.Rows)
             {
 
-                ListItem item = ddlAssignedUsers.Items.FindByValue(row["UserId"].ToString());
 
-                if (item != null)
-                {
-                    item.Selected = true;
+                SelectedUser += "," + row[0].ToString();
 
-                    if (string.IsNullOrEmpty(firstAssignedUser))
-                    {
-                        firstAssignedUser = item.Text;
-                    }
-                }
             }
+            if (SelectedUser.Length > 1)
+                hdnSelectedUsers.Value = SelectedUser.Substring(1);
 
-            if (!string.IsNullOrEmpty(firstAssignedUser))
-            {
-                ddlAssignedUsers.Texts.SelectBoxCaption = firstAssignedUser;
-                return true;
-            }
-            else
-            {
-                ddlAssignedUsers.Texts.SelectBoxCaption = "--Open--";
-                return false;
-            }
+
+            return false;
         }
 
         private void SetTaskDesignationDetails(DataTable dtTaskDesignationDetails)
@@ -1517,9 +1477,10 @@ namespace JG_Prospect.Sr_App
             String firstDesignation = string.Empty;
             if (this.IsAdminMode)
             {
+                
                 foreach (DataRow row in dtTaskDesignationDetails.Rows)
                 {
-                    ListItem item = ddlUserDesignation.Items.FindByText(row["Designation"].ToString());
+                    ListItem item = ddlDesignationSeq.Items.FindByText(row["Designation"].ToString());
 
                     if (item != null)
                     {
@@ -1532,16 +1493,14 @@ namespace JG_Prospect.Sr_App
                             firstDesignation = item.Text;
                         }
                     }
-                }
+                }                
 
                 if (objucSubTasks_Admin.SubTaskDesignations.Length > 0)
                 {
                     objucSubTasks_Admin.SubTaskDesignations = objucSubTasks_Admin.SubTaskDesignations.Substring(1);
                 }
+                hdnSelectedDesig.Value = objucSubTasks_Admin.SubTaskDesignations;
 
-                ddlUserDesignation.Texts.SelectBoxCaption = firstDesignation;
-
-                LoadUsersByDesgination();
             }
             else
             {
@@ -1680,7 +1639,7 @@ namespace JG_Prospect.Sr_App
         {
             rfvTaskTitle.Visible = flag;
             //rfvDesc.Visible = flag;
-            cvDesignations.Visible = flag;
+            //cvDesignations.Visible = flag;
         }
 
         private void DownloadUserAttachments(String CommaSeperatedFiles)
@@ -1877,6 +1836,42 @@ namespace JG_Prospect.Sr_App
             }
         }
 
+        #endregion
+
+        #region Web Methods
+        [WebMethod]
+        public static string SendEmailToSharedTaskUser(string contents, int InstallUserIDs)
+        {
+            try
+            {
+                string strHTMLTemplateName = "Task_Shared_Notification";
+                DesignationHTMLTemplate objHTMLTemplate = HTMLTemplateBLL.Instance.GetDesignationHTMLTemplate(HTMLTemplates.HR_User_Task_Shared, JGSession.DesignationId.ToString());
+
+                DataSet dsUser = TaskGeneratorBLL.Instance.GetInstallUserDetails(InstallUserIDs);
+
+                string emailId = dsUser.Tables[0].Rows[0]["Email"].ToString();
+                string FName = dsUser.Tables[0].Rows[0]["FristName"].ToString();
+
+                string strHeader = objHTMLTemplate.Header;
+                string strBody = objHTMLTemplate.Body;
+                string strFooter = objHTMLTemplate.Footer;
+                string strsubject = objHTMLTemplate.Subject;
+
+                strBody = strBody.Replace("#Fname#", FName);
+                strBody = strBody.Replace("#TaskLink#", contents);
+                strBody = strBody.Replace("#TaskTitle#", contents);
+
+                strBody = strHeader + strBody + strFooter;
+
+                CommonFunction.SendEmail(strHTMLTemplateName, emailId, strsubject, strBody, null);
+                return new JavaScriptSerializer().Serialize(new ActionOutput { Status = ActionStatus.Successfull });
+
+            }
+            catch (Exception ex)
+            {
+                return new JavaScriptSerializer().Serialize(new ActionOutput { Status = ActionStatus.Error });
+            }
+        }
         #endregion
     }
 }

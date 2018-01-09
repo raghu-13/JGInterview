@@ -31,40 +31,22 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.HtmlControls.HtmlGenericControl lblalertpopup;
         
         /// <summary>
-        /// lblNewCounter control.
+        /// lblNonFrozenTaskCounter control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlAnchor lblNewCounter;
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor lblNonFrozenTaskCounter;
         
         /// <summary>
-        /// lblNewCounter0 control.
+        /// lblFrozenTaskCounter control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblNewCounter0;
-        
-        /// <summary>
-        /// lblFrozenCounter control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlAnchor lblFrozenCounter;
-        
-        /// <summary>
-        /// lblFrozenCounter0 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblFrozenCounter0;
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor lblFrozenTaskCounter;
         
         /// <summary>
         /// btnFake control.
@@ -76,399 +58,129 @@ namespace JG_Prospect.Sr_App {
         protected global::System.Web.UI.HtmlControls.HtmlButton btnFake;
         
         /// <summary>
-        /// Table2 control.
+        /// table1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTable Table2;
+        protected global::System.Web.UI.HtmlControls.HtmlTable table1;
         
         /// <summary>
-        /// tblSearchcontrols control.
+        /// A1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTable tblSearchcontrols;
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor A1;
         
         /// <summary>
-        /// upnlDesignationFrozen control.
+        /// A2 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upnlDesignationFrozen;
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor A2;
         
         /// <summary>
-        /// ddlDesigFrozen control.
+        /// A3 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Saplin.Controls.DropDownCheckBoxes ddlDesigFrozen;
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor A3;
         
         /// <summary>
-        /// cvalidatorDesignationFrozen control.
+        /// A4 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.CustomValidator cvalidatorDesignationFrozen;
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor A4;
         
         /// <summary>
-        /// upnlUsersFrozen control.
+        /// tableFilter control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upnlUsersFrozen;
+        protected global::System.Web.UI.HtmlControls.HtmlTable tableFilter;
         
         /// <summary>
-        /// ddlUserFrozen control.
+        /// txtfrmdate control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::Saplin.Controls.DropDownCheckBoxes ddlUserFrozen;
+        protected global::System.Web.UI.WebControls.TextBox txtfrmdate;
         
         /// <summary>
-        /// txtSearchFrozen control.
+        /// calExtendFromDate control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtSearchFrozen;
+        protected global::AjaxControlToolkit.CalendarExtender calExtendFromDate;
         
         /// <summary>
-        /// btnSearchFrozen control.
+        /// txtTodate control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnSearchFrozen;
+        protected global::System.Web.UI.WebControls.TextBox txtTodate;
         
         /// <summary>
-        /// drpPageSizeFrozen control.
+        /// CalendarExtender2 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList drpPageSizeFrozen;
+        protected global::AjaxControlToolkit.CalendarExtender CalendarExtender2;
         
         /// <summary>
-        /// Label2 control.
+        /// seqArrowUp control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label2;
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor seqArrowUp;
         
         /// <summary>
-        /// upnlFrozenTasks control.
+        /// seqArrowDown control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upnlFrozenTasks;
+        protected global::System.Web.UI.HtmlControls.HtmlAnchor seqArrowDown;
         
         /// <summary>
-        /// grdFrozenTask control.
+        /// ltlManagerName control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView grdFrozenTask;
+        protected global::System.Web.UI.WebControls.Literal ltlManagerName;
         
         /// <summary>
-        /// htmltblNonFrozen control.
+        /// hdnUserId control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTable htmltblNonFrozen;
-        
-        /// <summary>
-        /// drpPageSizeNew control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList drpPageSizeNew;
-        
-        /// <summary>
-        /// Label3 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label3;
-        
-        /// <summary>
-        /// upnlNonFrozenTasks control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upnlNonFrozenTasks;
-        
-        /// <summary>
-        /// grdNewTask control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView grdNewTask;
-        
-        /// <summary>
-        /// btnCalClose control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnCalClose;
-        
-        /// <summary>
-        /// upnlInprogressTasks control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upnlInprogressTasks;
-        
-        /// <summary>
-        /// tblInProgress control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTable tblInProgress;
-        
-        /// <summary>
-        /// upnlDesignation control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upnlDesignation;
-        
-        /// <summary>
-        /// ddlInprogressUserDesignation control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::Saplin.Controls.DropDownCheckBoxes ddlInprogressUserDesignation;
-        
-        /// <summary>
-        /// cvDesignations control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CustomValidator cvDesignations;
-        
-        /// <summary>
-        /// upnlAssigned control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upnlAssigned;
-        
-        /// <summary>
-        /// ddlInProgressAssignedUsers control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.ListBox ddlInProgressAssignedUsers;
-        
-        /// <summary>
-        /// searchUsers control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button searchUsers;
-        
-        /// <summary>
-        /// txtSearchInPro control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtSearchInPro;
-        
-        /// <summary>
-        /// btnSearchInPro control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnSearchInPro;
-        
-        /// <summary>
-        /// drpPageSizeInpro control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList drpPageSizeInpro;
-        
-        /// <summary>
-        /// lblMessage control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label lblMessage;
-        
-        /// <summary>
-        /// grdTaskPending control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView grdTaskPending;
-        
-        /// <summary>
-        /// upClosedTask control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upClosedTask;
-        
-        /// <summary>
-        /// tblClosedTask control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTable tblClosedTask;
-        
-        /// <summary>
-        /// upnlDesignationClosedTasks control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upnlDesignationClosedTasks;
-        
-        /// <summary>
-        /// ddlClosedUserDesignation control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::Saplin.Controls.DropDownCheckBoxes ddlClosedUserDesignation;
-        
-        /// <summary>
-        /// CustomValidator1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.CustomValidator CustomValidator1;
-        
-        /// <summary>
-        /// upnlUsersClosedTasks control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.UpdatePanel upnlUsersClosedTasks;
-        
-        /// <summary>
-        /// ddlClosedAssignedUsers control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::Saplin.Controls.DropDownCheckBoxes ddlClosedAssignedUsers;
-        
-        /// <summary>
-        /// txtSearchClosed control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox txtSearchClosed;
-        
-        /// <summary>
-        /// btnSearchClosed control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button btnSearchClosed;
-        
-        /// <summary>
-        /// drpPageSizeClosed control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.DropDownList drpPageSizeClosed;
-        
-        /// <summary>
-        /// Label1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label1;
-        
-        /// <summary>
-        /// grdTaskClosed control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.GridView grdTaskClosed;
+        protected global::System.Web.UI.WebControls.HiddenField hdnUserId;
     }
 }

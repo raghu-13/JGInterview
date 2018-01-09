@@ -1,6 +1,8 @@
-/* =============================================      
+ /* =============================================      
  Author:  Jitendra Pancholi      
  Create date: 07-Nov-2017
+ Updated By: Jitendra Pancholi
+ Updated On: 15-Nov-2017
  Description: This will free all tasks which were assigned to the users whose interview date has expired.
  ============================================= */
 Go
@@ -21,12 +23,26 @@ Begin
 	Select Distinct E.EventDate, E.ApplicantId From tbl_AnnualEvents E With(NoLock) 
 		Where E.EventDate < CAST(GetDate() as date) 
 			And E.EventName = 'InterViewDetails' And E.IsInstallUser = 1
+
+	/* Creating Task History */
+	Select @Min = Min(Id), @Max = Max(Id) From #InterviewDetails
+	While @Min <= @Max
+		Begin
+			If Not Exists (Select 1 from InstallUserTaskHistory H Join tblAssignedSequencing S
+				on H.TaskID = S.TaskId And H.InstallUserId = S.UserId)
+				Begin
+					Select @UserID = UserId From #InterviewDetails Where Id = @Min
+						Insert Into InstallUserTaskHistory(InstallUserId, TaskId, AssignedOn)
+							Select S.UserId, S.TaskId, S.CreatedDateTime from tblAssignedSequencing S Where UserId = @UserID
+						Set @Min = @Min + 1
+				End
+		End
 	
 	/* Delete tasks of those users from tblAssignedSequencing table so that task can be assigned to other users */
 	Delete from tblAssignedSequencing Where UserId in (Select UserID from #InterviewDetails)
 	
 	/* Change User status to InterviewDateExpired with enum value 16 */
-	Update tblInstallUsers Set Status = 16 Where Id in (Select UserID from #InterviewDetails)
+	Update tblInstallUsers Set [Status] = 16 Where Id in (Select UserID from #InterviewDetails) And [Status] = 5
 End
 
 Go
@@ -188,3 +204,105 @@ Begin
 	
 	/* Call other job procedures like above */
 End
+
+/* =============================================      
+ Author:  Jitendra Pancholi      
+ Create date: 08-Nov-2017
+ Description: This will call all procedure which needs to be run periodically.
+ ============================================= */
+Go
+IF EXISTS(SELECT 1 FROM INFORMATION_SCHEMA.ROUTINES WHERE  ROUTINE_NAME = 'GetUserAssignedTaskHistory')
+  BEGIN
+      DROP PROCEDURE GetUserAssignedTaskHistory
+  END
+ Go
+ /*
+  GetUserAssignedTaskHistory 3809
+ */
+ Create PROCEDURE GetUserAssignedTaskHistory      
+(
+ @UserID  INT      
+)      
+AS      
+BEGIN
+
+-- Get newly assigned sequence from inserted sequence / Already assigned sequence      
+SELECT top 1 Id,T.TaskId, dbo.udf_GetParentTaskId(T.TaskId) AS ParentTaskId,       
+(SELECT Title FROM tblTask WHERE TaskId =  dbo.udf_GetParentTaskId(T.TaskId)) AS ParentTitle , 
+dbo.udf_GetCombineInstallId(T.TaskId) AS InstallId , T.Title       
+      
+FROM tblTask AS T  Join InstallUserTaskHistory H on T.TaskId = H.TaskId    
+       
+WHERE H.InstallUserId = @UserId
+
+End
+
+
+Go
+IF EXISTS(SELECT 1 FROM INFORMATION_SCHEMA.ROUTINES WHERE  ROUTINE_NAME = 'GetUserTouchPointLogs')
+  BEGIN
+      DROP PROCEDURE GetUserTouchPointLogs
+  END
+ Go
+
+ /*
+	GetUserTouchPointLogs 3809,0,10,0
+ */
+ Create PROCEDURE [dbo].[GetUserTouchPointLogs]      
+(
+	@UserID  Int,
+	@PageNumber Int = 0,
+	@PageSize Int = 10,
+	@TotalResults Int output
+)      
+AS      
+BEGIN
+	Select @TotalResults = Count(T.UserTouchPointLogID)
+			from tblUserTouchPointLog T With(NoLock) 
+		Join tblInstallUsers LU With(NoLock) On T.UpdatedByUserId = LU.Id
+		Join tblInstallUsers U With(NoLock) On T.UserId = U.Id
+	Where T.UserID = @UserID
+	
+	
+	Select T.UserTouchPointLogID, T.UserID, T.UpdatedByUserID, T.UpdatedUserInstallID, T.ChangeDateTime, 
+			T.LogDescription,
+			LU.FristName As UpdatedByFirstName, LU.LastName As UpdatedByLastName, LU.Email As UpdatedByEmail,
+			U.FristName, U.LastName, U.Email, U.Phone,
+			Format(T.ChangeDateTime, 'MM/dd/yyyy hh:mm tt') as ChangeDateTimeFormatted,
+			(
+			select ISNULL(Uu.Username,t2.FristName + ' ' + t2.LastName)  
+			 +' - '+ISNULL(t1.[UserInstallId], t2.[UserInstallId])
+			FROM tblInstallUsers tt  
+			  LEFT OUTER JOIN tblUsers Uu ON Uu.Id = tt.SourceUser  
+			  LEFT OUTER JOIN tblInstallUsers t2 ON t2.Id = tt.SourceUser  
+			  LEFT OUTER JOIN tblInstallUsers ru on tt.RejectedUserId= ru.Id  
+			  LEFT OUTER JOIN tblInstallUsers t1 ON t1.Id= Uu.Id
+			  Where tt.id=T.UpdatedByUserID
+			  ) As SourceUser
+			from tblUserTouchPointLog T With(NoLock) 
+		Join tblInstallUsers LU With(NoLock) On T.UpdatedByUserId = LU.Id
+		Join tblInstallUsers U With(NoLock) On T.UserId = U.Id
+	Where T.UserID = @UserID
+	ORDER BY T.ChangeDateTime Desc
+	OFFSET @PageSize * (@PageNumber) ROWS
+	FETCH NEXT @PageSize ROWS ONLY;
+End
+
+GO
+
+IF EXISTS (SELECT * FROM sys.objects WHERE [name] = N'AfterInsertTblInstallUsers' AND [type] = 'TR')
+BEGIN
+      DROP TRIGGER AfterInsertTblInstallUsers
+END
+Go
+Create  TRIGGER AfterInsertTblInstallUsers 
+   ON  tblInstallUsers
+   AFTER INSERT
+AS 
+BEGIN
+	Insert Into tblUserTouchPointLog(UserID, UpdatedByUserID, UpdatedUserInstallID, ChangeDateTime, LogDescription, CurrentUserGUID)
+		SELECT I.Id, I.Id, I.FristName + ' ' + I.LastName, GETUTCDATE(), 'User successfully filled in HR form', '' FROM INSERTED I
+End
+
+Go
+

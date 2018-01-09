@@ -25,11 +25,6 @@ namespace JG_Prospect.BLL
             set {; }
         }
 
-        public string GetDesignationCode(JGConstant.DesignationType objDesignationType)
-        {
-            return DesignationDAL.Instance.GetDesignationCode(objDesignationType);
-        }
-
         public DataSet GetAllDesignationsForHumanResource()
         {
             return DesignationDAL.Instance.GetAllDesignationsForHumanResource();
