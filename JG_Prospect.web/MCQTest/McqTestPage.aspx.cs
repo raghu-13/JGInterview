@@ -844,7 +844,10 @@ namespace JG_Prospect.MCQTest
         {
             InstallUserBLL.Instance.ChangeUserStatusToReject(Convert.ToInt32(JGConstant.InstallUserStatus.Rejected), DateTime.Now.Date, DateTime.Now.ToShortTimeString(), JGApplicationInfo.GetJMGCAutoUserID(), Convert.ToInt32(Session["ID"]), ReasonMessage);
         }
-
+        private void UpdateUserStatusAsLeftapptitudeTestWithoutcompleting(int userID, String ReasonMessage)
+        {
+            InstallUserBLL.Instance.ChangeUserStatusToLeftapptitudeTestWithoutcompleting(Convert.ToInt32(JGConstant.InstallUserStatus.LeftapptitudeTestWithoutcompleting), DateTime.Now.Date, DateTime.Now.ToShortTimeString(), JGApplicationInfo.GetJMGCAutoUserID(), Convert.ToInt32(Session["ID"]), ReasonMessage);
+        }
         //Update User Exam Summary.
         private void UpdateUserExamSummary(int markScored, int userID)
         {
@@ -875,7 +878,7 @@ namespace JG_Prospect.MCQTest
                 if (this.NextExamSeq == 0)
                 {
                     //Before user starts exam set his/her status to Rejected/With Reason, and set it to interview date only when that user has completed all exams. 
-                    UpdateUserStatusAsRejectedWithReason(UserID, "Left apptitude test without completing it.");
+                    UpdateUserStatusAsLeftapptitudeTestWithoutcompleting(UserID, "Left apptitude test without completing it.");
 
                     this.CurrentExamID = Convert.ToInt32(((Literal)rptExams.Items[0].FindControl("ltlExamId")).Text);
                     this.NextExamSeq = 1;// fetch next exam from repeater item index.

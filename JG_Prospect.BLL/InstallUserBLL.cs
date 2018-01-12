@@ -519,7 +519,11 @@ namespace JG_Prospect.BLL
         {
             return InstallUserDAL.Instance.ChangeUserStatusToReject(StatusId, RejectionDate, RejectionTime, RejectedUserId, UserId, StatusReason);
         }
-
+        
+  public DataSet ChangeUserStatusToLeftapptitudeTestWithoutcompleting(int StatusId, DateTime RejectionDate, string RejectionTime, int RejectedUserId, Int64 UserId, string StatusReason = "")
+        {
+            return InstallUserDAL.Instance.ChangeUserStatusToReject(StatusId, RejectionDate, RejectionTime, RejectedUserId, UserId, StatusReason);
+        }
 
         public DataSet GetAllInterivewUserByPastDate()
         {
